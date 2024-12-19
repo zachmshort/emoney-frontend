@@ -41,7 +41,6 @@ const ThreeScene = ({ objToRender }) => {
 
         scene.add(object);
 
-        const size = box.getSize(new THREE.Vector3());
         const targetPosition = new THREE.Vector3(500, 500, 500);
         const startPosition = new THREE.Vector3(0, 1000, 0);
         const cameraTarget = center.clone();
