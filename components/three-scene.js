@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 const ThreeScene = ({ objToRender }) => {
@@ -11,7 +12,7 @@ const ThreeScene = ({ objToRender }) => {
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
     camera.position.set(0, 600, 0); 
-    camera.lookAt(0, 0, 0); 
+    camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -21,7 +22,7 @@ const ThreeScene = ({ objToRender }) => {
     const topLight = new THREE.DirectionalLight(0xffffff, 1);
     topLight.position.set(300, 500, 300);
     topLight.castShadow = true;
-    topLight.shadow.bias = -0.005;
+    topLight.shadow.bias = -0.005; 
     scene.add(topLight);
 
     const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
@@ -62,7 +63,7 @@ const ThreeScene = ({ objToRender }) => {
       (error) => console.error("Error loading the model:", error)
     );
 
-    // const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
     // const gridHelper = new THREE.GridHelper(1000, 10); // 1000 size, 10 divisions
     // scene.add(gridHelper);
 
@@ -75,6 +76,7 @@ const ThreeScene = ({ objToRender }) => {
     };
     animate();
 
+    // Handle window resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -82,6 +84,7 @@ const ThreeScene = ({ objToRender }) => {
     };
     window.addEventListener("resize", handleResize);
 
+    // Cleanup on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
