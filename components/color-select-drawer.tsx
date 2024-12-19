@@ -47,18 +47,20 @@ export function ColorSelect() {
         <DrawerHeader>
           <DrawerTitle className={`text-black`}>Select Color</DrawerTitle>
           <div className={`flex flex-col items-evenly gap-y-4 justify-center`}>
-            {colors.map((color: any, index: number) => (
-              <DrawerClose
-                className={`flex items-center justify-start gap-x-3`}
-                key={index}
-                onClick={() => {
-                  setColor(color);
-                }}
-              >
-                <div className={`w-3 h-3 rounded-full ${color.value}`}></div>
-                <div className={`text-2xl`}>{color.name}</div>
-              </DrawerClose>
-            ))}
+            {colors.map(
+              (color: { name: string; value: string }, index: number) => (
+                <DrawerClose
+                  className={`flex items-center justify-start gap-x-3`}
+                  key={index}
+                  onClick={() => {
+                    setColor(color);
+                  }}
+                >
+                  <div className={`w-3 h-3 rounded-full ${color.value}`}></div>
+                  <div className={`text-2xl`}>{color.name}</div>
+                </DrawerClose>
+              )
+            )}
           </div>
         </DrawerHeader>
       </DrawerContent>

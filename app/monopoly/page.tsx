@@ -1,4 +1,4 @@
-import { sulpherBold, sulpherLight } from "@/components/fonts";
+import { sulpherBold } from "@/components/fonts";
 import Logo from "@/components/logo";
 import Link from "next/link";
 
