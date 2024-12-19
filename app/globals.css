@@ -19,3 +19,25 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+.sulphur-point-bold {
+  font-family: "Sulphur Point", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+.canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.container3D {
+    width: 100vw !important;
+    height: 100vh !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
