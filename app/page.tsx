@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import ThreeScene from "@/components/three-scene";
+import Link from "next/link";
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
 
@@ -12,7 +14,9 @@ export default function Home() {
             <div className="spinner"></div>
           </div>
         )}
-        <ThreeScene objToRender="monopoly" setLoading={setLoading} />
+        <Link href="/monopoly">
+          <ThreeScene objToRender="monopoly" setLoading={setLoading} />
+        </Link>
       </main>
     </>
   );

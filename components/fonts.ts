@@ -5,4 +5,8 @@ const sulpherBold = Sulphur_Point({
   weight: ["700"],
 });
 
-export { sulpherBold };
+const sulpherLight = Sulphur_Point({
+  subsets: ["latin"],
+  weight: ["300"],
+});
+export { sulpherBold, sulpherLight };
