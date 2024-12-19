@@ -1,10 +1,8 @@
-interface p {
-  params: {
-    code: string | null;
-  };
+interface Params {
+  code: string | null;
 }
 
-const RoomPage = ({ params }: p) => {
+const RoomPage = ({ params }: { params: Params }) => {
   const { code } = params;
   console.log(code);
   return <></>;
