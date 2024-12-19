@@ -5,6 +5,7 @@ interface p {
 }
 const RoomPage = async ({ params }: p) => {
   const { code } = await params;
+  console.log(code);
   return <></>;
 };
 
