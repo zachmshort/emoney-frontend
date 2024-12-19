@@ -5,7 +5,7 @@ interface RoomPageProps {
 }
 
 const RoomPage = async ({ params }: RoomPageProps) => {
-  const { code } = params;
+  const { code } = await params; // Explicitly await params
   return <div>Room Code: {code}</div>;
 };
 
