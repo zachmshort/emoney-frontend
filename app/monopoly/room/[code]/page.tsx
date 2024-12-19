@@ -3,8 +3,9 @@ interface p {
     code: string | null;
   };
 }
-const RoomPage = async ({ params }: p) => {
-  const { code } = await params;
+
+const RoomPage = ({ params }: p) => {
+  const { code } = params;
   console.log(code);
   return <></>;
 };
