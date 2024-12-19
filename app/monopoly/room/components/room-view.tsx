@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Player {
   id: string;
@@ -22,10 +22,11 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
   const [properties, setProperties] = useState<{ [key: string]: Property[] }>(
     {}
   );
-  console.log("players", players);
-  console.log(properties);
   const [view, setView] = useState<"players" | "properties">("players");
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
+
+  const playersContainerRef = useRef<HTMLDivElement>(null);
+  const propertiesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchRoomData = async () => {
@@ -38,32 +39,55 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
     fetchRoomData();
   }, [roomCode]);
 
+  const handleScroll = () => {
+    if (playersContainerRef.current && propertiesContainerRef.current) {
+      const playerScroll = playersContainerRef.current.scrollLeft;
+      const propertiesScroll = propertiesContainerRef.current.scrollLeft;
+
+      if (playerScroll === 0) {
+        setView("players");
+      } else if (propertiesScroll > 0) {
+        setView("properties");
+      }
+    }
+  };
+
+  const handleButtonClick = (playerId: string) => {
+    setSelectedPlayer(playerId);
+    setView("properties");
+    propertiesContainerRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="h-screen w-screen flex flex-col">
       <div className="flex flex-col h-full">
-        <div className="w-full snap-x snap-mandatory overflow-x-auto flex">
+        <div
+          ref={playersContainerRef}
+          className="w-full snap-x snap-mandatory overflow-x-auto flex"
+          onScroll={handleScroll}
+        >
           {players?.map((player) => (
             <div
               key={player.id}
               className="w-full flex-none snap-center"
               style={{ minWidth: "100%" }}
             >
-              {/* <PlayerCard
-                player={player}
-                onClick={() => {
-                  setSelectedPlayer(player.id);
-                  setView("properties");
-                }}
-              /> */}
+              <button
+                onClick={() => handleButtonClick(player.id)}
+                className="p-4 bg-blue-500 text-white rounded"
+              >
+                View {player.name}'s Properties
+              </button>
             </div>
           ))}
         </div>
 
-        {/* Properties view */}
         {selectedPlayer && view === "properties" && (
           <div
+            ref={propertiesContainerRef}
             className="w-full snap-x snap-mandatory overflow-x-auto flex mt-4"
             style={{ minHeight: "60vh" }}
+            onScroll={handleScroll}
           >
             {properties[selectedPlayer]?.map((property) => (
               <div
@@ -71,7 +95,9 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
                 className="w-full flex-none snap-center"
                 style={{ minWidth: "100%" }}
               >
-                {/* <PropertyCard property={property} /> */}
+                <div className="p-4 bg-gray-200 rounded">
+                  Property ID: {property.id}
+                </div>
               </div>
             ))}
           </div>
@@ -80,4 +106,5 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
     </div>
   );
 };
+
 export default RoomView;

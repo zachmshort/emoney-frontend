@@ -30,11 +30,11 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     };
   }, [code]);
 
-  const sendMessage = (type: string, payload: any) => {
-    if (ws.current?.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify({ type, payload }));
-    }
-  };
+  // const sendMessage = (type: string, payload: any) => {
+  //   if (ws.current?.readyState === WebSocket.OPEN) {
+  //     ws.current.send(JSON.stringify({ type, payload }));
+  //   }
+  // };
 
   return (
     <>
