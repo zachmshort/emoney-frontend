@@ -9,19 +9,20 @@ interface Player {
   balance: number;
 }
 
-interface Property {
-  id: string;
-  propertyIndex: number;
-  houses: number;
-  hotel: number;
-  isMortgaged: boolean;
-}
+// interface Property {
+//   id: string;
+//   propertyIndex: number;
+//   houses: number;
+//   hotel: number;
+//   isMortgaged: boolean;
+// }
 
 const RoomView = ({ roomCode }: { roomCode: string }) => {
   const [players, setPlayers] = useState<Player[]>([]);
-  const [properties, setProperties] = useState<{ [key: string]: Property[] }>(
-    {}
-  );
+  // const [properties, setProperties] = useState<{ [key: string]: Property[] }>(
+  //   {}
+  // );
+  const properties = [];
   const [view, setView] = useState<"players" | "properties">("players");
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
 
@@ -76,7 +77,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
                 onClick={() => handleButtonClick(player.id)}
                 className="p-4 bg-blue-500 text-white rounded"
               >
-                View {player.name}'s Properties
+                View {player.name}&apos;s Properties
               </button>
             </div>
           ))}
