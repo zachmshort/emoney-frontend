@@ -22,6 +22,7 @@ const RoomForm = ({
   const enterRoom = () => {
     router.push(`/monopoly/room/${code}`);
   };
+  console.log(type);
   return (
     <>
       <div className={`relative h-screen`}>
