@@ -1,12 +1,6 @@
-interface RoomPageProps {
-  params: {
-    code: string;
-  };
-}
+type tParams = Promise<{ code: string }>;
 
-const RoomPage = async ({ params }: RoomPageProps) => {
+export default async function RoomPage({ params }: { params: tParams }) {
   const { code } = await params;
-  return <div>Room Code: {code}</div>;
-};
-
-export default RoomPage;
+  return <>{code}</>;
+}
