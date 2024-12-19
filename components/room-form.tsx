@@ -2,7 +2,7 @@
 import { ColorSelect } from "@/components/color-select-drawer";
 import { sulpherBold } from "@/components/fonts";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "./logo";
 
 interface p {
@@ -18,11 +18,62 @@ const RoomForm = ({
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [showDetails, setShowDetails] = useState(false);
+  const [deviceId, setDeviceId] = useState<string>("");
   const router = useRouter();
-  const enterRoom = () => {
-    router.push(`/monopoly/room/${code}`);
+
+  useEffect(() => {
+    const storedDeviceId = localStorage.getItem("deviceId");
+    if (storedDeviceId) {
+      setDeviceId(storedDeviceId);
+    } else {
+      // const newDeviceId = `${Date.now()}-${Math.random()
+      //   .toString(36)
+      //   .slice(2)}`;
+      const newDeviceId = "test";
+      localStorage.setItem("deviceId", newDeviceId);
+      setDeviceId(newDeviceId);
+    }
+  }, []);
+
+  const createRoom = async () => {
+    try {
+      const payload = {
+        name: name,
+        deviceId: deviceId,
+        code: code,
+      };
+      console.log("Sending payload:", payload);
+
+      const response = await fetch("https://emoney.up.railway.app/room", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      console.log("Response:", data);
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create room");
+      }
+
+      router.push(`/monopoly/room/${data.roomCode}`);
+    } catch (error) {
+      console.error("Error creating room:", error);
+      alert(`Failed to create room: ${error.message}`);
+    }
   };
-  console.log(type);
+
+  const enterRoom = () => {
+    if (type === "CREATE") {
+      createRoom();
+    } else {
+      router.push(`/monopoly/room/${code}`);
+    }
+  };
+
   return (
     <>
       <div className={`relative h-screen`}>
@@ -59,7 +110,7 @@ const RoomForm = ({
                   setName(e.target.value);
                 }}
               />
-              <ColorSelect />
+              {type === "JOIN" && <ColorSelect />}
               <button
                 onClick={enterRoom}
                 className={`mt-4 text-2xl w-64 p-4 border rounded-lg`}
