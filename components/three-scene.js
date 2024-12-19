@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 
 const ThreeScene = ({ objToRender }) => {
   const containerRef = useRef(null);
@@ -10,47 +11,86 @@ const ThreeScene = ({ objToRender }) => {
   useEffect(() => {
     const scene = new THREE.Scene();
 
+    // Camera setup
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
-    camera.position.set(0, 600, 0); 
+    camera.position.set(2000, 600, 1000); // Initial camera position
     camera.lookAt(0, 0, 0);
 
+    // Renderer setup
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.enabled = true; // Enable shadows
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
     containerRef.current.appendChild(renderer.domElement);
 
-    const topLight = new THREE.DirectionalLight(0xffffff, 1);
-    topLight.position.set(300, 500, 300);
-    topLight.castShadow = true;
-    topLight.shadow.bias = -0.005; 
-    scene.add(topLight);
+    // Sunlight (Directional Light) - positioned behind the final camera target
+    const sunLight = new THREE.DirectionalLight(0xffffff, 3); // Bright sunlight
+    sunLight.position.set(2500, 1200, 1500); // Behind and above the ending camera position
+    sunLight.castShadow = true;
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+    // Shadow settings
+    sunLight.shadow.mapSize.width = 4096; // High resolution shadow map
+    sunLight.shadow.mapSize.height = 4096;
+    sunLight.shadow.camera.near = 0.5;
+    sunLight.shadow.camera.far = 5000;
+
+    // Adjust the shadow camera bounds for better shadow casting
+    sunLight.shadow.camera.left = -1000;
+    sunLight.shadow.camera.right = 1000;
+    sunLight.shadow.camera.top = 1000;
+    sunLight.shadow.camera.bottom = -1000;
+
+    scene.add(sunLight);
+
+    // Ambient Light for global illumination
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.5); // Subtle ambient light
     scene.add(ambientLight);
 
+    // HDRI Environment Map
+    const hdrLoader = new RGBELoader();
+    hdrLoader.load('/test.hdr', (texture) => {
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+      scene.environment = texture; // Set as environment map
+      scene.background = texture; // Optional: Set as background
+    });
+
+    // Load the 3D model
     const loader = new GLTFLoader();
     loader.load(
       `/${objToRender}.glb`,
       (gltf) => {
         const object = gltf.scene;
 
+        // Center the object
         const box = new THREE.Box3().setFromObject(object);
         const center = box.getCenter(new THREE.Vector3());
         object.position.sub(center);
 
+        // Offset the model along the X-axis
         object.position.x += 180;
+
+        // Enable shadows for the model
+        object.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true; // Object casts shadows
+            child.receiveShadow = true; // Object receives shadows
+            child.material.metalness = 0.2; // Slightly reflective
+            child.material.roughness = 0.5; // Smooth surfaces
+          }
+        });
 
         scene.add(object);
 
+        // Camera animation towards target position
         const targetPosition = new THREE.Vector3(500, 500, 500);
-        const startPosition = new THREE.Vector3(0, 1000, 0);
+        const startPosition = new THREE.Vector3(3000, 1000, 600);
         const cameraTarget = center.clone();
-        cameraTarget.x -= 100;
+        cameraTarget.x -= 80;
 
         let progress = 0;
         const animateCamera = () => {
           if (progress < 1) {
-            progress += 0.008; 
+            progress += 0.008;
             camera.position.lerpVectors(startPosition, targetPosition, progress);
             camera.lookAt(cameraTarget);
             requestAnimationFrame(animateCamera);
@@ -63,13 +103,10 @@ const ThreeScene = ({ objToRender }) => {
       (error) => console.error("Error loading the model:", error)
     );
 
+    // Orbit Controls for user interaction
     const controls = new OrbitControls(camera, renderer.domElement);
-    // const gridHelper = new THREE.GridHelper(1000, 10); // 1000 size, 10 divisions
-    // scene.add(gridHelper);
 
-    // const axesHelper = new THREE.AxesHelper(500); // Axes with size 500
-    // scene.add(axesHelper);
-
+    // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
@@ -96,4 +133,3 @@ const ThreeScene = ({ objToRender }) => {
 };
 
 export default ThreeScene;
-
