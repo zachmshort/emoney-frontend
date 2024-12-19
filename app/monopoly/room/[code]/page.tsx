@@ -1,5 +1,11 @@
-const RoomPage = async ({ params }: { params: { code: string } }) => {
-  const { code } = await params;
+interface RoomPageProps {
+  params: {
+    code: string;
+  };
+}
+
+const RoomPage = async ({ params }: RoomPageProps) => {
+  const { code } = params;
   return <div>Room Code: {code}</div>;
 };
 
