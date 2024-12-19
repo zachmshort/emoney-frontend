@@ -20,7 +20,7 @@ const ThreeScene = ({ objToRender }) => {
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true; // Enable shadows
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Use soft shadows
     containerRef.current.appendChild(renderer.domElement);
 
     // Sunlight (Directional Light) - positioned behind the final camera target
@@ -31,14 +31,15 @@ const ThreeScene = ({ objToRender }) => {
     // Shadow settings
     sunLight.shadow.mapSize.width = 4096; // High resolution shadow map
     sunLight.shadow.mapSize.height = 4096;
-    sunLight.shadow.camera.near = 0.5;
-    sunLight.shadow.camera.far = 5000;
+    sunLight.shadow.bias = -0.0005; // Revert bias to avoid ripples but retain shadows
 
-    // Adjust the shadow camera bounds for better shadow casting
-    sunLight.shadow.camera.left = -1000;
-    sunLight.shadow.camera.right = 1000;
-    sunLight.shadow.camera.top = 1000;
-    sunLight.shadow.camera.bottom = -1000;
+    // Adjust the shadow camera bounds for better shadow precision
+    sunLight.shadow.camera.left = -800;
+    sunLight.shadow.camera.right = 800;
+    sunLight.shadow.camera.top = 800;
+    sunLight.shadow.camera.bottom = -800;
+    sunLight.shadow.camera.near = 0.5;
+    sunLight.shadow.camera.far = 3000;
 
     scene.add(sunLight);
 
@@ -76,6 +77,7 @@ const ThreeScene = ({ objToRender }) => {
             child.receiveShadow = true; // Object receives shadows
             child.material.metalness = 0.2; // Slightly reflective
             child.material.roughness = 0.5; // Smooth surfaces
+            child.material.normalMap = child.material.normalMap || null; // Reenable normal maps
           }
         });
 
