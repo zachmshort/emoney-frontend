@@ -34,6 +34,7 @@ const PlayerCard = ({
   if (player?.color === undefined) {
     color = "#000";
   }
+  console.log(player.color);
   return (
     <>
       <div
@@ -65,7 +66,8 @@ const PlayerCard = ({
       <div className="w-full relative flex-none p-2 snap-center min-w-[370px] max-w-[calc(100%-2rem)] md:max-w-[370px] border bg-white border-black aspect-[3/4] rounded select-none ">
         <div className={`border p-2 w-full h-full border-black `}>
           <div
-            className={`bg-[${color}] h-16 w-full flex items-center ${
+            style={{ backgroundColor: color }}
+            className={`h-16 w-full flex items-center ${
               isBanker ? "justify-evenly" : "justify-center"
             } ${sulpherBold.className} text-2xl`}
           >

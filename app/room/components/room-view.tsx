@@ -51,7 +51,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
           height={300}
         />
         <a
-          className={`absolute top-9 right-2 text-blue-500 text-2xl ${sulpherBold.className} select-none`}
+          className={`absolute top-9 right-2 text-blue-500 text-2xl font ${sulpherBold.className} select-none`}
         >
           ${room?.freeParking}
         </a>
