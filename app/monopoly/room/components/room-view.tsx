@@ -41,7 +41,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
   }, [roomCode]);
 
   return (
-    <div className="h-screen w-screen flex flex-col relative items-center justify-center ">
+    <div className="h-screen w-full flex flex-col relative items-center justify-center ">
       <div className={`absolute top-2 right-[0]`}>
         <Image
           src="/free-parking.png"
@@ -50,7 +50,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
           height={300}
         />
         <a
-          className={`absolute top-9 right-[10rem]  text-blue-500 text-2xl ${sulpherBold.className} select-none`}
+          className={`absolute top-9 right-2  text-blue-500 text-2xl ${sulpherBold.className} select-none`}
         >
           ${room?.freeParking}
         </a>
