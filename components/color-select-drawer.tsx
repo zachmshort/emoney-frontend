@@ -57,19 +57,16 @@ export function ColorSelect({ onColorSelect }: ColorSelectProps) {
       >
         <DrawerHeader>
           <DrawerTitle className={`text-black`}>Select Color</DrawerTitle>
-          <div className={`flex flex-col items-evenly gap-y-4 justify-center`}>
+          <div className="grid grid-cols-4 sm:grid-cols-10 gap-2">
             {colors.map((color, index) => (
               <DrawerClose
-                className={`flex items-center justify-start gap-x-3`}
+                className="p-2 rounded mb-2 border aspect-square w-full"
                 key={index}
                 onClick={() => {
                   setSelectedColor(color);
                   onColorSelect(color.hex);
                 }}
-              >
-                <div className={`w-3 h-3 rounded-full ${color.value}`}></div>
-                <div className={`text-2xl`}>{color.name}</div>
-              </DrawerClose>
+              />
             ))}
           </div>
         </DrawerHeader>
