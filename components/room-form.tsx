@@ -4,6 +4,7 @@ import { sulpherBold } from "@/components/fonts";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logo from "./logo";
+import { toast } from "sonner";
 
 // interface JoinRoomResponse {
 //   message: string;
@@ -42,6 +43,11 @@ const RoomForm = ({
   }, []);
 
   const joinRoom = async () => {
+    if (!selectedColor) {
+      toast.error("Please select a color");
+    } else if (!name) {
+      toast.error("Please enter a name");
+    }
     try {
       const payload = {
         roomCode: code,
@@ -140,6 +146,9 @@ const RoomForm = ({
               <button
                 className={`border font rounded-lg p-4 border-yellow-200 w-64 mt-4 text-black text-2xl`}
                 onClick={() => {
+                  if (!code) {
+                    toast.error("Please provide a code");
+                  }
                   setShowDetails(true);
                 }}
               >
