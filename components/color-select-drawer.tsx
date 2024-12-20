@@ -61,6 +61,7 @@ export function ColorSelect({ onColorSelect }: ColorSelectProps) {
             {colors.map((color, index) => (
               <DrawerClose
                 className="p-2 rounded mb-2 border aspect-square w-full"
+                style={{ backgroundColor: color.hex }}
                 key={index}
                 onClick={() => {
                   setSelectedColor(color);
