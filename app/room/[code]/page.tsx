@@ -3,6 +3,9 @@ import { Player, Room } from "@/types/schema";
 import { use, useEffect, useRef, useState } from "react";
 import RoomView from "../components/room-view";
 import { getWsUrl } from "@/lib/utils/weHelpers";
+import { playerStore } from "@/lib/utils/playerStore";
+import { toast } from "sonner";
+
 type TransferType = "SEND" | "REQUEST" | "ADD" | "SUBTRACT";
 
 interface TransferPayload {
@@ -14,7 +17,7 @@ interface TransferPayload {
 }
 
 interface JoinPayload {
-  deviceId: string;
+  playerId: string;
 }
 
 type WebSocketPayload = TransferPayload | JoinPayload;
@@ -22,13 +25,20 @@ type WebSocketPayload = TransferPayload | JoinPayload;
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = use(params);
   const [player, setPlayer] = useState<Player | null>(null);
+  const [playerId, setPlayerId] = useState<string | null>(null);
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const ws = useRef<WebSocket | null>(null);
-  const [deviceId, setDeviceId] = useState<string>("");
 
   const fetchRoomData = async () => {
     try {
+      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
+
+      if (!storedPlayerId) {
+        toast.error("No player ID found for this room");
+        return;
+      }
+
       const response = await fetch(
         `https://emoney.up.railway.app/player/room/${code}`,
         {
@@ -37,30 +47,35 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
           },
         }
       );
+
       const data = await response.json();
+
       const currentPlayer = data.players.find(
-        (p: Player) => p.deviceId === deviceId
+        (p: Player) => p.id === storedPlayerId
       );
+
       const remainingPlayers = data.players.filter(
-        (p: Player) => p.deviceId !== deviceId
+        (p: Player) => p.id !== storedPlayerId
       );
 
       setPlayer(currentPlayer || null);
+      setPlayerId(storedPlayerId);
       setOtherPlayers(remainingPlayers);
       setRoom(data.room);
     } catch (error) {
       console.error("Failed to fetch room data:", error);
+      toast.error("Failed to fetch room data");
     }
   };
 
-  const initializeWebSocket = (storedDeviceId: string | null) => {
+  const initializeWebSocket = (storedPlayerId: string) => {
     if (ws.current?.readyState === WebSocket.OPEN) return;
 
     ws.current = new WebSocket(getWsUrl(code));
 
     ws.current.onopen = () => {
       console.log("Connected to room");
-      sendMessage("JOIN", { deviceId: storedDeviceId });
+      sendMessage("JOIN", { playerId: storedPlayerId });
     };
 
     ws.current.onmessage = (event) => {
@@ -78,15 +93,20 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     };
 
     ws.current.onclose = () => {
-      setTimeout(() => initializeWebSocket(storedDeviceId), 1000);
+      setTimeout(() => initializeWebSocket(storedPlayerId), 1000);
     };
   };
 
   useEffect(() => {
-    const storedDeviceId = localStorage.getItem("deviceId");
-    setDeviceId(storedDeviceId);
+    const storedPlayerId = playerStore.getPlayerIdForRoom(code);
 
-    initializeWebSocket(storedDeviceId);
+    if (!storedPlayerId) {
+      toast.error("No player found for this room");
+      return;
+    }
+
+    setPlayerId(storedPlayerId);
+    initializeWebSocket(storedPlayerId);
     fetchRoomData();
 
     return () => {
@@ -102,6 +122,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       ws.current.send(JSON.stringify({ type, payload }));
     }
   };
+
   return (
     <>
       <RoomView
@@ -121,4 +142,5 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     </>
   );
 };
+
 export default RoomPage;

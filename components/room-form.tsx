@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logo from "./logo";
 import { toast } from "sonner";
+import { playerStore } from "@/lib/utils/playerStore";
 
 interface p {
   type?: string;
@@ -19,22 +20,8 @@ const RoomForm = ({
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [showDetails, setShowDetails] = useState(false);
-  const [deviceId, setDeviceId] = useState<string>("");
   const router = useRouter();
   const [selectedColor, setSelectedColor] = useState<string>("");
-
-  useEffect(() => {
-    const storedDeviceId = localStorage.getItem("deviceId");
-    if (storedDeviceId) {
-      setDeviceId(storedDeviceId);
-    } else {
-      const newDeviceId = `${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2)}`;
-      localStorage.setItem("deviceId", newDeviceId);
-      setDeviceId(newDeviceId);
-    }
-  }, []);
 
   const joinRoom = async () => {
     if (!selectedColor) {
@@ -46,7 +33,6 @@ const RoomForm = ({
       const payload = {
         roomCode: code,
         name: name,
-        deviceId: deviceId,
         color: selectedColor,
       };
 
@@ -58,28 +44,18 @@ const RoomForm = ({
         body: JSON.stringify(payload),
       });
 
-      const rawText = await response.text();
-      console.log("Raw response:", rawText);
+      const data = await response.json();
 
-      let data;
-      try {
-        data = JSON.parse(rawText);
-      } catch (parseError) {
-        console.error("JSON Parse error:", parseError);
-        throw new Error(`Invalid JSON response: ${rawText}`);
-      }
+      if (response.ok) {
+        playerStore.setPlayerIdForRoom(code, data.playerId);
 
-      if (!response.ok) {
+        router.push(`/room/${code}`);
+      } else {
         throw new Error(data.error || "Failed to join room");
       }
-
-      localStorage.setItem("currentRoom", code);
-      localStorage.setItem("playerId", data.playerId);
-
-      router.push(`/room/${code}`);
     } catch (error) {
       console.error("Error joining room:", error);
-      alert(`Failed to join room: ${error.message}`);
+      toast.error(`Failed to join room: ${error.message}`);
     }
   };
 
@@ -87,7 +63,6 @@ const RoomForm = ({
     try {
       const payload = {
         name: name,
-        deviceId: deviceId,
         code: code,
       };
 
@@ -101,14 +76,16 @@ const RoomForm = ({
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (response.ok) {
+        playerStore.setPlayerIdForRoom(data.roomCode, data.playerId);
+
+        router.push(`/room/${data.roomCode}`);
+      } else {
         throw new Error(data.error || "Failed to create room");
       }
-
-      router.push(`/room/${data.roomCode}`);
     } catch (error) {
       console.error("Error creating room:", error);
-      alert(`Failed to create room: ${error.message}`);
+      toast.error(`Failed to create room: ${error.message}`);
     }
   };
 
