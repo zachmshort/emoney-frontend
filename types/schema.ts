@@ -16,6 +16,7 @@ export interface Player {
   balance: number;
   isActive: boolean;
   isBanker: boolean;
+  properties?: Property[];
 }
 
 export interface Property {

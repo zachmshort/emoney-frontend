@@ -40,7 +40,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         return;
       }
 
-      const response = await fetch(
+      const roomResponse = await fetch(
         `https://emoney.up.railway.app/player/room/${code}`,
         {
           headers: {
@@ -49,20 +49,38 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         }
       );
 
-      const data = await response.json();
+      const roomData = await roomResponse.json();
 
-      const currentPlayer = data.players.find(
+      const playerPromises = roomData.players.map(async (p: Player) => {
+        const propertyResponse = await fetch(
+          `https://emoney.up.railway.app/player/${p.id}/details`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const propertyData = await propertyResponse.json();
+        return {
+          ...p,
+          properties: propertyData.properties,
+        };
+      });
+
+      const playersWithProperties = await Promise.all(playerPromises);
+
+      const currentPlayer = playersWithProperties.find(
         (p: Player) => p.id === storedPlayerId
       );
 
-      const remainingPlayers = data.players.filter(
+      const remainingPlayers = playersWithProperties.filter(
         (p: Player) => p.id !== storedPlayerId
       );
 
       setPlayer(currentPlayer || null);
       setPlayerId(storedPlayerId);
       setOtherPlayers(remainingPlayers);
-      setRoom(data.room);
+      setRoom(roomData.room);
     } catch (error) {
       console.error("Failed to fetch room data:", error);
       toast.error("Failed to fetch room data");

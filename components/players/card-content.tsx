@@ -1,14 +1,13 @@
 import { Player } from "@/types/schema";
-import { sulpherLight } from "../fonts";
+import { josephinBold, sulpherBold, sulpherLight } from "../fonts";
 
 const PlayerDetails = ({ player }: { player: Player }) => {
   return (
     <>
       <div
-        className={`text-black flex flex-col items-evenly gap-y-2 justify-between ${sulpherLight.className}`}
+        className={`text-black flex flex-col items-evenly gap-y-2 justify-between ${josephinBold.className} text-2xl`}
       >
-        <div className={`flex items-center justify-between mt-4`}>
-          <div>Total Cash</div>
+        <div className={`flex items-center justify-center mt-4`}>
           <div>${player?.balance}</div>
         </div>
         <div className={`flex items-center justify-between`}>
