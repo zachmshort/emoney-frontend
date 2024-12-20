@@ -63,6 +63,7 @@ const RoomForm = ({
       const payload = {
         name: name,
         code: code,
+        color: selectedColor,
       };
 
       const response = await fetch("https://emoney.up.railway.app/room", {
@@ -135,11 +136,9 @@ const RoomForm = ({
                   setName(e.target.value);
                 }}
               />
-              {type === "JOIN" && (
-                <ColorSelect
-                  onColorSelect={(color: string) => setSelectedColor(color)}
-                />
-              )}
+              <ColorSelect
+                onColorSelect={(color: string) => setSelectedColor(color)}
+              />
               <button
                 onClick={enterRoom}
                 className={`mt-4 text-2xl w-64 p-4 border rounded-lg`}
