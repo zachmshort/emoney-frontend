@@ -36,21 +36,12 @@ const RoomView = ({
         <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
           <div className="inline-flex gap-x-4">
             <div className="flex-none snap-center ml-4">
-              <PlayerCard
-                player={player}
-                showTransferButtons={false}
-                isBanker={player?.isBanker}
-                onTransfer={onTransfer}
-              />
+              <PlayerCard player={player} isBanker={player?.isBanker} />
             </div>
 
             {otherPlayers?.map((oPlayer) => (
               <div key={oPlayer?.id} className="flex-none snap-center mr-4">
-                <PlayerCard
-                  player={oPlayer}
-                  onTransfer={onTransfer}
-                  isBanker={player?.isBanker}
-                />
+                <PlayerCard player={oPlayer} isBanker={player?.isBanker} />
               </div>
             ))}
           </div>
