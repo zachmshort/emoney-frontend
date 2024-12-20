@@ -35,7 +35,7 @@ const PlayerDetails = ({
         <Drawer>
           <DrawerTrigger asChild>
             <div className={`flex items-center justify-between w-full`}>
-              <div>{currentPlayer.id === player.id && "My"} Properties</div>
+              <div>{currentPlayer?.id === player?.id && "My"} Properties</div>
               <div>{player?.properties?.length || 0}</div>
             </div>
           </DrawerTrigger>
@@ -45,10 +45,10 @@ const PlayerDetails = ({
           </DrawerContent>
         </Drawer>
         <div className={`flex items-center justify-between`}>
-          <div>{currentPlayer.id === player.id && "My"} Monopolies</div>
+          <div>{currentPlayer?.id === player?.id && "My"} Monopolies</div>
           <div>0</div>
         </div>
-        {currentPlayer.id !== player.id && (
+        {currentPlayer?.id !== player?.id && (
           <Drawer>
             <DrawerTrigger asChild>
               <div
