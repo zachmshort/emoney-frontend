@@ -59,7 +59,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
 
       <div className="h-full flex flex-col justify-center">
         <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
-          <div className="inline-flex gap-x-4 px-4">
+          <div className="inline-flex gap-x-4 ">
             <div className="flex-none snap-center">
               <PlayerCard
                 player={player}

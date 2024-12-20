@@ -34,7 +34,6 @@ const PlayerCard = ({
   if (player?.color === undefined) {
     color = "#000";
   }
-  console.log(player.color);
   return (
     <>
       <div
@@ -63,7 +62,7 @@ const PlayerCard = ({
           </>
         )}
       </div>
-      <div className="w-full relative flex-none p-2 snap-center min-w-[370px] max-w-[calc(100%-2rem)] md:max-w-[370px] border bg-white border-black aspect-[3/4] rounded select-none ">
+      <div className="snap-center w-screen border bg-white border-black aspect-[3/4] rounded select-none ">
         <div className={`border p-2 w-full h-full border-black `}>
           <div
             style={{ backgroundColor: color }}
@@ -106,11 +105,12 @@ const PlayerCard = ({
                 placeholder="Amount"
                 className={`border p-4 bg-inherit rounded-lg text-2xl w-full border-neutral-400 ${sulpherBold.className} shadow-md text-black my-4`}
                 value={amount}
-                type="number"
+                type="numeric"
                 min={1}
                 onChange={(e) => {
                   setAmount(e.target.value);
                 }}
+                required
               />
               <ReasonSelect />
               <div
