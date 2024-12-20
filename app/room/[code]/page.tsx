@@ -14,6 +14,7 @@ export interface TransferPayload {
   fromPlayerId?: string;
   toPlayerId?: string;
   reason: string;
+  roomId: string;
 }
 
 interface JoinPayload {
@@ -87,26 +88,54 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     ws.current = new WebSocket(getWsUrl(code));
 
     ws.current.onopen = () => {
-      console.log("Connected to room");
+      console.log("WebSocket connected to room:", code);
       sendMessage("JOIN", { playerId: storedPlayerId });
     };
 
-    ws.current.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      switch (message.type) {
-        case "PLAYER_JOINED":
-          fetchRoomData();
-          break;
-        case "PLAYER_LEFT":
-          fetchRoomData();
-          break;
-        case "TRANSFER":
-        case "GAME_STATE_UPDATE":
-          fetchRoomData();
-          break;
-      }
+    ws.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
     };
 
+    ws.current.onclose = (event) => {
+      console.log(
+        "WebSocket closed. Reconnecting...",
+        event.code,
+        event.reason
+      );
+      setTimeout(() => initializeWebSocket(storedPlayerId), 1000);
+    };
+
+    ws.current.onmessage = (event) => {
+      console.log("Raw WebSocket message received:", event.data);
+
+      try {
+        const message = JSON.parse(event.data);
+        console.log("Parsed WebSocket message:", message);
+
+        switch (message.type) {
+          case "PLAYER_JOINED":
+            console.log("Player joined event received");
+            fetchRoomData();
+            break;
+          case "PLAYER_LEFT":
+            console.log("Player left event received");
+            fetchRoomData();
+            break;
+          case "TRANSFER":
+            console.log("Transfer message received:", message);
+            fetchRoomData();
+            break;
+          case "GAME_STATE_UPDATE":
+            console.log("Game state update received:", message);
+            fetchRoomData();
+            break;
+          default:
+            console.log("Unknown message type received:", message.type);
+        }
+      } catch (error) {
+        console.error("Error processing WebSocket message:", error);
+      }
+    };
     ws.current.onclose = () => {
       setTimeout(() => initializeWebSocket(storedPlayerId), 1000);
     };
@@ -134,7 +163,21 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     payload: WebSocketPayload
   ) => {
     if (ws.current?.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify({ type, payload }));
+      console.log("Attempting to send message:", { type, payload });
+      try {
+        ws.current.send(JSON.stringify({ type, payload }));
+        console.log("Message sent successfully");
+      } catch (error) {
+        console.error("Error sending message:", error);
+        toast.error("Failed to send message");
+      }
+    } else {
+      console.error("WebSocket not connected. State:", ws.current?.readyState);
+      toast.error("Connection lost. Trying to reconnect...");
+      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
+      if (storedPlayerId) {
+        initializeWebSocket(storedPlayerId);
+      }
     }
   };
   const fetchAvailableProperties = async (roomCode: string) => {
@@ -173,6 +216,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             fromPlayerId: transferDetails.fromPlayerId,
             toPlayerId: transferDetails.toPlayerId,
             reason: transferDetails.reason,
+            roomId: transferDetails.roomId,
           } as TransferPayload);
         }}
         availableProperties={availableProperties}

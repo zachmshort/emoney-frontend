@@ -15,9 +15,11 @@ const PlayerDetails = ({
   player,
   currentPlayer,
   onTransfer,
+  roomId,
 }: {
   player: Player;
   currentPlayer: Player;
+  roomId: string;
   onTransfer: (
     amount: string,
     type: "SEND" | "REQUEST",
@@ -25,6 +27,7 @@ const PlayerDetails = ({
       fromPlayerId: string;
       toPlayerId: string;
       reason: string;
+      roomId: string;
     }
   ) => void;
 }) => {
@@ -85,14 +88,17 @@ const PlayerDetails = ({
                     fromPlayerId: transferDetails.fromPlayerId,
                     toPlayerId: transferDetails.toPlayerId,
                     reason: reason,
+                    roomId: roomId,
                   };
 
                   onTransfer(payload.amount, payload.type, {
                     fromPlayerId: payload.fromPlayerId,
                     toPlayerId: payload.toPlayerId,
                     reason: payload.reason,
+                    roomId: roomId,
                   });
                 }}
+                roomId={roomId}
               />
             </DrawerContent>
           </Drawer>

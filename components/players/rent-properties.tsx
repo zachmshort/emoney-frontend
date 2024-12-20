@@ -5,6 +5,7 @@ import { MdArrowBackIos } from "react-icons/md";
 import { josephinBold } from "../fonts";
 import { calculateRent } from "../helper-funcs";
 import { toast } from "sonner";
+import { DrawerClose } from "../ui/drawer";
 
 interface PayRequestRentProps {
   properties?: Property[];
@@ -17,14 +18,17 @@ interface PayRequestRentProps {
     transferDetails: {
       fromPlayerId: string;
       toPlayerId: string;
-    }
+    },
+    roomId: string
   ) => void;
+  roomId: string;
 }
 
 const PayRequestRent = ({
   properties = [],
   type,
   fromPlayer,
+  roomId,
   toPlayer,
   onTransferRequest,
 }: PayRequestRentProps) => {
@@ -67,7 +71,7 @@ const PayRequestRent = ({
       type === "SEND" ? "Payment to" : "Request from"
     } ${type === "SEND" ? toPlayer.name : fromPlayer.name})`;
 
-    onTransferRequest(amount, formattedReason, transferDetails);
+    onTransferRequest(amount, formattedReason, transferDetails, roomId);
   };
 
   const groupedProperties = Object.entries(
@@ -116,7 +120,7 @@ const PayRequestRent = ({
             {groupedProperties
               .find(([group]) => group === selectedGroup)?.[1]
               .map((property) => (
-                <div
+                <DrawerClose
                   key={property.id}
                   className={`flex-shrink-0 cursor-pointer ${
                     property.isMortgaged ? "opacity-50" : ""
@@ -144,7 +148,7 @@ const PayRequestRent = ({
                       <div className="text-blue-500 text-sm">Hotel</div>
                     )}
                   </div>
-                </div>
+                </DrawerClose>
               ))}
           </div>
         </>

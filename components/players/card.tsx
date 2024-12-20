@@ -7,6 +7,7 @@ const PlayerCard = ({
   currentPlayer,
   isBanker = false,
   onTransfer,
+  roomId,
 }: {
   player: Player;
   currentPlayer: Player;
@@ -16,10 +17,12 @@ const PlayerCard = ({
     type: string,
     transferDetails: {
       fromPlayerId: string;
+      roomId: string;
       toPlayerId: string;
       reason: string;
     }
   ) => void;
+  roomId: string;
 }) => {
   let color = player?.color;
   if (player?.color === undefined) {
@@ -60,6 +63,7 @@ const PlayerCard = ({
             player={player}
             currentPlayer={currentPlayer}
             onTransfer={onTransfer}
+            roomId={roomId}
           />
         </div>
       </div>

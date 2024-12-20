@@ -21,6 +21,7 @@ const RoomView = ({
       fromPlayerId: string;
       toPlayerId: string;
       reason: string;
+      roomId: string;
     }
   ) => void;
   availableProperties: Property[];
@@ -42,6 +43,7 @@ const RoomView = ({
                 isBanker={currentPlayer?.isBanker}
                 currentPlayer={currentPlayer}
                 onTransfer={onTransfer}
+                roomId={room?.id}
               />
             </div>
 
@@ -52,6 +54,7 @@ const RoomView = ({
                   isBanker={currentPlayer?.isBanker}
                   currentPlayer={currentPlayer}
                   onTransfer={onTransfer}
+                  roomId={room?.id}
                 />
               </div>
             ))}
