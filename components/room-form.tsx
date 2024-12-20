@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import Logo from "./logo";
 import { Player, Room } from "@/types/schema";
 
-interface JoinRoomResponse {
-  message: string;
-  playerId: string;
-  players: Player[];
-  room: Room;
-}
+// interface JoinRoomResponse {
+//   message: string;
+//   playerId: string;
+//   players: Player[];
+//   room: Room;
+// }
 interface p {
   type?: string;
   buttonText1?: string;
@@ -50,9 +50,8 @@ const RoomForm = ({
         deviceId: deviceId,
         color: selectedColor,
       };
-      console.log("Sending join payload:", payload);
 
-      const response = await fetch("http://localhost:8080/room/join", {
+      const response = await fetch("https://emoney.up.railway.app/room/join", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,11 +59,9 @@ const RoomForm = ({
         body: JSON.stringify(payload),
       });
 
-      // Log the raw response text first
       const rawText = await response.text();
       console.log("Raw response:", rawText);
 
-      // Then try to parse it
       let data;
       try {
         data = JSON.parse(rawText);
@@ -72,8 +69,6 @@ const RoomForm = ({
         console.error("JSON Parse error:", parseError);
         throw new Error(`Invalid JSON response: ${rawText}`);
       }
-
-      console.log("Parsed response:", data);
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to join room");
@@ -88,6 +83,7 @@ const RoomForm = ({
       alert(`Failed to join room: ${error.message}`);
     }
   };
+
   const createRoom = async () => {
     try {
       const payload = {
@@ -95,7 +91,6 @@ const RoomForm = ({
         deviceId: deviceId,
         code: code,
       };
-      console.log("Sending payload:", payload);
 
       const response = await fetch("https://emoney.up.railway.app/room", {
         method: "POST",
@@ -106,7 +101,6 @@ const RoomForm = ({
       });
 
       const data = await response.json();
-      console.log("Response:", data);
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to create room");

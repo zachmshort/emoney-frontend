@@ -11,7 +11,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const [deviceId, setDeviceId] = useState<string>("");
-
+  console.log(deviceId);
   useEffect(() => {
     const storedDeviceId = localStorage.getItem("deviceId");
     setDeviceId(storedDeviceId);
