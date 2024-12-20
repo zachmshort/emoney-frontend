@@ -26,13 +26,14 @@ const RoomView = ({
   availableProperties: Property[];
 }) => {
   return (
-    <div className="h-screen w-full relative">
-      <Navbar
-        freeParking={room?.freeParking || 0}
-        availableProperties={availableProperties}
-      />
-
-      <div className="h-full flex items-center">
+    <div className="min-h-screen w-full relative flex flex-col">
+      <div className="sticky top-0 z-50 bg-white">
+        <Navbar
+          freeParking={room?.freeParking || 0}
+          availableProperties={availableProperties}
+        />
+      </div>
+      <div className="flex-1 flex items-center">
         <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
           <div className="inline-flex gap-x-4">
             <div className="flex-none snap-center ml-4">
