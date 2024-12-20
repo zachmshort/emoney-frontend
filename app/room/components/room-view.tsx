@@ -60,7 +60,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
       <div className="h-full flex flex-col justify-center">
         <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
           <div className="inline-flex gap-x-4 px-4">
-            <div className="flex-none w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)] snap-center">
+            <div className="flex-none snap-center">
               <PlayerCard
                 player={player}
                 showTransferButtons={false}
@@ -69,10 +69,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
             </div>
 
             {otherPlayers?.map((oPlayer) => (
-              <div
-                key={oPlayer?.id}
-                className="flex-none w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)] snap-center"
-              >
+              <div key={oPlayer?.id} className="flex-none snap-center">
                 <PlayerCard player={oPlayer} isBanker={player?.isBanker} />
               </div>
             ))}
