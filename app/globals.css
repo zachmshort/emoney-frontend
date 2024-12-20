@@ -129,8 +129,7 @@ body {
 	gap: 3em;
 }
 
-a {
-	font-size: 5em;
+.font {
 	text-decoration: none;
 	text-align: center;
 	text-transform: uppercase;
@@ -141,24 +140,15 @@ a {
 	transition: all 250ms;
 }
 
-a:hover {
+.font:hover {
 	text-shadow: 4px 4px 0 #fff;
 	transform: translate(-2px, -2px)
 }
-.snap-x {
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.snap-center {
-  scroll-snap-align: center;
-}
-
-.overflow-x-auto {
+.hide-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-.overflow-x-auto::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

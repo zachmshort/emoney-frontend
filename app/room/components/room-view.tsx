@@ -11,10 +11,11 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const [deviceId, setDeviceId] = useState<string>("");
-  console.log(deviceId);
+
   useEffect(() => {
     const storedDeviceId = localStorage.getItem("deviceId");
     setDeviceId(storedDeviceId);
+
     const fetchRoomData = async () => {
       const response = await fetch(
         `https://emoney.up.railway.app/player/room/${roomCode}`,
@@ -41,8 +42,8 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
   }, [roomCode]);
 
   return (
-    <div className="h-screen w-full flex flex-col relative items-center justify-center ">
-      <div className={`absolute top-2 right-[0]`}>
+    <div className="h-screen w-full relative">
+      <div className="absolute top-2 right-0 z-10">
         <Image
           src="/free-parking.png"
           alt="free parking"
@@ -50,25 +51,35 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
           height={300}
         />
         <a
-          className={`absolute top-9 right-2  text-blue-500 text-2xl ${sulpherBold.className} select-none`}
+          className={`absolute top-9 right-2 text-blue-500 text-2xl ${sulpherBold.className} select-none`}
         >
           ${room?.freeParking}
         </a>
       </div>
-      <PlayerCard
-        player={player}
-        showTransferButtons={false}
-        isBanker={player?.isBanker}
-      />
-      {otherPlayers?.map((oPlayer) => (
-        <PlayerCard
-          player={oPlayer}
-          key={oPlayer?.id}
-          isBanker={player?.isBanker}
-        />
-      ))}
+
+      <div className="h-full flex flex-col justify-center">
+        <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
+          <div className="inline-flex gap-x-4 px-4">
+            <div className="flex-none w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)] snap-center">
+              <PlayerCard
+                player={player}
+                showTransferButtons={false}
+                isBanker={player?.isBanker}
+              />
+            </div>
+
+            {otherPlayers?.map((oPlayer) => (
+              <div
+                key={oPlayer?.id}
+                className="flex-none w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)] snap-center"
+              >
+                <PlayerCard player={oPlayer} isBanker={player?.isBanker} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
-
 export default RoomView;

@@ -52,7 +52,7 @@ const RoomForm = ({
       };
       console.log("Sending join payload:", payload);
 
-      const response = await fetch("https://emoney.up.railway.app/room/join", {
+      const response = await fetch("http://localhost:8080/room/join", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,11 +60,23 @@ const RoomForm = ({
         body: JSON.stringify(payload),
       });
 
-      const data: JoinRoomResponse = await response.json();
-      console.log("Join response:", data);
+      // Log the raw response text first
+      const rawText = await response.text();
+      console.log("Raw response:", rawText);
+
+      // Then try to parse it
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseError) {
+        console.error("JSON Parse error:", parseError);
+        throw new Error(`Invalid JSON response: ${rawText}`);
+      }
+
+      console.log("Parsed response:", data);
 
       if (!response.ok) {
-        throw new Error("Failed to join room");
+        throw new Error(data.error || "Failed to join room");
       }
 
       localStorage.setItem("currentRoom", code);
@@ -125,7 +137,7 @@ const RoomForm = ({
           {!showDetails ? (
             <>
               <input
-                placeholder="Code"
+                placeholder="Enter Code"
                 className={`border p-4 bg-inherit rounded-lg text-2xl w-64`}
                 value={code}
                 onChange={(e) => {
@@ -133,7 +145,7 @@ const RoomForm = ({
                 }}
               />
               <button
-                className={`border rounded-lg p-4 bg-white w-64 mt-4 text-black text-2xl`}
+                className={`border font rounded-lg p-4 border-yellow-200 w-64 mt-4 text-black text-2xl`}
                 onClick={() => {
                   setShowDetails(true);
                 }}

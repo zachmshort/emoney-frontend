@@ -1,23 +1,32 @@
-"use client";
-import { useState } from "react";
-import ThreeScene from "@/components/three-scene";
+import { sulpherBold } from "@/components/fonts";
+import Logo from "@/components/logo";
 import Link from "next/link";
 
-export default function Home() {
-  const [loading, setLoading] = useState(true);
-
+const MonopolyPage = () => {
   return (
     <>
-      <main style={{ position: "relative", height: "100vh", width: "100%" }}>
-        {loading && (
-          <div className="spinner-container">
-            <div className="spinner"></div>
-          </div>
-        )}
-        <Link href="/monopoly">
-          <ThreeScene objToRender="monopoly" setLoading={setLoading} />
-        </Link>
-      </main>
+      <div className={`relative h-screen`}>
+        <Logo />
+        <div
+          className={`${sulpherBold.className} flex flex-col items-center justify-center gap-y-5 h-full `}
+        >
+          <Link
+            href="/join"
+            prefetch={true}
+            className={`border p-4 rounded-full w-64 text-xl text-center font border-yellow-200`}
+          >
+            Join Room
+          </Link>
+          <Link
+            href={`/create`}
+            className={`border p-4 rounded-full w-64 text-xl text-center font border-yellow-200`}
+          >
+            Create Room
+          </Link>
+        </div>
+      </div>
     </>
   );
-}
+};
+
+export default MonopolyPage;

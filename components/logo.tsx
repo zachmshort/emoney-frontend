@@ -4,12 +4,12 @@ import { sulpherLight } from "./fonts";
 const Logo = () => {
   return (
     <>
-      <Link href="/monopoly">
-        <h1
-          className={`${sulpherLight.className} fixed top-1 left-1 font-light`}
+      <Link href="/">
+        <div
+          className={`${sulpherLight.className} fixed top-1 left-1 font-light font`}
         >
           E-Money
-        </h1>
+        </div>
       </Link>
     </>
   );

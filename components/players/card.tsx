@@ -30,36 +30,42 @@ const PlayerCard = ({
         return "";
     }
   };
+  let color = player?.color;
+  if (player?.color === undefined) {
+    color = "#000";
+  }
   return (
     <>
-      {showTransferButtons && (
-        <div
-          className={`${sulpherLight.className} flex justify-between items-center w-full gap-x-2 pb-2`}
-        >
-          <button
-            className={`p-3 bg-red-500 rounded-md w-1/2 text-sm`}
-            onClick={() => {
-              setShowTransfer(true);
-              setType("SEND");
-            }}
-          >
-            Send Cash
-          </button>
-          <button
-            className={`p-3 bg-green-500 rounded-md w-1/2 text-sm`}
-            onClick={() => {
-              setShowTransfer(true);
-              setType("REQUEST");
-            }}
-          >
-            Request Cash
-          </button>
-        </div>
-      )}
+      <div
+        className={`${sulpherLight.className} flex justify-between items-center w-full gap-x-2 pb-2 h-14`}
+      >
+        {showTransferButtons && (
+          <>
+            <button
+              className={`p-3 bg-red-500 rounded-md w-1/2 text-sm`}
+              onClick={() => {
+                setShowTransfer(true);
+                setType("SEND");
+              }}
+            >
+              Send Cash
+            </button>
+            <button
+              className={`p-3 bg-green-500 rounded-md w-1/2 text-sm`}
+              onClick={() => {
+                setShowTransfer(true);
+                setType("REQUEST");
+              }}
+            >
+              Request Cash
+            </button>
+          </>
+        )}
+      </div>
       <div className="w-full relative flex-none p-2 snap-center min-w-[370px] max-w-[calc(100%-2rem)] md:max-w-[370px] border bg-white border-black aspect-[3/4] rounded select-none ">
         <div className={`border p-2 w-full h-full border-black `}>
           <div
-            className={`bg-green-700 h-16 w-full flex items-center ${
+            className={`bg-[${color}] h-16 w-full flex items-center ${
               isBanker ? "justify-evenly" : "justify-center"
             } ${sulpherBold.className} text-2xl`}
           >
@@ -76,7 +82,7 @@ const PlayerCard = ({
                 </button>
               )}
             </div>
-            <div>{player?.name}</div>
+            <div className={`text-black`}>{player?.name}</div>
             {isBanker && (
               <button
                 className={`border rounded-md aspect-square  px-4 border-green-300`}
