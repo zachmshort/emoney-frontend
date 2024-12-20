@@ -2,7 +2,7 @@
 import { ColorSelect } from "@/components/color-select-drawer";
 import { sulpherBold } from "@/components/fonts";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Logo from "./logo";
 import { toast } from "sonner";
 import { playerStore } from "@/lib/utils/playerStore";
