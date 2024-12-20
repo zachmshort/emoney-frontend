@@ -5,13 +5,13 @@ import { Player, Property, Room } from "@/types/schema";
 import Navbar from "../navbar/navbar";
 
 const RoomView = ({
-  player,
+  currentPlayer,
   otherPlayers,
   room,
   availableProperties,
 }: {
   otherPlayers: Player[];
-  player: Player;
+  currentPlayer: Player;
   room: Room;
   // onTransfer: (
   //   amount: string,
@@ -35,12 +35,20 @@ const RoomView = ({
         <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
           <div className="inline-flex gap-x-4">
             <div className="flex-none snap-center ml-4">
-              <PlayerCard player={player} isBanker={player?.isBanker} />
+              <PlayerCard
+                player={currentPlayer}
+                isBanker={currentPlayer?.isBanker}
+                currentPlayer={currentPlayer}
+              />
             </div>
 
             {otherPlayers?.map((oPlayer) => (
               <div key={oPlayer?.id} className="flex-none snap-center mr-4">
-                <PlayerCard player={oPlayer} isBanker={player?.isBanker} />
+                <PlayerCard
+                  player={oPlayer}
+                  isBanker={currentPlayer?.isBanker}
+                  currentPlayer={currentPlayer}
+                />
               </div>
             ))}
           </div>

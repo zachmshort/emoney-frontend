@@ -174,7 +174,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   return (
     <>
       <RoomView
-        player={player}
+        currentPlayer={player}
         otherPlayers={otherPlayers}
         room={room}
         // onTransfer={(amount, type, transferDetails) => {
