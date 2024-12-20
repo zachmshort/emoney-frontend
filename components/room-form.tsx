@@ -6,7 +6,7 @@ import { useState } from "react";
 import Logo from "./logo";
 import { toast } from "sonner";
 import { playerStore } from "@/lib/utils/playerStore";
-
+import { getWsUrl } from "@/lib/utils/weHelpers";
 interface p {
   type?: string;
   buttonText1?: string;

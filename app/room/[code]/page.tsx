@@ -81,15 +81,19 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
 
     ws.current.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      if (
-        [
-          "PLAYER_JOINED",
-          "PLAYER_LEFT",
-          "TRANSFER",
-          "GAME_STATE_UPDATE",
-        ].includes(message.type)
-      ) {
-        fetchRoomData();
+      switch (message.type) {
+        case "PLAYER_JOINED":
+          setOtherPlayers((prev) => [...prev, message.payload]);
+          break;
+        case "PLAYER_LEFT":
+          setOtherPlayers((prev) =>
+            prev.filter((player) => player.id !== message.payload.playerId)
+          );
+          break;
+        case "TRANSFER":
+        case "GAME_STATE_UPDATE":
+          fetchRoomData();
+          break;
       }
     };
 
