@@ -4,11 +4,13 @@ import { sulpherBold } from "@/components/fonts";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logo from "./logo";
+import { Player, Room } from "@/types/schema";
+
 interface JoinRoomResponse {
   message: string;
   playerId: string;
-  players: any[];
-  room: any;
+  players: Player[];
+  room: Room;
 }
 interface p {
   type?: string;

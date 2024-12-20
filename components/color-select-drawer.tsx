@@ -64,7 +64,7 @@ export function ColorSelect({ onColorSelect }: ColorSelectProps) {
                 key={index}
                 onClick={() => {
                   setSelectedColor(color);
-                  onColorSelect(color.hex); // Pass the hex value to parent
+                  onColorSelect(color.hex);
                 }}
               >
                 <div className={`w-3 h-3 rounded-full ${color.value}`}></div>
