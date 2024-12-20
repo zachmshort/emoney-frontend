@@ -62,7 +62,7 @@ const PlayerCard = ({
           </>
         )}
       </div>
-      <div className="snap-center w-screen border bg-white border-black aspect-[3/4] rounded select-none ">
+      <div className="snap-center w-[360px] border bg-white border-black aspect-[3/4] rounded select-none ">
         <div className={`border p-2 w-full h-full border-black `}>
           <div
             style={{ backgroundColor: color }}
