@@ -1,6 +1,8 @@
 import { Property } from "@/types/schema";
 import { useState } from "react";
 import Image from "next/image";
+import { BsBack } from "react-icons/bs";
+import { MdArrowBackIos } from "react-icons/md";
 
 const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
@@ -41,8 +43,13 @@ const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
 
       {selectedGroup ? (
         <>
-          <h1 onClick={() => setSelectedGroup(null)}>Back</h1>
-          <div className="overflow-x-auto flex gap-4 p-2">
+          <h1
+            className={`flex items-center justify-start`}
+            onClick={() => setSelectedGroup(null)}
+          >
+            <MdArrowBackIos /> Back
+          </h1>
+          <div className="overflow-x-auto flex gap-4 px-2">
             {groupedProperties
               .find(([group]) => group === selectedGroup)?.[1]
               .map((property) => (
@@ -61,8 +68,8 @@ const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
         </>
       ) : (
         <>
-          <h2>Select a Color</h2>
-          <div className="grid grid-cols-4 gap-2">
+          <h2 className={``}>Select a Color</h2>
+          <div className="grid grid-cols-4 sm:grid-cols-10 gap-2">
             {groupedProperties.map(([group, props]) => (
               <button
                 key={group}
