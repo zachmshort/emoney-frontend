@@ -4,7 +4,12 @@ import { sulpherBold } from "@/components/fonts";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logo from "./logo";
-
+interface JoinRoomResponse {
+  message: string;
+  playerId: string;
+  players: any[];
+  room: any;
+}
 interface p {
   type?: string;
   buttonText1?: string;
@@ -20,6 +25,7 @@ const RoomForm = ({
   const [showDetails, setShowDetails] = useState(false);
   const [deviceId, setDeviceId] = useState<string>("");
   const router = useRouter();
+  const [selectedColor, setSelectedColor] = useState<string>("");
 
   useEffect(() => {
     const storedDeviceId = localStorage.getItem("deviceId");
@@ -35,6 +41,40 @@ const RoomForm = ({
     }
   }, []);
 
+  const joinRoom = async () => {
+    try {
+      const payload = {
+        roomCode: code,
+        name: name,
+        deviceId: deviceId,
+        color: selectedColor,
+      };
+      console.log("Sending join payload:", payload);
+
+      const response = await fetch("https://emoney.up.railway.app/room/join", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data: JoinRoomResponse = await response.json();
+      console.log("Join response:", data);
+
+      if (!response.ok) {
+        throw new Error("Failed to join room");
+      }
+
+      localStorage.setItem("currentRoom", code);
+      localStorage.setItem("playerId", data.playerId);
+
+      router.push(`/monopoly/room/${code}`);
+    } catch (error) {
+      console.error("Error joining room:", error);
+      alert(`Failed to join room: ${error.message}`);
+    }
+  };
   const createRoom = async () => {
     try {
       const payload = {
@@ -70,7 +110,7 @@ const RoomForm = ({
     if (type === "CREATE") {
       createRoom();
     } else {
-      router.push(`/monopoly/room/${code}`);
+      joinRoom();
     }
   };
 
@@ -110,7 +150,11 @@ const RoomForm = ({
                   setName(e.target.value);
                 }}
               />
-              {type === "JOIN" && <ColorSelect />}
+              {type === "JOIN" && (
+                <ColorSelect
+                  onColorSelect={(color: string) => setSelectedColor(color)}
+                />
+              )}
               <button
                 onClick={enterRoom}
                 className={`mt-4 text-2xl w-64 p-4 border rounded-lg`}
