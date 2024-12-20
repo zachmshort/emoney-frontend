@@ -1,5 +1,5 @@
 export interface Room {
-  _id: string;
+  id: string;
   roomCode: string;
   bankerId: string;
   createdAt: Date;
@@ -8,7 +8,7 @@ export interface Room {
 }
 
 export interface Player {
-  _id: string;
+  id: string;
   roomId: string;
   deviceId: string;
   name: string;
@@ -19,7 +19,7 @@ export interface Player {
 }
 
 export interface Property {
-  _id: string;
+  id: string;
   roomId: string;
   playerId: string;
   name: string;
@@ -33,7 +33,7 @@ export interface Property {
 }
 
 export interface Transfer {
-  _id: string;
+  id: string;
   roomId: string;
   fromPlayerId: string | null; // null if from bank
   toPlayerId: string | null; // null if to bank
