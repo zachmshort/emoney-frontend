@@ -1,7 +1,6 @@
 import { Player } from "@/types/schema";
 import { sulpherBold } from "../fonts";
 import { PlayerDetails } from "./card-content";
-import { TransferPayload } from "@/app/room/[code]/page";
 
 const PlayerCard = ({
   player,
