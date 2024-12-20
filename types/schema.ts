@@ -30,6 +30,7 @@ export interface Property {
   hotel: number;
   images: string[];
   isMortgaged: boolean;
+  rentPrices: number[];
   houseCost?: number;
   propertyIndex: number;
 }

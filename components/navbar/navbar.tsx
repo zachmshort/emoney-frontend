@@ -7,7 +7,7 @@ import {
 } from "../ui/drawer";
 import { sulpherBold } from "../fonts";
 import { Property } from "@/types/schema";
-import SelectColorProperties from "./select-color-properties";
+import SelectColorProperties from "../players/select-color-properties";
 
 const Navbar = ({
   freeParking,

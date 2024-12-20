@@ -6,9 +6,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
-import SelectColorProperties from "../navbar/select-color-properties";
+import SelectColorProperties from "./select-color-properties";
 import { useState } from "react";
 import SendReqToggle from "./send-req-toggle";
+import PayRequestRent from "./rent-properties";
 
 const PlayerDetails = ({
   player,
@@ -17,7 +18,7 @@ const PlayerDetails = ({
   player: Player;
   currentPlayer: Player;
 }) => {
-  const [type, setType] = useState("REQUEST");
+  const [type, setType] = useState<"SEND" | "REQUEST">("REQUEST");
   const getPropertiesToShow = () => {
     if (type !== "SEND") {
       return currentPlayer?.properties;
@@ -62,7 +63,13 @@ const PlayerDetails = ({
                 Choose Payment Type
               </DrawerTitle>
               <SendReqToggle onToggle={(newType) => setType(newType)} />
-              <SelectColorProperties properties={getPropertiesToShow()} />
+              <PayRequestRent
+                properties={getPropertiesToShow()}
+                type={type}
+                fromPlayer={type === "SEND" ? currentPlayer : player}
+                toPlayer={type === "SEND" ? player : currentPlayer}
+                onTransferRequest={(amount, reason) => {}}
+              />
             </DrawerContent>
           </Drawer>
         )}
