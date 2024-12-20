@@ -71,7 +71,7 @@ const PlayerDetails = ({
                 Pay or Request
               </div>
             </DrawerTrigger>
-            <DrawerContent className={`h-[70vh] bg-black px-2`}>
+            <DrawerContent className={`h-[90vh] bg-black px-2`}>
               <DrawerTitle className={`text-black`}>
                 Choose Payment Type
               </DrawerTitle>
