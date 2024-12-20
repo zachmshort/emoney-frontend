@@ -76,7 +76,7 @@ const RoomForm = ({
       localStorage.setItem("currentRoom", code);
       localStorage.setItem("playerId", data.playerId);
 
-      router.push(`/monopoly/room/${code}`);
+      router.push(`/room/${code}`);
     } catch (error) {
       console.error("Error joining room:", error);
       alert(`Failed to join room: ${error.message}`);
@@ -105,7 +105,7 @@ const RoomForm = ({
         throw new Error(data.error || "Failed to create room");
       }
 
-      router.push(`/monopoly/room/${data.roomCode}`);
+      router.push(`/room/${data.roomCode}`);
     } catch (error) {
       console.error("Error creating room:", error);
       alert(`Failed to create room: ${error.message}`);
