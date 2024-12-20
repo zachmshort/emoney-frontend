@@ -30,7 +30,7 @@ export function ReasonSelect() {
           className={`border p-4 bg-inherit rounded-lg text-2xl w-full border-neutral-400 ${sulpherBold.className} shadow-md text-black  mb-4`}
         >
           {!selectedReason.name ? (
-            <div className={`text-slate-400`}>Select Reason</div>
+            <div className={`text-slate-400 text-start`}>Select Reason</div>
           ) : (
             <div className={`flex items-center justify-start gap-x-3`}>
               {selectedReason.name}
