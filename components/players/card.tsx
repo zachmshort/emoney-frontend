@@ -1,7 +1,7 @@
 import { Player } from "@/types/schema";
 import { sulpherBold, sulpherLight } from "../fonts";
 import { useState } from "react";
-import { PlayerDetails } from "./card-center";
+import { PlayerDetails } from "./card-content";
 import { ReasonSelect } from "../reason-select";
 
 const PlayerCard = ({
