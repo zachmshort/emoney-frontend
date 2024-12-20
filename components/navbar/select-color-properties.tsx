@@ -52,18 +52,19 @@ const SelectColorProperties = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 text-2xl ml-2 mt-2 ${josephinBold.className}`}>
       {hoveredGroup && <PrefetchImages group={hoveredGroup} />}
 
       {selectedGroup ? (
         <>
           <h1
-            className={`flex items-center justify-start`}
+            className={`flex items-center justify-start `}
             onClick={() => setSelectedGroup(null)}
           >
-            <MdArrowBackIos /> Back
+            <MdArrowBackIos className={``} />
+            <div>Back</div>
           </h1>
-          <div className="overflow-x-auto flex gap-4 px-2">
+          <div className="overflow-x-auto flex gap-4">
             {groupedProperties
               .find(([group]) => group === selectedGroup)?.[1]
               .map((property) => (

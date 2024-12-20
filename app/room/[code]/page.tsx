@@ -170,6 +170,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       toast.error("Unable to retrieve available properties");
     }
   };
+  console.log(player);
   return (
     <>
       <RoomView

@@ -12,7 +12,7 @@ const PlayerDetails = ({ player }: { player: Player }) => {
         </div>
         <div className={`flex items-center justify-between`}>
           <div>Properties</div>
-          <div>0</div>
+          <div>{player.properties.length}</div>
         </div>
         <div className={`flex items-center justify-between`}>
           <div>Monopolies</div>
