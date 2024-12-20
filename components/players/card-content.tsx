@@ -1,5 +1,5 @@
 import { Player } from "@/types/schema";
-import { josephinBold, sulpherBold, sulpherLight } from "../fonts";
+import { josephinBold } from "../fonts";
 
 const PlayerDetails = ({ player }: { player: Player }) => {
   return (

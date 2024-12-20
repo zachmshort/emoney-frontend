@@ -176,15 +176,15 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         player={player}
         otherPlayers={otherPlayers}
         room={room}
-        onTransfer={(amount, type, transferDetails) => {
-          sendMessage("TRANSFER", {
-            amount,
-            type,
-            fromPlayerId: transferDetails.fromPlayerId,
-            toPlayerId: transferDetails.toPlayerId,
-            reason: transferDetails.reason,
-          } as TransferPayload);
-        }}
+        // onTransfer={(amount, type, transferDetails) => {
+        //   sendMessage("TRANSFER", {
+        //     amount,
+        //     type,
+        //     fromPlayerId: transferDetails.fromPlayerId,
+        //     toPlayerId: transferDetails.toPlayerId,
+        //     reason: transferDetails.reason,
+        //   } as TransferPayload);
+        // }}
         availableProperties={availableProperties}
       />
     </>
