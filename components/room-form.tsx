@@ -14,8 +14,8 @@ interface p {
 }
 const RoomForm = ({
   type = "JOIN",
-  buttonText1 = "Join",
-  buttonText2 = "Enter Room",
+  buttonText1 = "Next",
+  buttonText2 = "Join",
 }: p) => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
