@@ -34,10 +34,9 @@ const RoomForm = ({
     if (storedDeviceId) {
       setDeviceId(storedDeviceId);
     } else {
-      // const newDeviceId = `${Date.now()}-${Math.random()
-      //   .toString(36)
-      //   .slice(2)}`;
-      const newDeviceId = "test";
+      const newDeviceId = `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2)}`;
       localStorage.setItem("deviceId", newDeviceId);
       setDeviceId(newDeviceId);
     }
