@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { sulpherBold } from "../fonts";
 type TransferType = "SEND" | "REQUEST";
+
 interface SendReqToggleProps {
   onToggle: (type: TransferType) => void;
 }
+
 const SendReqToggle = ({ onToggle }: SendReqToggleProps) => {
   const [isSend, setIsSend] = useState(true);
 

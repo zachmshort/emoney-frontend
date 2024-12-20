@@ -1,15 +1,26 @@
 import { Player } from "@/types/schema";
 import { sulpherBold } from "../fonts";
 import { PlayerDetails } from "./card-content";
+import { TransferPayload } from "@/app/room/[code]/page";
 
 const PlayerCard = ({
   player,
   currentPlayer,
   isBanker = false,
+  onTransfer,
 }: {
   player: Player;
   currentPlayer: Player;
   isBanker?: boolean;
+  onTransfer: (
+    amount: string,
+    type: string,
+    transferDetails: {
+      fromPlayerId: string;
+      toPlayerId: string;
+      reason: string;
+    }
+  ) => void;
 }) => {
   let color = player?.color;
   if (player?.color === undefined) {
@@ -46,7 +57,11 @@ const PlayerCard = ({
             )}
           </div>
 
-          <PlayerDetails player={player} currentPlayer={currentPlayer} />
+          <PlayerDetails
+            player={player}
+            currentPlayer={currentPlayer}
+            onTransfer={onTransfer}
+          />
         </div>
       </div>
     </>

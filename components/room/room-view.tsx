@@ -9,19 +9,20 @@ const RoomView = ({
   otherPlayers,
   room,
   availableProperties,
+  onTransfer,
 }: {
   otherPlayers: Player[];
   currentPlayer: Player;
   room: Room;
-  // onTransfer: (
-  //   amount: string,
-  //   type: string,
-  //   transferDetails: {
-  //     fromPlayerId: string;
-  //     toPlayerId: string;
-  //     reason: string;
-  //   }
-  // ) => void;
+  onTransfer: (
+    amount: string,
+    type: string,
+    transferDetails: {
+      fromPlayerId: string;
+      toPlayerId: string;
+      reason: string;
+    }
+  ) => void;
   availableProperties: Property[];
 }) => {
   return (
@@ -39,6 +40,7 @@ const RoomView = ({
                 player={currentPlayer}
                 isBanker={currentPlayer?.isBanker}
                 currentPlayer={currentPlayer}
+                onTransfer={onTransfer}
               />
             </div>
 
@@ -48,6 +50,7 @@ const RoomView = ({
                   player={oPlayer}
                   isBanker={currentPlayer?.isBanker}
                   currentPlayer={currentPlayer}
+                  onTransfer={onTransfer}
                 />
               </div>
             ))}

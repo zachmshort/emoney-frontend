@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 type TransferType = "SEND" | "REQUEST" | "ADD" | "SUBTRACT";
 
-interface TransferPayload {
+export interface TransferPayload {
   amount: string;
   type: TransferType;
   fromPlayerId?: string;
@@ -25,8 +25,6 @@ type WebSocketPayload = TransferPayload | JoinPayload;
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = use(params);
   const [player, setPlayer] = useState<Player | null>(null);
-  const [playerId, setPlayerId] = useState<string | null>(null);
-  console.log(playerId);
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const ws = useRef<WebSocket | null>(null);
@@ -78,7 +76,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       );
 
       setPlayer(currentPlayer || null);
-      setPlayerId(storedPlayerId);
       setOtherPlayers(remainingPlayers);
       setRoom(roomData.room);
     } catch (error) {
@@ -129,7 +126,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       return;
     }
 
-    setPlayerId(storedPlayerId);
     initializeWebSocket(storedPlayerId);
     fetchRoomData();
     fetchAvailableProperties(code);
@@ -177,15 +173,15 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         currentPlayer={player}
         otherPlayers={otherPlayers}
         room={room}
-        // onTransfer={(amount, type, transferDetails) => {
-        //   sendMessage("TRANSFER", {
-        //     amount,
-        //     type,
-        //     fromPlayerId: transferDetails.fromPlayerId,
-        //     toPlayerId: transferDetails.toPlayerId,
-        //     reason: transferDetails.reason,
-        //   } as TransferPayload);
-        // }}
+        onTransfer={(amount, type, transferDetails) => {
+          sendMessage("TRANSFER", {
+            amount,
+            type,
+            fromPlayerId: transferDetails.fromPlayerId,
+            toPlayerId: transferDetails.toPlayerId,
+            reason: transferDetails.reason,
+          } as TransferPayload);
+        }}
         availableProperties={availableProperties}
       />
     </>

@@ -14,9 +14,19 @@ import PayRequestRent from "./rent-properties";
 const PlayerDetails = ({
   player,
   currentPlayer,
+  onTransfer,
 }: {
   player: Player;
   currentPlayer: Player;
+  onTransfer: (
+    amount: string,
+    type: "SEND" | "REQUEST",
+    transferDetails: {
+      fromPlayerId: string;
+      toPlayerId: string;
+      reason: string;
+    }
+  ) => void;
 }) => {
   const [type, setType] = useState<"SEND" | "REQUEST">("REQUEST");
   const getPropertiesToShow = () => {
@@ -68,7 +78,21 @@ const PlayerDetails = ({
                 type={type}
                 fromPlayer={type === "SEND" ? currentPlayer : player}
                 toPlayer={type === "SEND" ? player : currentPlayer}
-                onTransferRequest={(amount, reason) => {}}
+                onTransferRequest={(amount, reason, transferDetails) => {
+                  const payload = {
+                    amount: amount.toString(),
+                    type: type,
+                    fromPlayerId: transferDetails.fromPlayerId,
+                    toPlayerId: transferDetails.toPlayerId,
+                    reason: reason,
+                  };
+
+                  onTransfer(payload.amount, payload.type, {
+                    fromPlayerId: payload.fromPlayerId,
+                    toPlayerId: payload.toPlayerId,
+                    reason: payload.reason,
+                  });
+                }}
               />
             </DrawerContent>
           </Drawer>

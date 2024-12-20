@@ -43,11 +43,8 @@ const doesPlayerOwnFullSet = (
 
 const calculateRent = (
   property: Property,
-  playerProperties: Property[]
-): {
-  amount: number;
-  reason: string;
-} => {
+  properties: Property[]
+): { amount: number; reason: string } => {
   if (property.isMortgaged) {
     return {
       amount: 0,
@@ -55,10 +52,12 @@ const calculateRent = (
     };
   }
 
+  const hasFullSet = doesPlayerOwnFullSet(property, properties);
+
   let rentIndex = 0;
   let rentReason = `Base rent for ${property.name}`;
 
-  if (doesPlayerOwnFullSet(property, playerProperties)) {
+  if (hasFullSet) {
     if (property.houses === 0 && property.hotel === 0) {
       rentIndex = 1;
       rentReason = `Double rent for ${property.name} (full ${property.group} set)`;
@@ -72,9 +71,11 @@ const calculateRent = (
       }`;
     }
   }
+  const amount =
+    property.rentPrices?.[rentIndex] ?? property.rentPrices?.[0] ?? 50;
 
   return {
-    amount: property.rentPrices[rentIndex],
+    amount,
     reason: rentReason,
   };
 };

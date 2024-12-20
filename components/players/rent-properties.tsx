@@ -5,6 +5,7 @@ import { MdArrowBackIos } from "react-icons/md";
 import { josephinBold } from "../fonts";
 import { calculateRent } from "../helper-funcs";
 import { toast } from "sonner";
+
 interface PayRequestRentProps {
   properties?: Property[];
   type: "SEND" | "REQUEST";
@@ -19,6 +20,7 @@ interface PayRequestRentProps {
     }
   ) => void;
 }
+
 const PayRequestRent = ({
   properties = [],
   type,
