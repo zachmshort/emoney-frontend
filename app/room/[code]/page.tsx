@@ -2,7 +2,22 @@
 import { Player, Room } from "@/types/schema";
 import { use, useEffect, useRef, useState } from "react";
 import RoomView from "../components/room-view";
-import { getWsUrl } from "@/types/schema";
+import { getWsUrl } from "@/lib/utils/weHelpers";
+type TransferType = "SEND" | "REQUEST" | "ADD" | "SUBTRACT";
+
+interface TransferPayload {
+  amount: string;
+  type: TransferType;
+  fromPlayerId?: string;
+  toPlayerId?: string;
+  reason: string;
+}
+
+interface JoinPayload {
+  deviceId: string;
+}
+
+type WebSocketPayload = TransferPayload | JoinPayload;
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = use(params);
@@ -79,12 +94,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     };
   }, [code]);
 
-  const sendMessage = (type: string, payload: any) => {
+  const sendMessage = (
+    type: "TRANSFER" | "JOIN",
+    payload: WebSocketPayload
+  ) => {
     if (ws.current?.readyState === WebSocket.OPEN) {
       ws.current.send(JSON.stringify({ type, payload }));
     }
   };
-
   return (
     <>
       <RoomView
@@ -98,7 +115,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             fromPlayerId: transferDetails.fromPlayerId,
             toPlayerId: transferDetails.toPlayerId,
             reason: transferDetails.reason,
-          });
+          } as TransferPayload);
         }}
       />
     </>

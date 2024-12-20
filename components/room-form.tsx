@@ -6,12 +6,6 @@ import { useEffect, useState } from "react";
 import Logo from "./logo";
 import { toast } from "sonner";
 
-// interface JoinRoomResponse {
-//   message: string;
-//   playerId: string;
-//   players: Player[];
-//   room: Room;
-// }
 interface p {
   type?: string;
   buttonText1?: string;
