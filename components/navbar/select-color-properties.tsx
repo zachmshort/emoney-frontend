@@ -1,7 +1,6 @@
 import { Property } from "@/types/schema";
 import { useState } from "react";
 import Image from "next/image";
-import { BsBack } from "react-icons/bs";
 import { MdArrowBackIos } from "react-icons/md";
 
 const SelectColorProperties = ({ properties }: { properties: Property[] }) => {

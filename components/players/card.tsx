@@ -1,17 +1,16 @@
 import { Player } from "@/types/schema";
-import { sulpherBold, sulpherLight } from "../fonts";
-import { useState } from "react";
+import { sulpherBold } from "../fonts";
+import { useEffect, useState } from "react";
 import { PlayerDetails } from "./card-content";
 import { ReasonSelect } from "../reason-select";
+import ToggleSwitch from "./send-req-toggle";
 
 const PlayerCard = ({
   player,
-  showTransferButtons = true,
   isBanker = false,
   onTransfer,
 }: {
   player: Player;
-  showTransferButtons?: boolean;
   isBanker?: boolean;
   onTransfer?: (
     amount: string,
@@ -25,7 +24,7 @@ const PlayerCard = ({
 }) => {
   const [showTransfer, setShowTransfer] = useState(false);
   const [amount, setAmount] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState("SEND");
   const getButtonText = () => {
     switch (type) {
       case "SEND":
@@ -61,41 +60,41 @@ const PlayerCard = ({
       setType("");
     }
   };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const content = document.getElementById("transfer-content");
+      if (content && !content.contains(event.target as Node)) {
+        setShowTransfer(false);
+      }
+    };
+
+    if (showTransfer) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showTransfer]);
+  const openTransfer = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowTransfer(true);
+  };
   return (
     <>
       <div
-        className={`${sulpherLight.className} flex justify-between items-center w-full gap-x-2 pb-2 h-14`}
+        className="snap-center w-[360px] border bg-white border-black aspect-[3/4] rounded select-none "
+        onClick={() => {
+          setShowTransfer(true);
+        }}
       >
-        {showTransferButtons && (
-          <>
-            <button
-              className={`p-3 bg-red-500 rounded-md w-1/2 text-sm`}
-              onClick={() => {
-                setShowTransfer(true);
-                setType("SEND");
-              }}
-            >
-              Send Cash
-            </button>
-            <button
-              className={`p-3 bg-green-500 rounded-md w-1/2 text-sm`}
-              onClick={() => {
-                setShowTransfer(true);
-                setType("REQUEST");
-              }}
-            >
-              Request Cash
-            </button>
-          </>
-        )}
-      </div>
-      <div className="snap-center w-[360px] border bg-white border-black aspect-[3/4] rounded select-none ">
         <div className={`border p-2 w-full h-full border-black `}>
           <div
             style={{ backgroundColor: color }}
             className={`h-16 w-full flex items-center ${
               isBanker ? "justify-evenly" : "justify-center"
             } ${sulpherBold.className} text-2xl`}
+            onClick={(e) => e.stopPropagation()}
           >
             <div>
               {isBanker && (
@@ -125,9 +124,11 @@ const PlayerCard = ({
           </div>
 
           {!showTransfer ? (
-            <PlayerDetails player={player} />
+            <div onClick={openTransfer}>
+              <PlayerDetails player={player} />
+            </div>
           ) : (
-            <>
+            <div id="transfer-content">
               <input
                 placeholder="Amount"
                 className={`border p-4 bg-inherit rounded-lg text-2xl w-full border-neutral-400 ${sulpherBold.className} shadow-md text-black my-4`}
@@ -143,6 +144,7 @@ const PlayerCard = ({
                 onChange={(value) => setReason(value)}
                 reason={reason}
               />
+              <ToggleSwitch onToggle={(newType) => setType(newType)} />
               <div
                 className={`${sulpherBold.className} w-full flex items-center justify-between gap-x-2`}
               >
@@ -163,7 +165,7 @@ const PlayerCard = ({
                   {getButtonText()}
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
