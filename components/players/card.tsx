@@ -8,10 +8,20 @@ const PlayerCard = ({
   player,
   showTransferButtons = true,
   isBanker = false,
+  onTransfer,
 }: {
   player: Player;
   showTransferButtons?: boolean;
   isBanker?: boolean;
+  onTransfer?: (
+    amount: string,
+    type: string,
+    transferDetails: {
+      fromPlayerId: string;
+      toPlayerId: string;
+      reason: string;
+    }
+  ) => void;
 }) => {
   const [showTransfer, setShowTransfer] = useState(false);
   const [amount, setAmount] = useState("");
@@ -34,6 +44,23 @@ const PlayerCard = ({
   if (player?.color === undefined) {
     color = "#000";
   }
+  const [reason, setReason] = useState("");
+
+  const handleTransfer = () => {
+    if (onTransfer && amount && type) {
+      const transferDetails = {
+        fromPlayerId: type === "SEND" ? player.id : "",
+        toPlayerId: type === "SEND" ? "" : player.id,
+        reason: reason,
+      };
+
+      onTransfer(amount, type, transferDetails);
+      setShowTransfer(false);
+      setAmount("");
+      setReason("");
+      setType("");
+    }
+  };
   return (
     <>
       <div
@@ -112,7 +139,10 @@ const PlayerCard = ({
                 }}
                 required
               />
-              <ReasonSelect />
+              <ReasonSelect
+                onChange={(value) => setReason(value)}
+                reason={reason}
+              />
               <div
                 className={`${sulpherBold.className} w-full flex items-center justify-between gap-x-2`}
               >
@@ -128,7 +158,7 @@ const PlayerCard = ({
                 </button>
                 <button
                   className={`border p-2 rounded-md border-black text-white bg-black w-1/2`}
-                  onClick={() => {}}
+                  onClick={handleTransfer}
                 >
                   {getButtonText()}
                 </button>

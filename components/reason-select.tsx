@@ -20,8 +20,17 @@ const reasons = [
   { name: "Reward", value: "reward" },
 ];
 
-export function ReasonSelect() {
-  const [selectedReason, setSelectedReason] = useState({ name: "", value: "" });
+export function ReasonSelect({
+  onChange,
+  reason,
+}: {
+  onChange: (reason: string) => void;
+  reason: string;
+}) {
+  const [selectedReason, setSelectedReason] = useState({
+    name: reason || "",
+    value: "",
+  });
 
   return (
     <Drawer>
@@ -50,6 +59,7 @@ export function ReasonSelect() {
                 key={index}
                 onClick={() => {
                   setSelectedReason(reason);
+                  onChange(reason.value);
                 }}
               >
                 <div className={`text-2xl`}>{reason.name}</div>

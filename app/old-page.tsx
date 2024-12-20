@@ -14,7 +14,7 @@ export default function Home() {
             <div className="spinner"></div>
           </div>
         )}
-        <Link href="/monopoly">
+        <Link href="/">
           <ThreeScene objToRender="monopoly" setLoading={setLoading} />
         </Link>
       </main>
