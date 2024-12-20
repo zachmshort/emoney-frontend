@@ -26,6 +26,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = use(params);
   const [player, setPlayer] = useState<Player | null>(null);
   const [playerId, setPlayerId] = useState<string | null>(null);
+  console.log(playerId);
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const ws = useRef<WebSocket | null>(null);
