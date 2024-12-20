@@ -4,6 +4,7 @@ import Image from "next/image";
 
 const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
 
   const groupedProperties = Object.entries(
     properties.reduce((acc, property) => {
@@ -15,13 +16,32 @@ const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
     }, {} as Record<string, Property[]>)
   );
 
+  const PrefetchImages = ({ group }: { group: string }) => {
+    const images = groupedProperties
+      .find(([g]) => g === group)?.[1]
+      .map((property) => property.images[0]);
+
+    return (
+      <>
+        {images?.map((image) => (
+          <link
+            key={image}
+            rel="prefetch"
+            href={`/property-images/${image}.png`}
+            as="image"
+          />
+        ))}
+      </>
+    );
+  };
+
   return (
     <div className="space-y-4">
+      {hoveredGroup && <PrefetchImages group={hoveredGroup} />}
+
       {selectedGroup ? (
         <>
-          <h1 className={``} onClick={() => setSelectedGroup(null)}>
-            Back
-          </h1>
+          <h1 onClick={() => setSelectedGroup(null)}>Back</h1>
           <div className="overflow-x-auto flex gap-4 p-2">
             {groupedProperties
               .find(([group]) => group === selectedGroup)?.[1]
@@ -33,6 +53,7 @@ const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
                     width={200}
                     height={300}
                     className="rounded"
+                    priority
                   />
                 </div>
               ))}
@@ -48,6 +69,8 @@ const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
                 className="p-2 rounded mb-2 border aspect-square w-full"
                 style={{ backgroundColor: props[0].color }}
                 onClick={() => setSelectedGroup(group)}
+                onMouseEnter={() => setHoveredGroup(group)}
+                onMouseLeave={() => setHoveredGroup(null)}
               />
             ))}
           </div>
