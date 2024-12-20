@@ -53,7 +53,7 @@ const PlayerCard = ({
           </div>
         </DrawerTrigger>
         <DrawerContent className={`h-[70vh] bg-black`}>
-          <SelectColorProperties properties={player.properties} />
+          <SelectColorProperties properties={player?.properties} />
         </DrawerContent>
       </Drawer>
     </>

@@ -2,10 +2,25 @@ import { Property } from "@/types/schema";
 import { useState } from "react";
 import Image from "next/image";
 import { MdArrowBackIos } from "react-icons/md";
+import { josephinBold } from "../fonts";
 
-const SelectColorProperties = ({ properties }: { properties: Property[] }) => {
+const SelectColorProperties = ({
+  properties = [],
+}: {
+  properties?: Property[];
+}) => {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
+
+  if (!properties || properties.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className={`text-xl ${josephinBold.className} text-white`}>
+          No Properties Found
+        </p>
+      </div>
+    );
+  }
 
   const groupedProperties = Object.entries(
     properties.reduce((acc, property) => {
