@@ -42,7 +42,7 @@ const RoomView = ({ roomCode }: { roomCode: string }) => {
 
   return (
     <div className="h-screen w-screen flex flex-col relative items-center justify-center ">
-      <div className={`absolute top-2 right-[-40]`}>
+      <div className={`absolute top-2 right-[0]`}>
         <Image
           src="/free-parking.png"
           alt="free parking"
