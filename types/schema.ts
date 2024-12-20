@@ -25,6 +25,7 @@ export interface Property {
   name: string;
   color: string;
   houses: number;
+  group: string;
   hotel: number;
   images: string[];
   isMortgaged: boolean;

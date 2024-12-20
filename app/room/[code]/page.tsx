@@ -114,6 +114,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     setPlayerId(storedPlayerId);
     initializeWebSocket(storedPlayerId);
     fetchRoomData();
+    fetchAvailableProperties(code);
 
     return () => {
       ws.current?.close();

@@ -7,6 +7,7 @@ import {
 } from "../ui/drawer";
 import { sulpherBold } from "../fonts";
 import { Property } from "@/types/schema";
+import SelectColorProperties from "./select-color-properties";
 
 const Navbar = ({
   freeParking,
@@ -32,16 +33,16 @@ const Navbar = ({
               <DrawerTrigger>
                 <div className={`flex justify-between`}>
                   <li>Bank Properties</li>
-                  <li></li>
+                  <li>{availableProperties.length}</li>
                 </div>
               </DrawerTrigger>
               <DrawerContent
-                className={`${sulpherBold.className} bg-black h-[66vh] px-3 text-2xl`}
+                className={`${sulpherBold.className} bg-black h-[66vh] px-3 text-2xl overflow-y-auto`}
               >
                 <DrawerTitle className={`select-none text-black`}>
                   Properties for Sale
                 </DrawerTitle>
-                <h1 className={`text-start`}>Select a Color</h1>
+                <SelectColorProperties properties={availableProperties} />
               </DrawerContent>
             </Drawer>
             <div className={`flex justify-between`}>
