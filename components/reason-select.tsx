@@ -27,7 +27,7 @@ export function ReasonSelect() {
     <Drawer>
       <DrawerTrigger asChild>
         <button
-          className={`border p-4 bg-inherit rounded-lg text-2xl w-full border-neutral-400 ${sulpherBold.className} shadow-md text-black  mb-4`}
+          className={`border p-4 bg-inherit rounded-lg text-2xl w-full border-neutral-400 ${sulpherBold.className} shadow-md text-black  mb-4 `}
         >
           {!selectedReason.name ? (
             <div className={`text-slate-400 text-start`}>Select Reason</div>
