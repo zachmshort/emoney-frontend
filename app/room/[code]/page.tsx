@@ -68,6 +68,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       toast.error("Failed to fetch room data");
     }
   };
+  const [availableProperties, setAvailableProperties] = useState([]);
 
   const initializeWebSocket = (storedPlayerId: string) => {
     if (ws.current?.readyState === WebSocket.OPEN) return;
@@ -127,7 +128,29 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       ws.current.send(JSON.stringify({ type, payload }));
     }
   };
+  const fetchAvailableProperties = async (roomCode: string) => {
+    try {
+      const response = await fetch(
+        `https://emoney.up.railway.app/property/available/${roomCode}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch available properties");
+      }
+
+      const data = await response.json();
+      setAvailableProperties(data.availableProperties);
+    } catch (error) {
+      console.error("Error fetching available properties:", error);
+      toast.error("Unable to retrieve available properties");
+    }
+  };
   return (
     <>
       <RoomView
@@ -143,6 +166,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             reason: transferDetails.reason,
           } as TransferPayload);
         }}
+        availableProperties={availableProperties}
       />
     </>
   );

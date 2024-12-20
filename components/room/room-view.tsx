@@ -1,15 +1,15 @@
 "use client";
 
-import { sulpherBold } from "@/components/fonts";
 import PlayerCard from "@/components/players/card";
-import { Player, Room } from "@/types/schema";
-import Image from "next/image";
+import { Player, Property, Room } from "@/types/schema";
+import Navbar from "../navbar/navbar";
 
 const RoomView = ({
   player,
   otherPlayers,
   room,
   onTransfer,
+  availableProperties,
 }: {
   otherPlayers: Player[];
   player: Player;
@@ -23,22 +23,14 @@ const RoomView = ({
       reason: string;
     }
   ) => void;
+  availableProperties: Property[];
 }) => {
   return (
     <div className="h-screen w-full relative">
-      <div className="absolute top-2 right-0 z-10">
-        <Image
-          src="/free-parking.png"
-          alt="free parking"
-          width={200}
-          height={300}
-        />
-        <a
-          className={`absolute top-9 right-2 text-blue-500 text-2xl ${sulpherBold.className} select-none`}
-        >
-          ${room?.freeParking}
-        </a>
-      </div>
+      <Navbar
+        freeParking={room?.freeParking || 0}
+        availableProperties={availableProperties}
+      />
 
       <div className="h-full flex items-center">
         <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
