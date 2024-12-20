@@ -2,7 +2,7 @@
 import { Player, Room } from "@/types/schema";
 import { use, useEffect, useRef, useState } from "react";
 import RoomView from "@/components/room/room-view";
-import { getWsUrl } from "@/lib/utils/weHelpers";
+import { getEndpoints, getWsUrl } from "@/lib/utils/weHelpers";
 import { playerStore } from "@/lib/utils/playerStore";
 import { toast } from "sonner";
 
@@ -28,7 +28,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const ws = useRef<WebSocket | null>(null);
-
   const fetchRoomData = async () => {
     try {
       const storedPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -38,34 +37,31 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         return;
       }
 
-      const roomResponse = await fetch(
-        `https://emoney.up.railway.app/player/room/${code}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const roomResponse = await fetch(getEndpoints.room.getDetails(code), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const roomData = await roomResponse.json();
 
-      const playerPromises = roomData.players.map(async (p: Player) => {
-        const propertyResponse = await fetch(
-          `https://emoney.up.railway.app/player/${p.id}/details`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const propertyData = await propertyResponse.json();
-        return {
-          ...p,
-          properties: propertyData.properties,
-        };
-      });
-
-      const playersWithProperties = await Promise.all(playerPromises);
+      const playersWithProperties = await Promise.all(
+        roomData.players.map(async (p: Player) => {
+          const propertyResponse = await fetch(
+            getEndpoints.player.getDetails(p.id),
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const propertyData = await propertyResponse.json();
+          return {
+            ...p,
+            properties: propertyData.properties,
+          };
+        })
+      );
 
       const currentPlayer = playersWithProperties.find(
         (p: Player) => p.id === storedPlayerId
@@ -99,12 +95,10 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       const message = JSON.parse(event.data);
       switch (message.type) {
         case "PLAYER_JOINED":
-          setOtherPlayers((prev) => [...prev, message.payload]);
+          fetchRoomData();
           break;
         case "PLAYER_LEFT":
-          setOtherPlayers((prev) =>
-            prev.filter((player) => player.id !== message.payload.playerId)
-          );
+          fetchRoomData();
           break;
         case "TRANSFER":
         case "GAME_STATE_UPDATE":
@@ -166,7 +160,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       toast.error("Unable to retrieve available properties");
     }
   };
-  console.log(player);
   return (
     <>
       <RoomView

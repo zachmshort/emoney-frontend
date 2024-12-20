@@ -73,6 +73,7 @@ const calculateRent = (
   }
   const amount =
     property.rentPrices?.[rentIndex] ?? property.rentPrices?.[0] ?? 50;
+  console.log(amount, "amount");
 
   return {
     amount,
