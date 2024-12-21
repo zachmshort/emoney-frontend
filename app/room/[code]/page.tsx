@@ -166,15 +166,13 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             fetchRoomData();
             break;
           case "PURCHASE_PROPERTY":
-            console.log("Notification payload:", message.payload.notification);
-            console.log("Player bought property");
-            if (message.payload.notification) {
-              toast.success(message.payload.notification, {
-                duration: 4000,
-                icon: "🏠",
-                className: "property-purchase-toast",
-              });
-            }
+            toast.success(message.payload.notification, {
+              duration: 4000,
+              icon: "🏠",
+            });
+            fetchRoomData();
+            fetchAvailableProperties(room.roomCode);
+            break;
           case "TRANSFER":
             console.log("Transfer message received:", message);
             fetchRoomData();
