@@ -14,7 +14,7 @@ function InstallPrompt() {
   }, []);
 
   if (isStandalone) {
-    return null; // Don't show install button if already installed
+    return null;
   }
 
   return (
