@@ -78,7 +78,12 @@ function InstallPrompt() {
           Install
         </button>
       )}
-
+      <Link
+        href="/"
+        className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
+      >
+        Home
+      </Link>
       {isIOS && (
         <p>
           To install this app on your iOS device, tap the share button
