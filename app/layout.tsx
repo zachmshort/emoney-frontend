@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "E-Money",
@@ -14,7 +15,10 @@ export default function RootLayout({
   return (
     <>
       <html lang="en">
-        <body className={`bg-black text-white`}>{children}</body>
+        <body className={`bg-black text-white`}>
+          <main>{children}</main>
+          <Toaster />
+        </body>
       </html>
     </>
   );

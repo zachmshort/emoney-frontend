@@ -165,17 +165,25 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             console.log("Player left event received");
             fetchRoomData();
             break;
-          case "PROPERTY_BOUGHT":
+          case "PURCHASE_PROPERTY":
+            console.log("Notification payload:", message.payload.notification);
             console.log("Player bought property");
-            fetchRoomData();
-            fetchAvailableProperties(code);
-            break;
+            if (message.payload.notification) {
+              toast.success(message.payload.notification, {
+                duration: 4000,
+                icon: "🏠",
+                className: "property-purchase-toast",
+              });
+            }
           case "TRANSFER":
             console.log("Transfer message received:", message);
             fetchRoomData();
             break;
           case "GAME_STATE_UPDATE":
-            console.log("Game state update received:", message);
+            toast.success(message.payload.notification, {
+              duration: 4000,
+              icon: "🏠",
+            });
             fetchRoomData();
             break;
           default:
