@@ -88,9 +88,7 @@ const PayRequestRent = ({
       toPlayerId: type === "SEND" ? toPlayer.id : fromPlayer.id,
     };
 
-    const formattedReason = `${transactionDetails.reason} (${
-      type === "SEND" ? "Payment to" : "Request from"
-    } ${type === "SEND" ? toPlayer.name : fromPlayer.name})`;
+    const formattedReason = `${transactionDetails.reason}`;
 
     onTransferRequest(
       transactionDetails.amount,

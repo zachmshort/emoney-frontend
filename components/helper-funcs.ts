@@ -55,18 +55,18 @@ const calculateRent = (
   const hasFullSet = doesPlayerOwnFullSet(property, properties);
   let rentIndex = 0;
   let rentMultiplier = 1;
-  let rentReason = `Base rent for ${property.name}`;
+  let rentReason = `base rent for ${property.name}`;
 
   if (hasFullSet) {
     if (property.houses === 0 && property.hotel === 0) {
       rentMultiplier = 2;
-      rentReason = `Double rent for ${property.name} (full ${property.group} set)`;
+      rentReason = `double rent for ${property.name} (full ${property.group} set)`;
     } else if (property.hotel === 1) {
       rentIndex = 5;
-      rentReason = `Hotel rent for ${property.name}`;
+      rentReason = `hotel rent for ${property.name}`;
     } else {
       rentIndex = property.houses + 1;
-      rentReason = `Rent for ${property.name} with ${property.houses} house${
+      rentReason = `rent for ${property.name} with ${property.houses} house${
         property.houses > 1 ? "s" : ""
       }`;
     }
