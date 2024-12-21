@@ -1,5 +1,6 @@
 "use client";
 import Logo from "@/components/ui/logo";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -55,7 +56,15 @@ function InstallPrompt() {
   };
 
   if (isStandalone) {
-    return null;
+    <div className="font flex justify-center items-center h-screen select-none">
+      <Logo />
+      <Link
+        href="/"
+        className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
+      >
+        Home
+      </Link>
+    </div>;
   }
 
   return (
