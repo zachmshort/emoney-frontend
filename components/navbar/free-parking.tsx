@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { josephinBold, josephinNormal, sulpherBold } from "../fonts";
+import { josephinBold, josephinNormal } from "../fonts";
 import { Player } from "@/types/schema";
 import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";

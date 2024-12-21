@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 const PlayerCard = ({
@@ -52,7 +51,7 @@ const PlayerCard = ({
     setAmount("");
     setDialogState(null);
   };
-  let color = player?.color || "#fff";
+  const color = player?.color || "#fff";
 
   return (
     <>
@@ -97,7 +96,7 @@ const PlayerCard = ({
               <DialogHeader>
                 <DialogTitle>
                   {dialogState === "add" ? "Add Money to" : "Remove Money from"}{" "}
-                  {player.name}
+                  {player?.name}
                 </DialogTitle>
               </DialogHeader>
               <div className="grid gap-4 py-4">
