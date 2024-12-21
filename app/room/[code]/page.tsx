@@ -208,7 +208,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   }, [code]);
 
   const sendMessage = (
-    type: "TRANSFER" | "JOIN",
+    type: "TRANSFER" | "JOIN" | "PROPERTY_BOUGHT",
     payload: WebSocketPayload
   ) => {
     if (ws.current?.readyState === WebSocket.OPEN) {
@@ -252,6 +252,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       toast.error("Unable to retrieve available properties");
     }
   };
+
   return (
     <>
       <RoomView

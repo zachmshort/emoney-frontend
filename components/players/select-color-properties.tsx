@@ -104,12 +104,11 @@ const SelectColorProperties = ({
           onClick={handleBack}
         >
           <MdArrowBackIos />
-          <div>Back</div>
         </h1>
-        <div className="space-y-6">
-          <div className="space-y-4">
+        <div className="space-y-2">
+          <div className="space-y-2">
             <h2 className="text-xl">Confirm Purchase</h2>
-            <div className="bg-gray-800 rounded-lg p-4 space-y-4">
+            <div className="bg-gray-800 rounded-lg p-4 space-y-2">
               <div className="flex justify-between items-center">
                 <span>Price:</span>
                 <span className="text-xl">${selectedProperty.price}</span>
@@ -118,7 +117,7 @@ const SelectColorProperties = ({
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-2">
             <h3 className="text-lg">Balance After Purchase</h3>
             <div className="bg-gray-800 rounded-lg p-4">
               <div className="flex justify-between">
@@ -142,7 +141,7 @@ const SelectColorProperties = ({
   };
 
   return (
-    <div className={`space-y-4 text-2xl ml-2 mt-2 ${josephinBold.className}`}>
+    <div className={`space-y-2 text-2xl  ${josephinBold.className}`}>
       {hoveredGroup && <PrefetchImages group={hoveredGroup} />}
 
       {currentView === "confirmation" ? (
@@ -151,7 +150,6 @@ const SelectColorProperties = ({
         <>
           <h1 className="flex items-center justify-start" onClick={handleBack}>
             <MdArrowBackIos />
-            <div>Back</div>
           </h1>
           <div className="overflow-x-auto flex gap-4">
             {groupedProperties
@@ -172,7 +170,7 @@ const SelectColorProperties = ({
                       priority
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-center">
-                      <span className="text-lg">${property.price}</span>
+                      <span className="text-lg">${property?.price}</span>
                     </div>
                   </div>
                 </div>

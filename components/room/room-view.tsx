@@ -40,7 +40,6 @@ const RoomView = ({
           player={currentPlayer}
           availableProperties={availableProperties}
           onPurchaseProperty={onPurchaseProperty}
-          roomId={room?.id}
         />
       </div>
       <div className="flex-1 flex items-center">

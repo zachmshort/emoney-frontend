@@ -8,8 +8,12 @@ const josephinBold = Josefin_Sans({
   weight: ["700"],
   subsets: ["latin"],
 });
+const josephinNormal = Josefin_Sans({
+  weight: ["400"],
+  subsets: ["latin"],
+});
 const sulpherLight = Sulphur_Point({
   subsets: ["latin"],
   weight: ["300"],
 });
-export { sulpherBold, josephinBold, sulpherLight };
+export { josephinNormal, sulpherBold, josephinBold, sulpherLight };
