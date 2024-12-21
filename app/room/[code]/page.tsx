@@ -5,6 +5,7 @@ import RoomView from "@/components/room/room-view";
 import { getEndpoints, getWsUrl } from "@/lib/utils/weHelpers";
 import { playerStore } from "@/lib/utils/playerStore";
 import { toast } from "sonner";
+import { josephinBold } from "@/components/fonts";
 
 type TransferType = "SEND" | "REQUEST" | "ADD" | "SUBTRACT";
 
@@ -170,6 +171,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               duration: 4000,
               icon: "🏠",
               position: "top-center",
+              className: `${josephinBold.className} text-xs text-center`,
             });
             fetchRoomData();
             fetchAvailableProperties(room.roomCode);
@@ -179,6 +181,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               duration: 4000,
               icon: "💵",
               position: "top-center",
+              className: `${josephinBold.className} text-xs text-center`,
             });
             fetchRoomData();
             break;
