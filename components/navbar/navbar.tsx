@@ -9,6 +9,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { josephinNormal, sulpherBold } from "../fonts";
 import SelectColorProperties from "../players/select-color-properties";
 import { useState } from "react";
+import Link from "next/link";
 
 const Navbar = ({
   freeParking,
@@ -77,6 +78,13 @@ const Navbar = ({
                   <li>Free Parking</li>
                   <li>${freeParking}</li>
                 </div>
+                <Link href={`/`}>
+                  <div
+                    className={`text-center absolute bottom-0 w-full border rounded-md p-3 $`}
+                  >
+                    Sign Out
+                  </div>
+                </Link>
               </>
             )}
           </ul>
