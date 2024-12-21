@@ -10,6 +10,7 @@ const RoomView = ({
   room,
   availableProperties,
   onTransfer,
+  onPurchaseProperty,
 }: {
   otherPlayers: Player[];
   currentPlayer: Player;
@@ -25,13 +26,21 @@ const RoomView = ({
     }
   ) => void;
   availableProperties: Property[];
+  onPurchaseProperty: (
+    propertyId: string,
+    buyerId: string,
+    price: number
+  ) => void;
 }) => {
   return (
     <div className="min-h-screen w-full relative flex flex-col">
       <div className="sticky top-0 z-50 bg-white">
         <Navbar
           freeParking={room?.freeParking || 0}
+          player={currentPlayer}
           availableProperties={availableProperties}
+          onPurchaseProperty={onPurchaseProperty}
+          roomId={room?.id}
         />
       </div>
       <div className="flex-1 flex items-center">

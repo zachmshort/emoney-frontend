@@ -21,7 +21,15 @@ interface JoinPayload {
   playerId: string;
 }
 
-type WebSocketPayload = TransferPayload | JoinPayload;
+interface PurchasePropertyPayload {
+  type: "PURCHASE_PROPERTY";
+  propertyId: string;
+  buyerId: string;
+  price: number;
+  roomId: string;
+}
+
+type WebSocketPayload = TransferPayload | JoinPayload | PurchasePropertyPayload;
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = use(params);
@@ -29,6 +37,42 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const ws = useRef<WebSocket | null>(null);
+  const handlePurchaseProperty = (
+    propertyId: string,
+    buyerId: string,
+    price: number
+  ) => {
+    if (ws.current?.readyState === WebSocket.OPEN) {
+      const purchasePayload: PurchasePropertyPayload = {
+        type: "PURCHASE_PROPERTY",
+        propertyId,
+        buyerId,
+        price,
+        roomId: code,
+      };
+
+      try {
+        ws.current.send(
+          JSON.stringify({
+            type: "PURCHASE_PROPERTY",
+            payload: purchasePayload,
+          })
+        );
+        console.log("Property purchase message sent successfully");
+      } catch (error) {
+        console.error("Error sending property purchase message:", error);
+        toast.error("Failed to send purchase request");
+      }
+    } else {
+      console.error("WebSocket not connected. State:", ws.current?.readyState);
+      toast.error("Connection lost. Trying to reconnect...");
+      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
+      if (storedPlayerId) {
+        initializeWebSocket(storedPlayerId);
+      }
+    }
+  };
+
   const fetchRoomData = async () => {
     try {
       const storedPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -120,6 +164,11 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
           case "PLAYER_LEFT":
             console.log("Player left event received");
             fetchRoomData();
+            break;
+          case "PROPERTY_BOUGHT":
+            console.log("Player bought property");
+            fetchRoomData();
+            fetchAvailableProperties(code);
             break;
           case "TRANSFER":
             console.log("Transfer message received:", message);
@@ -220,6 +269,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
           } as TransferPayload);
         }}
         availableProperties={availableProperties}
+        onPurchaseProperty={handlePurchaseProperty}
       />
     </>
   );

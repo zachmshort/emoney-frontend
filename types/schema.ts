@@ -25,6 +25,7 @@ export interface Property {
   playerId: string;
   name: string;
   color: string;
+  price: number;
   houses: number;
   group: string;
   hotel: number;
