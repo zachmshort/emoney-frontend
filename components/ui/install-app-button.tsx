@@ -18,6 +18,7 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
   const frameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
 
+  const router = useRouter();
   useEffect(() => {
     setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
 
@@ -149,7 +150,6 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
   if (isStandalone) {
     return null;
   }
-  const router = useRouter();
   const route = () => {
     router.push("/install");
   };
