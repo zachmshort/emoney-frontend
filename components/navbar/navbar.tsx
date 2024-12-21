@@ -10,11 +10,13 @@ import { josephinNormal, sulpherBold } from "../fonts";
 import SelectColorProperties from "../players/select-color-properties";
 import { useState } from "react";
 import Link from "next/link";
+import FreeParkingDialog from "./free-parking";
 
 const Navbar = ({
   freeParking,
   player,
   availableProperties,
+  onFreeParkingAction,
   onPurchaseProperty,
 }: {
   freeParking: number;
@@ -24,9 +26,12 @@ const Navbar = ({
     buyerId: string,
     price: number
   ) => void;
+  onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
   availableProperties?: Property[];
 }) => {
   const [showProperties, setShowProperties] = useState(false);
+  const [showFreeParking, setShowFreeParking] = useState(false);
+
   return (
     <>
       <Drawer>
@@ -64,6 +69,15 @@ const Navbar = ({
                     player={player}
                   />
                 </div>
+              </>
+            ) : showFreeParking ? (
+              <>
+                <FreeParkingDialog
+                  player={player}
+                  onFreeParkingAction={onFreeParkingAction}
+                  freeParking={freeParking}
+                  onCancel={() => {}}
+                />
               </>
             ) : (
               <>

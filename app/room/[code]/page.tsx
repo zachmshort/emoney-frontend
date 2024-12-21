@@ -73,7 +73,38 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       }
     }
   };
-
+  const handleFreeParkingAction = (
+    amount: string,
+    type: "ADD" | "REMOVE",
+    playerId: string
+  ) => {
+    if (ws.current?.readyState === WebSocket.OPEN) {
+      try {
+        ws.current.send(
+          JSON.stringify({
+            type: "FREE_PARKING",
+            payload: {
+              type,
+              amount,
+              playerId,
+              roomId: code,
+            },
+          })
+        );
+        console.log("Free parking action sent successfully");
+      } catch (error) {
+        console.error("Error sending free parking action:", error);
+        toast.error("Failed to process Free Parking action");
+      }
+    } else {
+      console.error("WebSocket not connected. State:", ws.current?.readyState);
+      toast.error("Connection lost. Trying to reconnect...");
+      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
+      if (storedPlayerId) {
+        initializeWebSocket(storedPlayerId);
+      }
+    }
+  };
   const fetchRoomData = async () => {
     try {
       const storedPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -163,6 +194,15 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             toast.success(message.payload.notification || "Player Joined", {
               duration: 4000,
               icon: "🧍",
+              position: "top-center",
+              className: `${josephinBold.className} text-xs text-center`,
+            });
+            fetchRoomData();
+            break;
+          case "FREE_PARKING_UPDATE":
+            toast.success(message.payload.notification, {
+              duration: 4000,
+              icon: "💰",
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
@@ -293,6 +333,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         }}
         availableProperties={availableProperties}
         onPurchaseProperty={handlePurchaseProperty}
+        onFreeParkingAction={handleFreeParkingAction}
       />
     </>
   );

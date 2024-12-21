@@ -11,6 +11,7 @@ const RoomView = ({
   availableProperties,
   onTransfer,
   onPurchaseProperty,
+  onFreeParkingAction,
 }: {
   otherPlayers: Player[];
   currentPlayer: Player;
@@ -25,6 +26,7 @@ const RoomView = ({
       roomId: string;
     }
   ) => void;
+  onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
   availableProperties: Property[];
   onPurchaseProperty: (
     propertyId: string,
@@ -40,6 +42,7 @@ const RoomView = ({
           player={currentPlayer}
           availableProperties={availableProperties}
           onPurchaseProperty={onPurchaseProperty}
+          onFreeParkingAction={onFreeParkingAction}
         />
       </div>
       <div className="flex-1 flex items-center">
