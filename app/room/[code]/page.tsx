@@ -169,19 +169,20 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             toast.success(message.payload.notification, {
               duration: 4000,
               icon: "🏠",
+              position: "top-center",
             });
             fetchRoomData();
             fetchAvailableProperties(room.roomCode);
             break;
           case "TRANSFER":
-            console.log("Transfer message received:", message);
+            toast.success(message.payload.notification, {
+              duration: 4000,
+              icon: "💵",
+              position: "top-center",
+            });
             fetchRoomData();
             break;
           case "GAME_STATE_UPDATE":
-            toast.success(message.payload.notification, {
-              duration: 4000,
-              icon: "🏠",
-            });
             fetchRoomData();
             break;
           default:

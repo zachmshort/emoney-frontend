@@ -87,7 +87,7 @@ const RoomForm = ({
       }
     } catch (error) {
       console.error("Error joining room:", error);
-      toast.error(`Failed to join room: ${error.message}`);
+      toast.error(`${error.message}`);
     }
   };
 
