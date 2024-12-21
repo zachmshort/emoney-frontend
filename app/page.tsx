@@ -13,13 +13,13 @@ const MonopolyPage = () => {
           <Link
             href="/join"
             prefetch={true}
-            className={`border p-4 rounded-full w-64 text-xl text-center font border-yellow-200`}
+            className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
           >
             Join Room
           </Link>
           <Link
             href={`/create`}
-            className={`border p-4 rounded-full w-64 text-xl text-center font border-yellow-200`}
+            className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
           >
             Create Room
           </Link>

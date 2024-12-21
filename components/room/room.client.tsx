@@ -1,6 +1,6 @@
 "use client";
 
-import PlayerCard from "@/components/players/card";
+import PlayerCard from "@/components/players/player-card";
 import { Player, Property, Room } from "@/types/schema";
 import Navbar from "../navbar/navbar";
 
@@ -45,6 +45,7 @@ const RoomView = ({
           availableProperties={availableProperties}
           onPurchaseProperty={onPurchaseProperty}
           onFreeParkingAction={onFreeParkingAction}
+          roomId={room?.id}
         />
       </div>
       <div className="flex-1 flex items-center">

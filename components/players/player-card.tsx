@@ -1,6 +1,6 @@
 import { Player } from "@/types/schema";
 import { josephinBold, sulpherBold } from "../fonts";
-import { PlayerDetails } from "./card-content";
+import { PlayerDetails } from "./player-card-content";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

@@ -6,7 +6,7 @@ const Logo = () => {
     <>
       <Link href="/">
         <div
-          className={`${sulpherLight.className} fixed top-1 left-1 font-light font`}
+          className={`${sulpherLight.className} fixed top-2 left-2 font text-xl`}
         >
           E-Money
         </div>

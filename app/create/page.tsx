@@ -1,4 +1,6 @@
-import RoomForm from "@/components/room/room-form";
+"use client";
+
+import RoomForm from "@/components/room/join-create-room-steps";
 
 const CreateRoom = () => {
   return (

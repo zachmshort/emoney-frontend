@@ -1,9 +1,9 @@
 "use client";
 import { Player, Room } from "@/types/schema";
 import { use, useEffect, useRef, useState } from "react";
-import RoomView from "@/components/room/room-view";
-import { getEndpoints, getWsUrl } from "@/lib/utils/weHelpers";
-import { playerStore } from "@/lib/utils/playerStore";
+import RoomView from "@/components/room/room.client";
+import { getEndpoints, getWsUrl } from "@/lib/utils/wsHelpers";
+import { playerStore } from "@/lib/utils/playerHelpers";
 import { toast } from "sonner";
 import { josephinBold } from "@/components/fonts";
 

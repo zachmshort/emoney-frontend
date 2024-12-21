@@ -1,11 +1,11 @@
 "use client";
-import { ColorSelect } from "@/components/color-select-drawer";
+import { ColorSelect } from "../players/color-select-drawer";
 import { sulpherBold } from "@/components/fonts";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Logo from "../logo";
 import { toast } from "sonner";
-import { playerStore } from "@/lib/utils/playerStore";
+import { playerStore } from "@/lib/utils/playerHelpers";
 
 interface p {
   type?: string;
@@ -149,7 +149,13 @@ const RoomForm = ({
               />
               <button
                 className={`border font rounded-lg p-4 border-yellow-200 w-64 mt-4 text-black text-2xl`}
-                onClick={checkExistingPlayer}
+                onClick={() => {
+                  if (!code) {
+                    toast.error("Please enter a code");
+                  } else {
+                    checkExistingPlayer();
+                  }
+                }}
               >
                 {buttonText1}
               </button>

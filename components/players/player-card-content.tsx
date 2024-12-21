@@ -6,10 +6,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
-import SelectColorProperties from "./select-color-properties";
+import SelectColorProperties from "./purchase-properties-bank";
 import { useState } from "react";
-import SendReqToggle from "./send-req-toggle";
-import PayRequestRent from "./rent-properties";
+import SendReqToggle from "./pay-req-toggle-switch";
+import PayRequestRent from "./pay.req.rent.component";
 import { calculateMonopolies } from "../helper-funcs";
 
 const PlayerDetails = ({

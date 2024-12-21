@@ -7,19 +7,22 @@ import {
 } from "../ui/drawer";
 import { AiOutlineMenu } from "react-icons/ai";
 import { josephinNormal, sulpherBold } from "../fonts";
-import SelectColorProperties from "../players/select-color-properties";
+import SelectColorProperties from "../players/purchase-properties-bank";
 import { useState } from "react";
 import Link from "next/link";
 import FreeParkingDialog from "./free-parking";
+import { playerStore } from "@/lib/utils/playerHelpers";
 
 const Navbar = ({
   freeParking,
   player,
   availableProperties,
   onFreeParkingAction,
+  roomId,
   onPurchaseProperty,
 }: {
   freeParking: number;
+  roomId: string;
   player: Player;
   onPurchaseProperty: (
     propertyId: string,
@@ -36,15 +39,15 @@ const Navbar = ({
     <>
       <Drawer>
         <DrawerTrigger asChild>
-          <div className={`border rounded-md p-2 absolute top-4 right-4`}>
+          <div className={`border rounded-md p-2 absolute top-4 right-4 `}>
             <AiOutlineMenu size={25} />
           </div>
         </DrawerTrigger>
         <DrawerContent
-          className={`${josephinNormal.className} h-[75vh] bg-black border-[1px] px-3 text-3xl`}
+          className={`${josephinNormal.className} h-[75vh] bg-black border-[1px] px-3 text-3xl `}
         >
           <DrawerTitle className={`text-black`}>Menu</DrawerTitle>
-          <ul className={`flex flex-col`}>
+          <ul className={`flex flex-col h-[75vh] relative`}>
             {showProperties ? (
               <>
                 <div
@@ -98,13 +101,39 @@ const Navbar = ({
                   <li>Free Parking</li>
                   <li>${freeParking}</li>
                 </div>
-                <Link href={`/`}>
-                  <div
-                    className={`text-center absolute bottom-0 w-full border rounded-md p-3 $`}
-                  >
-                    Sign Out
+                <div className={`absolute bottom-2 w-full`}>
+                  <div className={`flex flex-col items-start w-full `}>
+                    <div className={` w-full text-lg text-red-300`}>
+                      Danger Zone
+                    </div>
+                    <div
+                      className={`flex flex-col items-start w-full space-y-5`}
+                    >
+                      <Link
+                        href={`/`}
+                        className={` w-full text-lg border border-red-300 p-2 rounded-sm`}
+                      >
+                        Leave Game
+                      </Link>
+                      <Link
+                        href={`/`}
+                        className={`w-full text-lg border rounded-sm p-2 border-red-300`}
+                        onClick={() => playerStore.clearAllPlayerData()}
+                      >
+                        Delete My Players in All Games
+                      </Link>
+                      <Link
+                        href={`/`}
+                        className={`  p-2 border rounded-sm w-full text-lg border-red-300`}
+                        onClick={() => {
+                          playerStore.clearPlayerDataForRoom(roomId);
+                        }}
+                      >
+                        Delete My Player this Game
+                      </Link>
+                    </div>
                   </div>
-                </Link>
+                </div>
               </>
             )}
           </ul>

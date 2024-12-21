@@ -6,7 +6,7 @@ interface SendReqToggleProps {
   onToggle: (type: TransferType) => void;
 }
 
-const SendReqToggle = ({ onToggle }: SendReqToggleProps) => {
+const PayRequestRentToggleSwitch = ({ onToggle }: SendReqToggleProps) => {
   const [isSend, setIsSend] = useState(true);
 
   const handleToggle = () => {
@@ -44,4 +44,4 @@ const SendReqToggle = ({ onToggle }: SendReqToggleProps) => {
     </button>
   );
 };
-export default SendReqToggle;
+export default PayRequestRentToggleSwitch;
