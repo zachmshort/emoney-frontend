@@ -1,9 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
 function InstallPrompt() {
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     interface WindowWithMSStream extends Window {
@@ -16,16 +23,51 @@ function InstallPrompt() {
     );
 
     setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+    };
   }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+
+    await deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === "accepted") {
+      console.log("App installed successfully");
+    }
+
+    setDeferredPrompt(null);
+  };
 
   if (isStandalone) {
     return null;
   }
 
   return (
-    <div>
-      <h3>Install App</h3>
-      <button>Add to Home Screen</button>
+    <div className="font flex justify-center items-center h-screen select-none">
+      {deferredPrompt && (
+        <button
+          onClick={handleInstallClick}
+          className="px-4 py-2 text-white rounded 700 "
+        >
+          Install Application
+        </button>
+      )}
+
       {isIOS && (
         <p>
           To install this app on your iOS device, tap the share button

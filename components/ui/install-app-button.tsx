@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Rect {
   x: number;
@@ -30,18 +30,15 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
       const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, 0.1);
       lastTimeRef.current = timestamp;
 
-      // Get viewport and button dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const buttonRect = buttonRef.current.getBoundingClientRect();
 
-      // Update position based on velocity with springy motion
       let newX = position.x + velocity.x * deltaTime * 120;
       let newY = position.y + velocity.y * deltaTime * 120;
       let newVelX = velocity.x;
       let newVelY = velocity.y;
 
-      // Springy boundary collisions
       const bounceFactor = 0.95;
       const energyPreservation = 1.02;
 
@@ -62,7 +59,7 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
       }
 
       const otherButtons = document.querySelectorAll(
-        'a[href="/join"], a[href="/create", a[href="/"]]'
+        'a[href="/join"], a[href="/create"]'
       );
 
       otherButtons.forEach((button) => {
@@ -145,17 +142,17 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
 
   const handleClick = () => {
     setIsCaught(true);
-    setPosition({
-      x: window.innerWidth - (buttonRef.current?.offsetWidth || 0) - 20,
-      y: 20,
-    });
+
     setVelocity({ x: 0, y: 0 });
   };
 
   if (isStandalone) {
     return null;
   }
-
+  const router = useRouter();
+  const route = () => {
+    router.push("/install");
+  };
   return (
     <div
       ref={buttonRef}
@@ -168,9 +165,9 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
           ? "transform 0.3s ease-out"
           : "transform 0.05s linear",
       }}
-      onClick={!isCaught ? handleClick : undefined}
+      onClick={!isCaught ? handleClick : route}
     >
-      <Link
+      <div
         className={`
           block
           px-4 py-2
@@ -181,13 +178,12 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
           transition-all
           duration-200
           font
-          ${className || ""}
+          ${className}
         `}
-        href="/install"
         onClick={(e) => !isCaught && e.preventDefault()}
       >
         {isCaught ? "Install App" : "Try to catch me!"}
-      </Link>
+      </div>
     </div>
   );
 };
