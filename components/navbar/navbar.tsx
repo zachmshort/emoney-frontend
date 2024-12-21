@@ -49,7 +49,10 @@ const Navbar = ({
               <>
                 <div
                   className={`flex justify-between`}
-                  onClick={() => setShowProperties(false)}
+                  onClick={() => {
+                    setShowProperties(false);
+                    setShowFreeParking(false);
+                  }}
                 >
                   <li
                     className={`border w-full text-center py-2 rounded shadow-xl`}
@@ -88,7 +91,10 @@ const Navbar = ({
                   <li>Bank Properties</li>
                   <li>{availableProperties.length}</li>
                 </div>
-                <div className={`flex justify-between`}>
+                <div
+                  className={`flex justify-between`}
+                  onClick={() => setShowFreeParking(true)}
+                >
                   <li>Free Parking</li>
                   <li>${freeParking}</li>
                 </div>
