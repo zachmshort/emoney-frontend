@@ -1,4 +1,5 @@
 "use client";
+import Logo from "@/components/ui/logo";
 import { useEffect, useState } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -59,12 +60,13 @@ function InstallPrompt() {
 
   return (
     <div className="font flex justify-center items-center h-screen select-none">
+      <Logo />
       {deferredPrompt && (
         <button
           onClick={handleInstallClick}
-          className="px-4 py-2 text-white rounded 700 "
+          className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
         >
-          Install Application
+          Install
         </button>
       )}
 
