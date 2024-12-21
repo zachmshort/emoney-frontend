@@ -41,7 +41,7 @@ const Navbar = ({
           </div>
         </DrawerTrigger>
         <DrawerContent
-          className={`${josephinNormal.className} h-[75vh] bg-black border-[1px] px-3 text-2xl`}
+          className={`${josephinNormal.className} h-[75vh] bg-black border-[1px] px-3 text-3xl`}
         >
           <DrawerTitle className={`text-black`}>Menu</DrawerTitle>
           <ul className={`flex flex-col`}>
@@ -79,20 +79,20 @@ const Navbar = ({
                   player={player}
                   onFreeParkingAction={onFreeParkingAction}
                   freeParking={freeParking}
-                  onCancel={() => {}}
+                  onClick={() => setShowFreeParking(false)}
                 />
               </>
             ) : (
               <>
                 <div
-                  className={`flex justify-between`}
+                  className={`flex justify-between mt-2`}
                   onClick={() => setShowProperties(true)}
                 >
-                  <li>Bank Properties</li>
+                  <li>Bank&apos;s Properties</li>
                   <li>{availableProperties.length}</li>
                 </div>
                 <div
-                  className={`flex justify-between`}
+                  className={`flex justify-between mt-4`}
                   onClick={() => setShowFreeParking(true)}
                 >
                   <li>Free Parking</li>

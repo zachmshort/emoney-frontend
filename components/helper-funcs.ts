@@ -40,7 +40,38 @@ const doesPlayerOwnFullSet = (
 
   return ownedUnmortgagedCount === requiredPropertiesPerGroup[property.group];
 };
+const calculateMonopolies = (playerProperties: Property[] = []): number => {
+  if (!playerProperties) return 0;
 
+  const monopolyGroups = new Set<string>();
+
+  playerProperties.forEach((property) => {
+    if (
+      !monopolyGroups.has(property.group) &&
+      doesPlayerOwnFullSet(property, playerProperties)
+    ) {
+      monopolyGroups.add(property.group);
+    }
+  });
+
+  return monopolyGroups.size;
+};
+
+const getGroupedMonopolies = (playerProperties: Property[] = []) => {
+  if (!playerProperties) return []; // Guard against null/undefined
+
+  const groupedObj = playerProperties.reduce((acc, property) => {
+    if (doesPlayerOwnFullSet(property, playerProperties)) {
+      if (!acc[property.group]) {
+        acc[property.group] = [];
+      }
+      acc[property.group].push(property);
+    }
+    return acc;
+  }, {} as Record<string, Property[]>);
+
+  return Object.entries(groupedObj);
+};
 const calculateRent = (
   property: Property,
   properties: Property[]
@@ -82,4 +113,10 @@ const calculateRent = (
   };
 };
 
-export { getButtonText, calculateRent };
+export {
+  getButtonText,
+  calculateRent,
+  doesPlayerOwnFullSet,
+  calculateMonopolies,
+  getGroupedMonopolies,
+};

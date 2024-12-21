@@ -10,6 +10,7 @@ import SelectColorProperties from "./select-color-properties";
 import { useState } from "react";
 import SendReqToggle from "./send-req-toggle";
 import PayRequestRent from "./rent-properties";
+import { calculateMonopolies } from "../helper-funcs";
 
 const PlayerDetails = ({
   player,
@@ -31,13 +32,15 @@ const PlayerDetails = ({
     }
   ) => void;
 }) => {
-  const [type, setType] = useState<"SEND" | "REQUEST">("REQUEST");
+  const [type, setType] = useState<"SEND" | "REQUEST">("SEND");
   const getPropertiesToShow = () => {
     if (type !== "SEND") {
       return currentPlayer?.properties;
     }
     return player?.properties;
   };
+  const monopoliesCount = calculateMonopolies(player?.properties);
+
   return (
     <>
       <div
@@ -53,14 +56,16 @@ const PlayerDetails = ({
               <div>{player?.properties?.length || 0}</div>
             </div>
           </DrawerTrigger>
-          <DrawerContent>
-            <DrawerTitle>{player?.name}&apos; Properties</DrawerTitle>
+          <DrawerContent className={`bg-black h-[75vh] px-3 text-white`}>
+            <DrawerTitle className={`text-black`}>
+              {player?.name}&apos; Properties
+            </DrawerTitle>
             <SelectColorProperties properties={player?.properties} />
           </DrawerContent>
         </Drawer>
         <div className={`flex items-center justify-between`}>
           <div>{currentPlayer?.id === player?.id && "My"} Monopolies</div>
-          <div>0</div>
+          <div>{monopoliesCount}</div>
         </div>
         {currentPlayer?.id !== player?.id && (
           <Drawer>

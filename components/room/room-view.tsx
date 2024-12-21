@@ -12,6 +12,7 @@ const RoomView = ({
   onTransfer,
   onPurchaseProperty,
   onFreeParkingAction,
+  onBankerTransaction,
 }: {
   otherPlayers: Player[];
   currentPlayer: Player;
@@ -27,6 +28,7 @@ const RoomView = ({
     }
   ) => void;
   onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
+  onBankerTransaction: (amount: string, type: string, playerId: string) => void;
   availableProperties: Property[];
   onPurchaseProperty: (
     propertyId: string,
@@ -55,6 +57,7 @@ const RoomView = ({
                 currentPlayer={currentPlayer}
                 onTransfer={onTransfer}
                 roomId={room?.id}
+                onBankerTransaction={onBankerTransaction}
               />
             </div>
 
@@ -66,6 +69,7 @@ const RoomView = ({
                   currentPlayer={currentPlayer}
                   onTransfer={onTransfer}
                   roomId={room?.id}
+                  onBankerTransaction={onBankerTransaction}
                 />
               </div>
             ))}

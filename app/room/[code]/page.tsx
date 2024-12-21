@@ -7,8 +7,6 @@ import { playerStore } from "@/lib/utils/playerStore";
 import { toast } from "sonner";
 import { josephinBold } from "@/components/fonts";
 
-type TransferType = "SEND" | "REQUEST" | "ADD" | "SUBTRACT";
-
 export interface TransferPayload {
   amount: string;
   type: TransferType;
@@ -17,6 +15,28 @@ export interface TransferPayload {
   reason: string;
   roomId: string;
 }
+type TransferType =
+  | "SEND"
+  | "REQUEST"
+  | "ADD"
+  | "SUBTRACT"
+  | "BANKER_ADD"
+  | "BANKER_REMOVE";
+
+interface BankerTransactionPayload {
+  type: "BANKER_TRANSACTION";
+  amount: string;
+  fromPlayerId: string;
+  toPlayerId: string;
+  transactionType: "BANKER_ADD" | "BANKER_REMOVE";
+  roomId: string;
+}
+
+type WebSocketPayload =
+  | TransferPayload
+  | JoinPayload
+  | PurchasePropertyPayload
+  | BankerTransactionPayload;
 
 interface JoinPayload {
   playerId: string;
@@ -30,14 +50,46 @@ interface PurchasePropertyPayload {
   roomId: string;
 }
 
-type WebSocketPayload = TransferPayload | JoinPayload | PurchasePropertyPayload;
-
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = use(params);
   const [player, setPlayer] = useState<Player | null>(null);
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
   const ws = useRef<WebSocket | null>(null);
+  const handleBankerTransaction = (
+    amount: string,
+    targetPlayerId: string,
+    transactionType: "BANKER_ADD" | "BANKER_REMOVE"
+  ) => {
+    if (ws.current?.readyState === WebSocket.OPEN) {
+      try {
+        ws.current.send(
+          JSON.stringify({
+            type: "BANKER_TRANSACTION",
+            payload: {
+              type: "BANKER_TRANSACTION",
+              amount,
+              fromPlayerId: player?.id,
+              toPlayerId: targetPlayerId,
+              transactionType,
+              roomId: room?.id,
+            },
+          })
+        );
+        console.log("Banker transaction sent successfully");
+      } catch (error) {
+        console.error("Error sending banker transaction:", error);
+        toast.error("Failed to process banker transaction");
+      }
+    } else {
+      console.error("WebSocket not connected. State:", ws.current?.readyState);
+      toast.error("Connection lost. Trying to reconnect...");
+      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
+      if (storedPlayerId) {
+        initializeWebSocket(storedPlayerId);
+      }
+    }
+  };
   const handlePurchaseProperty = (
     propertyId: string,
     buyerId: string,
@@ -87,7 +139,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               type,
               amount,
               playerId,
-              roomId: code,
+              roomId: room?.id,
             },
           })
         );
@@ -199,7 +251,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             });
             fetchRoomData();
             break;
-          case "FREE_PARKING_UPDATE":
+          case "FREE_PARKING":
             toast.success(message.payload.notification, {
               duration: 4000,
               icon: "💰",
@@ -213,6 +265,15 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             toast.success(message.payload.notification || "Player Left", {
               duration: 4000,
               icon: "🧍",
+              position: "top-center",
+              className: `${josephinBold.className} text-xs text-center`,
+            });
+            fetchRoomData();
+            break;
+          case "BANKER_TRANSACTION":
+            toast.success(message.payload.notification, {
+              duration: 4000,
+              icon: "🏦",
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
@@ -334,6 +395,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         availableProperties={availableProperties}
         onPurchaseProperty={handlePurchaseProperty}
         onFreeParkingAction={handleFreeParkingAction}
+        onBankerTransaction={handleBankerTransaction}
       />
     </>
   );

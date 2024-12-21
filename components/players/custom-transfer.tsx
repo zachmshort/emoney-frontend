@@ -53,15 +53,6 @@ const CustomTransfer = ({
       <div
         className={`${sulpherBold.className} w-full flex items-center justify-between gap-x-2`}
       >
-        {/* <button
-          className={`border p-2 rounded-md border-black w-1/2 text-black`}
-          onClick={() => {
-            setAmount("");
-            setType("");
-          }}
-        >
-          Cancel
-        </button> */}
         <button
           className={`border p-2 rounded-md border-black text-white bg-black w-full`}
           onClick={handleTransfer}
