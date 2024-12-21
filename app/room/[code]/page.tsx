@@ -160,6 +160,12 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         switch (message.type) {
           case "PLAYER_JOINED":
             console.log("Player joined event received");
+            toast.success("Player Joined", {
+              duration: 4000,
+              icon: "🧍",
+              position: "top-center",
+              className: `${josephinBold.className} text-xs text-center`,
+            });
             fetchRoomData();
             break;
           case "PLAYER_LEFT":
@@ -218,7 +224,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   }, [code]);
 
   const sendMessage = (
-    type: "TRANSFER" | "JOIN" | "PROPERTY_BOUGHT",
+    type: "TRANSFER" | "JOIN" | "PURCHASE_PROPERTY",
     payload: WebSocketPayload
   ) => {
     if (ws.current?.readyState === WebSocket.OPEN) {
