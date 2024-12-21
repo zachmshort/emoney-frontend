@@ -1,6 +1,5 @@
 import { sulpherBold } from "@/components/ui/fonts";
 import FloatingInstallButton from "@/components/ui/install-app-button";
-import InstallButton from "@/components/ui/install-app-button";
 import Logo from "@/components/ui/logo";
 import Link from "next/link";
 
