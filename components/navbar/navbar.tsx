@@ -6,15 +6,10 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { AiOutlineMenu } from "react-icons/ai";
-import { josephinBold, josephinNormal, sulpherBold } from "../fonts";
+import { josephinNormal, sulpherBold } from "../fonts";
 import SelectColorProperties from "../players/select-color-properties";
 import { useState } from "react";
-interface PurchasePropertyPayload {
-  propertyId: string;
-  buyerId: string;
-  price: number;
-  roomId: string;
-}
+
 const Navbar = ({
   freeParking,
   player,
