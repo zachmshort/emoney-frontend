@@ -40,9 +40,9 @@ const PlayerCard = ({
     transactionType: string
   ) => void;
 }) => {
+  const [dialogState, setDialogState] = useState<"add" | "remove" | null>(null);
   const [amount, setAmount] = useState("");
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
+
   const handleBankerAction = (isAdd: boolean) => {
     onBankerTransaction(
       amount,
@@ -50,40 +50,9 @@ const PlayerCard = ({
       isAdd ? "BANKER_ADD" : "BANKER_REMOVE"
     );
     setAmount("");
-    setIsAddDialogOpen(false);
-    setIsRemoveDialogOpen(false);
+    setDialogState(null);
   };
-
   let color = player?.color || "#fff";
-
-  const BankerDialog = ({ isAdd }: { isAdd: boolean }) => (
-    <Dialog
-      open={isAdd ? isAddDialogOpen : isRemoveDialogOpen}
-      onOpenChange={isAdd ? setIsAddDialogOpen : setIsRemoveDialogOpen}
-    >
-      <DialogContent
-        className={`sm:max-w-[425px] ${josephinBold.className} text-black`}
-      >
-        <DialogHeader>
-          <DialogTitle>
-            {isAdd ? "Add Money to" : "Remove Money from"} {player.name}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="flex items-center gap-4">
-            <Input
-              type="number"
-              placeholder="Enter amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="col-span-3"
-            />
-            <Button onClick={() => handleBankerAction(isAdd)}>Confirm</Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
 
   return (
     <>
@@ -100,11 +69,10 @@ const PlayerCard = ({
               <>
                 <button
                   className="border rounded-md aspect-square px-4 border-red-300"
-                  onClick={() => setIsRemoveDialogOpen(true)}
+                  onClick={() => setDialogState("remove")}
                 >
                   -
                 </button>
-                <BankerDialog isAdd={false} />
               </>
             )}
             <div className="text-black">{player?.name}</div>
@@ -112,14 +80,44 @@ const PlayerCard = ({
               <>
                 <button
                   className="border rounded-md aspect-square px-4 border-green-300"
-                  onClick={() => setIsAddDialogOpen(true)}
+                  onClick={() => setDialogState("add")}
                 >
                   +
                 </button>
-                <BankerDialog isAdd={true} />
               </>
             )}
           </div>
+          <Dialog
+            open={dialogState !== null}
+            onOpenChange={(open) => !open && setDialogState(null)}
+          >
+            <DialogContent
+              className={`sm:max-w-[425px] ${josephinBold.className} text-black`}
+            >
+              <DialogHeader>
+                <DialogTitle>
+                  {dialogState === "add" ? "Add Money to" : "Remove Money from"}{" "}
+                  {player.name}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="flex items-center gap-4">
+                  <Input
+                    type="number"
+                    placeholder="Enter amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="col-span-3"
+                  />
+                  <Button
+                    onClick={() => handleBankerAction(dialogState === "add")}
+                  >
+                    Confirm
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           <PlayerDetails
             player={player}
             currentPlayer={currentPlayer}
