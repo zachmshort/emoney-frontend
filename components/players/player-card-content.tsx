@@ -1,5 +1,5 @@
 import { Player } from "@/types/schema";
-import { josephinBold } from "../fonts";
+import { josephinBold } from "../ui/fonts";
 import {
   Drawer,
   DrawerContent,
@@ -10,7 +10,7 @@ import SelectColorProperties from "./purchase-properties-bank";
 import { useState } from "react";
 import SendReqToggle from "./pay-req-toggle-switch";
 import PayRequestRent from "./pay.req.rent.component";
-import { calculateMonopolies } from "../helper-funcs";
+import { calculateMonopolies } from "../ui/helper-funcs";
 
 const PlayerDetails = ({
   player,

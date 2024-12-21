@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { sulpherBold } from "../fonts";
-import { getButtonText } from "../helper-funcs";
+import { sulpherBold } from "../ui/fonts";
+import { getButtonText } from "../ui/helper-funcs";
 // import { ReasonSelect } from "../reason-select";
 // import SendReqToggle from "./send-req-toggle";
 import { Player } from "@/types/schema";

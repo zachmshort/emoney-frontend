@@ -8,7 +8,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { sulpherBold } from "@/components/fonts";
+import { sulpherBold } from "@/components/ui/fonts";
 import { useState } from "react";
 
 const colors = [

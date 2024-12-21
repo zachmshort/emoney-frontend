@@ -1,5 +1,5 @@
 import { Player } from "@/types/schema";
-import { josephinBold, sulpherBold } from "../fonts";
+import { josephinBold, sulpherBold } from "../ui/fonts";
 import { PlayerDetails } from "./player-card-content";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";

@@ -1,9 +1,9 @@
 "use client";
 import { ColorSelect } from "../players/color-select-drawer";
-import { sulpherBold } from "@/components/fonts";
+import { sulpherBold } from "@/components/ui/fonts";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Logo from "../logo";
+import Logo from "../ui/logo";
 import { toast } from "sonner";
 import { playerStore } from "@/lib/utils/playerHelpers";
 

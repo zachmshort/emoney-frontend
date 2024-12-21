@@ -6,7 +6,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { AiOutlineMenu } from "react-icons/ai";
-import { josephinNormal, sulpherBold } from "../fonts";
+import { josephinNormal, sulpherBold } from "../ui/fonts";
 import SelectColorProperties from "../players/purchase-properties-bank";
 import { useState } from "react";
 import Link from "next/link";

@@ -2,7 +2,7 @@ import { Player, Property } from "@/types/schema";
 import { useState } from "react";
 import Image from "next/image";
 import { MdArrowBackIos } from "react-icons/md";
-import { josephinBold } from "../fonts";
+import { josephinBold } from "../ui/fonts";
 import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";
 

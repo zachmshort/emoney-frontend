@@ -2,8 +2,8 @@ import { Player, Property } from "@/types/schema";
 import { useState } from "react";
 import Image from "next/image";
 import { MdArrowBackIos } from "react-icons/md";
-import { josephinBold } from "../fonts";
-import { calculateRent } from "../helper-funcs";
+import { josephinBold } from "../ui/fonts";
+import { calculateRent } from "../ui/helper-funcs";
 import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";
 

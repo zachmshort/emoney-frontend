@@ -5,7 +5,7 @@ import RoomView from "@/components/room/room.client";
 import { getEndpoints, getWsUrl } from "@/lib/utils/wsHelpers";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import { toast } from "sonner";
-import { josephinBold } from "@/components/fonts";
+import { josephinBold } from "@/components/ui/fonts";
 
 export interface TransferPayload {
   amount: string;

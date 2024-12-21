@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { sulpherBold } from "../fonts";
+import { sulpherBold } from "../ui/fonts";
 type TransferType = "SEND" | "REQUEST";
 
 interface SendReqToggleProps {
