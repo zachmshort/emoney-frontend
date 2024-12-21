@@ -3,9 +3,10 @@ import { ColorSelect } from "../players/color-select-drawer";
 import { sulpherBold } from "@/components/ui/fonts";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Logo from "../ui/logo";
+import Logo from "../ui/cusotm-link";
 import { toast } from "sonner";
 import { playerStore } from "@/lib/utils/playerHelpers";
+import CustomLink from "../ui/cusotm-link";
 
 interface p {
   type?: string;
@@ -133,7 +134,7 @@ const RoomForm = ({
   return (
     <>
       <div className={`relative h-screen`}>
-        <Logo />
+        <CustomLink text="E-Money" href="/" className="top-2 left-2" />
         <div
           className={`flex flex-col items-center text-start justify-center h-full ${sulpherBold.className}`}
         >

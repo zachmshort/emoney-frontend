@@ -1,5 +1,6 @@
 "use client";
-import Logo from "@/components/ui/logo";
+import CustomLink from "@/components/ui/cusotm-link";
+import Logo from "@/components/ui/cusotm-link";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -57,7 +58,7 @@ function InstallPrompt() {
 
   if (isStandalone) {
     <div className="font flex justify-center items-center h-screen select-none">
-      <Logo />
+      <CustomLink text="E-Money" href="/" className="top-2 left-2" />
       <Link
         href="/"
         className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
@@ -69,7 +70,7 @@ function InstallPrompt() {
 
   return (
     <div className="font flex flex-col space-y-3 justify-center items-center h-screen select-none">
-      <Logo />
+      <CustomLink text="E-Money" href="/" className="top-2 left-2" />
       {deferredPrompt && (
         <button
           onClick={handleInstallClick}

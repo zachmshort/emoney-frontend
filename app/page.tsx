@@ -1,30 +1,22 @@
-import { sulpherBold } from "@/components/ui/fonts";
-import FloatingInstallButton from "@/components/ui/install-app-button";
-import Logo from "@/components/ui/logo";
-import Link from "next/link";
+import CustomLink from "@/components/ui/cusotm-link";
+import CustomButton from "@/components/ui/custom-button";
+import { josephinBold } from "@/components/ui/fonts";
 
 const MonopolyPage = () => {
   return (
     <>
       <div className={`relative h-screen`}>
-        <Logo />
+        <CustomLink href="/" text="E-Money" className="top-2 left-2" />
+        <CustomLink
+          href="/install"
+          text="Install App"
+          className="top-2 right-2"
+        />
         <div
-          className={`${sulpherBold.className} flex flex-col items-center justify-center gap-y-5 h-full `}
+          className={`${josephinBold.className} flex flex-col items-center justify-center gap-y-5 h-full `}
         >
-          <Link
-            href="/join"
-            prefetch={true}
-            className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
-          >
-            Join Room
-          </Link>
-          <Link
-            href={`/create`}
-            className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
-          >
-            Create Room
-          </Link>
-          <FloatingInstallButton className={``} />
+          <CustomButton href="/join" text="Join Room" />
+          <CustomButton href="/create" text="Create Room" />
         </div>
       </div>
     </>

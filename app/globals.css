@@ -76,10 +76,9 @@ body {
 .font {
 	text-decoration: none;
 	text-align: center;
-	text-transform: uppercase;
 	line-height: 1;
 	color: transparent;
-	-webkit-text-stroke: 1.5px yellow;
+	-webkit-text-stroke: 1px yellow;
 	text-shadow: 0 0 0 #fff;
 	transition: all 250ms;
 }
