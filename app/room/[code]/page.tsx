@@ -160,7 +160,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         switch (message.type) {
           case "PLAYER_JOINED":
             console.log("Player joined event received");
-            toast.success("Player Joined", {
+            toast.success(message.payload.notification || "Player Joined", {
               duration: 4000,
               icon: "🧍",
               position: "top-center",
@@ -170,6 +170,12 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
             break;
           case "PLAYER_LEFT":
             console.log("Player left event received");
+            toast.success(message.payload.notification || "Player Left", {
+              duration: 4000,
+              icon: "🧍",
+              position: "top-center",
+              className: `${josephinBold.className} text-xs text-center`,
+            });
             fetchRoomData();
             break;
           case "PURCHASE_PROPERTY":
