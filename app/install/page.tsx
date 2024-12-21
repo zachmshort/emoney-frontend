@@ -68,7 +68,7 @@ function InstallPrompt() {
   }
 
   return (
-    <div className="font flex justify-center items-center h-screen select-none">
+    <div className="font flex flex-col space-y-3 justify-center items-center h-screen select-none">
       <Logo />
       {deferredPrompt && (
         <button
@@ -78,12 +78,17 @@ function InstallPrompt() {
           Install
         </button>
       )}
-      <Link
-        href="/"
-        className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
-      >
-        Home
-      </Link>
+      {!isIOS && (
+        <>
+          <Link
+            href="/"
+            className={`border font rounded-lg p-4 border-yellow-200 w-64  text-black text-2xl`}
+          >
+            Home
+          </Link>
+        </>
+      )}
+
       {isIOS && (
         <p>
           To install this app on your iOS device, tap the share button
@@ -96,7 +101,6 @@ function InstallPrompt() {
             {" "}
             ➕{" "}
           </span>
-          .
         </p>
       )}
     </div>
