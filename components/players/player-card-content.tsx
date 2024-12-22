@@ -5,7 +5,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
-import SelectColorProperties from "./purchase-properties-bank";
 import { useState } from "react";
 import SendReqToggle from "./pay-req-toggle-switch";
 import PayRequestRent from "./pay.req.rent.component";
@@ -73,7 +72,7 @@ const PlayerDetails = ({
               onSellHouses={() => {}}
               onSellToBank={() => {}}
               player={player}
-              currentPlayer={currentPlayer}
+              // currentPlayer={currentPlayer}
             />
           </DrawerContent>
         </Drawer>

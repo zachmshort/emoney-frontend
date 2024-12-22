@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { josephinLight, josephinNormal } from "./fonts";
+import { josephinLight } from "./fonts";
 
 const FloatingInstallButton = ({ className }: { className?: string }) => {
   const [isStandalone, setIsStandalone] = useState(false);

@@ -1,4 +1,3 @@
-import { formatDistanceToNow } from "date-fns";
 import { EventHistory, Player, Property } from "@/types/schema";
 import {
   Drawer,
@@ -7,12 +6,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { AiOutlineMenu } from "react-icons/ai";
-import {
-  josephinBold,
-  josephinLight,
-  josephinNormal,
-  sulpherBold,
-} from "../ui/fonts";
+import { josephinBold, josephinNormal } from "../ui/fonts";
 import SelectColorProperties from "../players/purchase-properties-bank";
 import { useState } from "react";
 import Link from "next/link";
@@ -78,7 +72,7 @@ const Navbar = ({
                   </li>
                 </div>
                 <div
-                  className={`${sulpherBold.className} bg-black h-full  text-2xl overflow-y-auto`}
+                  className={`${josephinBold.className} bg-black h-full  text-2xl overflow-y-auto`}
                 >
                   <DrawerTitle className={`select-none text-black`}>
                     Properties for Sale

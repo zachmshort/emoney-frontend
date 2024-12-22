@@ -164,7 +164,7 @@ const playerTags: PlayerTag[] = [
 
   {
     title: "Luxury Living",
-    icon: "👑",
+    icon: "🏖️",
     color: "bg-indigo-500",
     description: "Collector of premium properties in prestigious locations",
     howToEarn: "Own at least 3 properties with one property worth $350 or more",

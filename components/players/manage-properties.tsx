@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 
 interface ManagePropertiesProps {
   player: Player;
-  currentPlayer: Player;
+  //   currentPlayer: Player;
   onBuildHouses: (propertyIds: string[], count: number) => void;
   onSellHouses: (propertyIds: string[], count: number) => void;
   onMortgage: (propertyId: string) => void;
@@ -18,7 +18,7 @@ interface ManagePropertiesProps {
 
 const ManageProperties = ({
   player,
-  currentPlayer,
+  //   currentPlayer,
   onBuildHouses,
   onSellHouses,
   onMortgage,
@@ -33,7 +33,6 @@ const ManageProperties = ({
   const [houseCount, setHouseCount] = useState(0);
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
-  // Empty state handling
   if (!player?.properties || player?.properties.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -44,7 +43,6 @@ const ManageProperties = ({
     );
   }
 
-  // Group properties by color
   const groupedProperties = Object.entries(
     player.properties.reduce((acc, property) => {
       if (!acc[property.group]) {
@@ -55,18 +53,16 @@ const ManageProperties = ({
     }, {} as Record<string, Property[]>)
   );
 
-  // Helper to check if house building is valid
   const canBuildHouses = (properties: Property[]) => {
     const minHouses = Math.min(...properties.map((p) => p.houses));
     const maxHouses = Math.max(...properties.map((p) => p.houses));
     return (
-      maxHouses - minHouses <= 1 && // Houses are relatively even
-      !properties.some((p) => p.isMortgaged) && // No mortgaged properties
+      maxHouses - minHouses <= 1 &&
+      !properties.some((p) => p.isMortgaged) &&
       maxHouses < 5
-    ); // No property has a hotel
+    );
   };
 
-  // Handle house building flow
   const handleBuildHouses = (properties: Property[]) => {
     const totalProperties = properties.length;
     const maxHousesToBuild =
@@ -82,67 +78,89 @@ const ManageProperties = ({
     setSelectedProperties([]);
   };
 
-  // Render the house building dialog
   const renderHouseBuildingDialog = (properties: Property[]) => {
-    const minHouses = Math.min(...properties.map((p) => p.houses));
+    // const minHouses = Math.min(...properties.map((p) => p.houses));
+    const totalHousesAvailable = properties.length * 4;
+    const currentHouses = properties.reduce((sum, p) => sum + p.houses, 0);
+    const maxHouses = totalHousesAvailable - currentHouses;
     const totalCost = houseCount * properties[0].houseCost;
     const unbalancedCount = houseCount % properties.length;
-
     return (
       <Dialog open={houseBuildingMode} onOpenChange={setHouseBuildingMode}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Build Houses</DialogTitle>
+            <DialogTitle className={`${josephinNormal.className} text-black`}>
+              Build Houses
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            {/* House count selector */}
             <div className="flex items-center justify-between">
               <button
                 onClick={() => setHouseCount(Math.max(0, houseCount - 1))}
-                className="p-2 rounded bg-gray-200"
+                className="h-12 w-12 rounded border-[1px] text-black"
               >
                 -
               </button>
-              <span>
-                {houseCount} houses (${totalCost})
+              <span className={`text-black ${josephinBold.className}`}>
+                {houseCount} house{houseCount !== 1 && "s"} (${totalCost})
               </span>
               <button
-                onClick={() => setHouseCount(houseCount + 1)}
-                className="px-3 py-2 rounded border-[1px] text-black"
+                onClick={() =>
+                  setHouseCount((prev) => Math.min(prev + 1, maxHouses))
+                }
+                className="h-12 w-12 rounded border-[1px] text-black"
               >
                 +
               </button>
             </div>
-
-            {unbalancedCount > 0 && (
-              <div
-                className={`${josephinNormal.className} space-y-2 text-black`}
-              >
-                <p>
-                  Select {unbalancedCount} properties to receive an extra house:
-                </p>
-                {properties.map((property) => (
-                  <div
-                    key={property.id}
-                    className={`p-2 border rounded ${
-                      selectedProperties.includes(property.id)
-                        ? "bg-blue-100"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      if (selectedProperties.includes(property.id)) {
-                        setSelectedProperties((prev) =>
-                          prev.filter((id) => id !== property.id)
-                        );
-                      } else if (selectedProperties.length < unbalancedCount) {
-                        setSelectedProperties((prev) => [...prev, property.id]);
-                      }
-                    }}
-                  >
-                    {property.name} (Currently {property.houses} houses)
-                  </div>
-                ))}
-              </div>
+            {unbalancedCount > 0 ? (
+              <>
+                <div
+                  className={`${josephinNormal.className} space-y-2 text-black h-44`}
+                >
+                  <p>
+                    Select {unbalancedCount} properties to receive an extra
+                    house:
+                  </p>
+                  {properties.map((property) => (
+                    <div
+                      key={property.id}
+                      className={`p-2 border rounded ${
+                        selectedProperties.includes(property.id)
+                          ? "bg-blue-100"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        if (selectedProperties.includes(property.id)) {
+                          setSelectedProperties((prev) =>
+                            prev.filter((id) => id !== property.id)
+                          );
+                        } else if (
+                          selectedProperties.length < unbalancedCount
+                        ) {
+                          setSelectedProperties((prev) => [
+                            ...prev,
+                            property.id,
+                          ]);
+                        }
+                      }}
+                    >
+                      {property.name} (Currently {property.houses} houses)
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className={`${
+                    houseCount === 0 ? "text-white" : "text-black"
+                  } select-none ${josephinBold.className} text-center h-44`}
+                >
+                  {houseCount / properties.length} House
+                  {houseCount / properties.length > 1 && "s"} Each
+                </div>
+              </>
             )}
 
             <button
@@ -250,14 +268,14 @@ const ManageProperties = ({
       {currentView === "properties" ? (
         <>
           <h1
-            className="flex items-center justify-start"
+            className="flex items-center justify-start text-white"
             onClick={() => {
               setCurrentView("colors");
               setSelectedGroup(null);
             }}
           >
-            <MdArrowBackIos />
-            <span className="ml-2">Back</span>
+            <MdArrowBackIos className={`text-white pb-1`} />
+            <span className="ml-2 text-white -1">Back</span>
           </h1>
           <div className="overflow-x-auto flex gap-4">
             {groupedProperties
@@ -280,7 +298,7 @@ const ManageProperties = ({
         </>
       ) : (
         <>
-          <h2>Select a Color Group</h2>
+          <h2 className={`text-white`}>Select a Color Group</h2>
           <div className="grid grid-cols-4 sm:grid-cols-10 gap-2">
             {groupedProperties.map(([group, props]) => (
               <button
