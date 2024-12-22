@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { josephinNormal } from "./fonts";
+import { josephinLight, josephinNormal } from "./fonts";
 
 const FloatingInstallButton = ({ className }: { className?: string }) => {
   const [isStandalone, setIsStandalone] = useState(false);
@@ -17,7 +17,7 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
   return (
     <Link
       href="/install"
-      className={`font ${josephinNormal.className} ${className}`}
+      className={`font text-xl ${josephinLight.className} ${className}`}
     >
       Install App
     </Link>
