@@ -101,7 +101,7 @@ const Navbar = ({
                   <li>Free Parking</li>
                   <li>${freeParking}</li>
                 </div>
-                <div className={`absolute bottom-2 w-full`}>
+                <div className={`absolute bottom-5 w-full`}>
                   <div className={`flex flex-col items-start w-full `}>
                     <div className={` w-full text-lg text-red-300`}>
                       Danger Zone
@@ -114,14 +114,7 @@ const Navbar = ({
                         className={` w-full text-lg border border-red-300 p-2 rounded-sm`}
                       >
                         Leave Game
-                      </Link>
-                      <Link
-                        href={`/`}
-                        className={`w-full text-lg border rounded-sm p-2 border-red-300`}
-                        onClick={() => playerStore.clearAllPlayerData()}
-                      >
-                        Delete My Players in All Games
-                      </Link>
+                      </Link>{" "}
                       <Link
                         href={`/`}
                         className={`  p-2 border rounded-sm w-full text-lg border-red-300`}
@@ -130,6 +123,13 @@ const Navbar = ({
                         }}
                       >
                         Delete My Player this Game
+                      </Link>
+                      <Link
+                        href={`/`}
+                        className={`w-full text-lg border rounded-sm p-2 border-red-300`}
+                        onClick={() => playerStore.clearAllPlayerData()}
+                      >
+                        Delete My Players in All Games
                       </Link>
                     </div>
                   </div>

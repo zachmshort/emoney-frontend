@@ -26,7 +26,7 @@ const RoomForm = ({
   const [showDetails, setShowDetails] = useState(false);
   const router = useRouter();
   const [selectedColor, setSelectedColor] = useState<string>("");
-
+  const [roomName, setRoomName] = useState("");
   const checkExistingPlayer = async () => {
     try {
       const existingPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -98,10 +98,11 @@ const RoomForm = ({
     try {
       const payload = {
         name: name,
+        roomName: roomName,
         code: code,
         color: selectedColor,
       };
-
+      console.log(payload);
       const response = await fetch("https://emoney.up.railway.app/room", {
         method: "POST",
         headers: {
@@ -142,9 +143,19 @@ const RoomForm = ({
         >
           {!showDetails ? (
             <>
+              {type === "CREATE" && (
+                <input
+                  placeholder={`New Room Name`}
+                  className={`${josephinBold.className} border p-4 bg-inherit rounded-lg text-2xl w-64`}
+                  value={roomName}
+                  onChange={(e) => {
+                    setRoomName(e.target.value);
+                  }}
+                />
+              )}
               <input
                 placeholder={placeholder}
-                className={`${josephinBold.className} border p-4 bg-inherit rounded-lg text-2xl w-64`}
+                className={`${josephinBold.className} border p-4 bg-inherit rounded-lg text-2xl w-64 mt-4`}
                 value={code}
                 onChange={(e) => {
                   setCode(e.target.value);

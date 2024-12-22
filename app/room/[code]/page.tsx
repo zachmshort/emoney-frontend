@@ -287,7 +287,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               className: `${josephinBold.className} text-xs text-center`,
             });
             fetchRoomData();
-            fetchAvailableProperties(room.roomCode);
+            fetchAvailableProperties(code);
             break;
           case "TRANSFER":
             toast.success(message.payload.notification, {

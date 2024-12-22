@@ -7,7 +7,7 @@ const CreateRoom = () => {
     <>
       <RoomForm
         type="CREATE"
-        placeholder="Create Room Code"
+        placeholder="New Room Code"
         buttonText2="Create Room"
       />
     </>

@@ -1,5 +1,4 @@
 import { Player } from "@/types/schema";
-import { josephinBold } from "../ui/fonts";
 import {
   Drawer,
   DrawerContent,
@@ -11,14 +10,18 @@ import { useState } from "react";
 import SendReqToggle from "./pay-req-toggle-switch";
 import PayRequestRent from "./pay.req.rent.component";
 import { calculateMonopolies } from "../ui/helper-funcs";
+import { josephinBold, josephinNormal } from "../ui/fonts";
+import PlayerTags from "./player-tags";
 
 const PlayerDetails = ({
   player,
   currentPlayer,
+  allPlayers,
   onTransfer,
   roomId,
 }: {
   player: Player;
+  allPlayers: Player[];
   currentPlayer: Player;
   roomId: string;
   onTransfer: (
@@ -44,14 +47,16 @@ const PlayerDetails = ({
   return (
     <>
       <div
-        className={`text-black flex flex-col items-evenly gap-y-2 justify-between ${josephinBold.className} text-2xl`}
+        className={`px-4 text-black flex flex-col items-evenly gap-y-2 justify-between ${josephinNormal.className} text-2xl`}
       >
-        <div className={`flex items-center justify-center mt-4`}>
-          <div>${player?.balance || 0}</div>
+        <div
+          className={`${josephinBold.className} absolute top-[6.5rem] right-1/2 transform translate-x-1/2`}
+        >
+          ${player?.balance || 0}
         </div>
         <Drawer>
           <DrawerTrigger asChild>
-            <div className={`flex items-center justify-between w-full`}>
+            <div className={`flex items-center justify-between w-full mt-14`}>
               <div>{currentPlayer?.id === player?.id && "My"} Properties</div>
               <div>{player?.properties?.length || 0}</div>
             </div>
@@ -67,11 +72,15 @@ const PlayerDetails = ({
           <div>{currentPlayer?.id === player?.id && "My"} Monopolies</div>
           <div>{monopoliesCount}</div>
         </div>
+        <PlayerTags
+          player={player}
+          allPlayers={allPlayers.filter((p) => p?.id !== player?.id)}
+        />
         {currentPlayer?.id !== player?.id && (
           <Drawer>
             <DrawerTrigger asChild>
               <div
-                className={`shadow-xl w-[calc(100%-1rem)] text-center border rounded-full absolute bottom-4 p-4`}
+                className={`shadow-xl w-[calc(100%-4rem)] text-center border rounded-full absolute bottom-6 p-4 right-1/2 transform translate-x-1/2`}
               >
                 Pay or Request
               </div>

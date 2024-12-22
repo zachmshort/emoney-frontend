@@ -3,6 +3,7 @@
 import PlayerCard from "@/components/players/player-card";
 import { Player, Property, Room } from "@/types/schema";
 import Navbar from "../navbar/navbar";
+import { josephinBold } from "../ui/fonts";
 
 const RoomView = ({
   currentPlayer,
@@ -36,9 +37,15 @@ const RoomView = ({
     price: number
   ) => void;
 }) => {
+  const allPlayers = [...otherPlayers, currentPlayer];
   return (
     <div className="min-h-screen w-full relative flex flex-col">
       <div className="sticky top-0 z-50 bg-white">
+        <div
+          className={`${josephinBold.className} select-none text-white absolute top-5 text-2xl right-1/2 transform translate-x-1/2`}
+        >
+          {room?.name || room?.roomCode}
+        </div>
         <Navbar
           freeParking={room?.freeParking || 0}
           player={currentPlayer}
@@ -58,6 +65,7 @@ const RoomView = ({
                 currentPlayer={currentPlayer}
                 onTransfer={onTransfer}
                 roomId={room?.id}
+                allPlayers={allPlayers}
                 onBankerTransaction={onBankerTransaction}
               />
             </div>
@@ -69,6 +77,7 @@ const RoomView = ({
                   isBanker={currentPlayer?.isBanker}
                   currentPlayer={currentPlayer}
                   onTransfer={onTransfer}
+                  allPlayers={allPlayers}
                   roomId={room?.id}
                   onBankerTransaction={onBankerTransaction}
                 />
