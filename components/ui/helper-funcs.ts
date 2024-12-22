@@ -1,4 +1,10 @@
 import { Property } from "@/types/schema";
+import {
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInWeeks,
+} from "date-fns";
 
 const getButtonText = (type: string) => {
   switch (type) {
@@ -56,9 +62,26 @@ const calculateMonopolies = (playerProperties: Property[] = []): number => {
 
   return monopolyGroups.size;
 };
+const formatTimeAgo = (date: Date) => {
+  const now = new Date();
+  const minutesAgo = differenceInMinutes(now, date);
+  const hoursAgo = differenceInHours(now, date);
+  const daysAgo = differenceInDays(now, date);
+  const weeksAgo = differenceInWeeks(now, date);
 
+  if (weeksAgo >= 1) {
+    return "over 1 week ago";
+  }
+  if (daysAgo >= 1) {
+    return `${daysAgo} day${daysAgo === 1 ? "" : "s"} ago`;
+  }
+  if (hoursAgo >= 1) {
+    return `${hoursAgo} hr${hoursAgo === 1 ? "" : "s"} ago`;
+  }
+  return `${minutesAgo} min ago`;
+};
 const getGroupedMonopolies = (playerProperties: Property[] = []) => {
-  if (!playerProperties) return []; // Guard against null/undefined
+  if (!playerProperties) return [];
 
   const groupedObj = playerProperties.reduce((acc, property) => {
     if (doesPlayerOwnFullSet(property, playerProperties)) {
@@ -119,4 +142,5 @@ export {
   doesPlayerOwnFullSet,
   calculateMonopolies,
   getGroupedMonopolies,
+  formatTimeAgo,
 };

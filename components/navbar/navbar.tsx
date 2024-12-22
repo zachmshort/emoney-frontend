@@ -7,7 +7,12 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { AiOutlineMenu } from "react-icons/ai";
-import { josephinBold, josephinNormal, sulpherBold } from "../ui/fonts";
+import {
+  josephinBold,
+  josephinLight,
+  josephinNormal,
+  sulpherBold,
+} from "../ui/fonts";
 import SelectColorProperties from "../players/purchase-properties-bank";
 import { useState } from "react";
 import Link from "next/link";
@@ -15,6 +20,7 @@ import FreeParkingDialog from "./free-parking";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import { IoCopyOutline } from "react-icons/io5";
 import { toast } from "sonner";
+import { formatTimeAgo } from "../ui/helper-funcs";
 
 const Navbar = ({
   freeParking,
@@ -66,7 +72,7 @@ const Navbar = ({
                   }}
                 >
                   <li
-                    className={`border w-full text-center py-2 rounded shadow-xl`}
+                    className={`border w-full text-center text-sm py-2 rounded shadow-xl`}
                   >
                     Return to Main Menu
                   </li>
@@ -104,20 +110,20 @@ const Navbar = ({
                   }}
                 >
                   <li
-                    className={`border w-full text-center py-2 rounded shadow-xl`}
+                    className={`border w-full text-center py-2 rounded shadow-xl text-sm`}
                   >
                     Return to Main Menu
                   </li>
                 </div>
-                <h3>Events</h3>
+                <h2 className={`pt-5 pb-2 ${josephinBold.className}`}>
+                  Event History
+                </h2>
                 {eventHistory.map((event: EventHistory, index: number) => (
-                  <div className={``} key={index}>
-                    <div className="flex justify-between">
-                      <span>{event.event}</span>
-                      <span className="text-gray-500 text-sm">
-                        {formatDistanceToNow(new Date(event.timestamp), {
-                          addSuffix: true,
-                        })}
+                  <div className={`${josephinNormal.className}`} key={index}>
+                    <div className="flex justify-between items-start">
+                      <span className={`text-sm`}>{event.event}</span>
+                      <span className={` text-gray-500 text-xs w-16 pt-[2px]`}>
+                        {formatTimeAgo(new Date(event.timestamp))}
                       </span>
                     </div>
                   </div>
