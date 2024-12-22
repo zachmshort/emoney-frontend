@@ -1,7 +1,7 @@
 "use client";
 
 import PlayerCard from "@/components/players/player-card";
-import { Player, Property, Room } from "@/types/schema";
+import { EventHistory, Player, Property, Room } from "@/types/schema";
 import Navbar from "../navbar/navbar";
 import { josephinBold } from "../ui/fonts";
 
@@ -11,11 +11,13 @@ const RoomView = ({
   room,
   availableProperties,
   onTransfer,
+  eventHistory,
   onPurchaseProperty,
   onFreeParkingAction,
   onBankerTransaction,
 }: {
   otherPlayers: Player[];
+  eventHistory: EventHistory[];
   currentPlayer: Player;
   room: Room;
   onTransfer: (
@@ -49,9 +51,11 @@ const RoomView = ({
         <Navbar
           freeParking={room?.freeParking || 0}
           player={currentPlayer}
+          eventHistory={eventHistory}
           availableProperties={availableProperties}
           onPurchaseProperty={onPurchaseProperty}
           onFreeParkingAction={onFreeParkingAction}
+          roomCode={room?.roomCode}
           roomId={room?.id}
         />
       </div>

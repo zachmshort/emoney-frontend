@@ -47,3 +47,14 @@ export interface Transfer {
   timestamp: Date;
   status: string; // "pending" | "completed" | "rejected"
 }
+
+export interface EventHistory {
+  id: string;
+  roomId: string;
+  fromPlayerId: string | null; // null if from bank
+  toPlayerId: string | null; // null if to bank
+  amount: number | null;
+  event: string;
+  type: string; // "transfer" | "rent" | "tax" | "chance" etc.
+  timestamp: Date;
+}

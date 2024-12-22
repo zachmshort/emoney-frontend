@@ -1,5 +1,5 @@
 "use client";
-import { Player, Room } from "@/types/schema";
+import { EventHistory, Player, Room } from "@/types/schema";
 import { use, useEffect, useRef, useState } from "react";
 import RoomView from "@/components/room/room.client";
 import { getEndpoints, getWsUrl } from "@/lib/utils/wsHelpers";
@@ -55,6 +55,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const [player, setPlayer] = useState<Player | null>(null);
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
+  const [eventHistory, setEventHistory] = useState<EventHistory[]>([]);
   const ws = useRef<WebSocket | null>(null);
   const handleBankerTransaction = (
     amount: string,
@@ -203,6 +204,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       setPlayer(currentPlayer || null);
       setOtherPlayers(remainingPlayers);
       setRoom(roomData.room);
+      setEventHistory(roomData.eventHistory);
     } catch (error) {
       console.error("Failed to fetch room data:", error);
       toast.error("Failed to fetch room data");
@@ -396,6 +398,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         onPurchaseProperty={handlePurchaseProperty}
         onFreeParkingAction={handleFreeParkingAction}
         onBankerTransaction={handleBankerTransaction}
+        eventHistory={eventHistory}
       />
     </>
   );

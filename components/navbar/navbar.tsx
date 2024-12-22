@@ -1,4 +1,5 @@
-import { Player, Property } from "@/types/schema";
+import { formatDistanceToNow } from "date-fns";
+import { EventHistory, Player, Property } from "@/types/schema";
 import {
   Drawer,
   DrawerContent,
@@ -6,22 +7,28 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { AiOutlineMenu } from "react-icons/ai";
-import { josephinNormal, sulpherBold } from "../ui/fonts";
+import { josephinBold, josephinNormal, sulpherBold } from "../ui/fonts";
 import SelectColorProperties from "../players/purchase-properties-bank";
 import { useState } from "react";
 import Link from "next/link";
 import FreeParkingDialog from "./free-parking";
 import { playerStore } from "@/lib/utils/playerHelpers";
+import { IoCopyOutline } from "react-icons/io5";
+import { toast } from "sonner";
 
 const Navbar = ({
   freeParking,
   player,
+  eventHistory,
   availableProperties,
   onFreeParkingAction,
   roomId,
+  roomCode,
   onPurchaseProperty,
 }: {
   freeParking: number;
+  roomCode: string;
+  eventHistory: EventHistory[];
   roomId: string;
   player: Player;
   onPurchaseProperty: (
@@ -34,6 +41,7 @@ const Navbar = ({
 }) => {
   const [showProperties, setShowProperties] = useState(false);
   const [showFreeParking, setShowFreeParking] = useState(false);
+  const [showEvents, setShowEvents] = useState(false);
 
   return (
     <>
@@ -85,6 +93,36 @@ const Navbar = ({
                   onClick={() => setShowFreeParking(false)}
                 />
               </>
+            ) : showEvents ? (
+              <>
+                <div
+                  className={`flex justify-between`}
+                  onClick={() => {
+                    setShowProperties(false);
+                    setShowFreeParking(false);
+                    setShowEvents(false);
+                  }}
+                >
+                  <li
+                    className={`border w-full text-center py-2 rounded shadow-xl`}
+                  >
+                    Return to Main Menu
+                  </li>
+                </div>
+                <h3>Events</h3>
+                {eventHistory.map((event: EventHistory, index: number) => (
+                  <div className={``} key={index}>
+                    <div className="flex justify-between">
+                      <span>{event.event}</span>
+                      <span className="text-gray-500 text-sm">
+                        {formatDistanceToNow(new Date(event.timestamp), {
+                          addSuffix: true,
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </>
             ) : (
               <>
                 <div
@@ -100,6 +138,36 @@ const Navbar = ({
                 >
                   <li>Free Parking</li>
                   <li>${freeParking}</li>
+                </div>
+                <div
+                  className={`flex justify-between mt-4`}
+                  onClick={() => setShowEvents(true)}
+                >
+                  <li>Event History</li>
+                  <li>{eventHistory.length}</li>
+                </div>
+                <div
+                  className={`flex justify-between mt-4 cursor-pointer hover:opacity-80 transition-opacity`}
+                  onClick={() => {
+                    navigator.clipboard
+                      .writeText(roomCode)
+                      .then(() => {
+                        toast.success("Room code copied to clipboard!", {
+                          duration: 2000,
+                          icon: "📋",
+                          className: `${josephinBold.className}`,
+                        });
+                      })
+                      .catch(() => {
+                        toast.error("Failed to copy room code");
+                      });
+                  }}
+                >
+                  <li>Room Code</li>
+                  <li className={`flex items-center`}>
+                    <IoCopyOutline className={`mr-1`} />
+                    {roomCode}
+                  </li>
                 </div>
                 <div className={`absolute bottom-5 w-full`}>
                   <div className={`flex flex-col items-start w-full `}>

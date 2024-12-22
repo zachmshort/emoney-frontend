@@ -12,6 +12,7 @@ import PayRequestRent from "./pay.req.rent.component";
 import { calculateMonopolies } from "../ui/helper-funcs";
 import { josephinBold, josephinNormal } from "../ui/fonts";
 import PlayerTags from "./player-tags";
+import ManageProperties from "./manage-properties";
 
 const PlayerDetails = ({
   player,
@@ -65,7 +66,15 @@ const PlayerDetails = ({
             <DrawerTitle className={`text-black`}>
               {player?.name}&apos; Properties
             </DrawerTitle>
-            <SelectColorProperties properties={player?.properties} />
+            <ManageProperties
+              onBuildHouses={() => {}}
+              onMortgage={() => {}}
+              onUnmortgage={() => {}}
+              onSellHouses={() => {}}
+              onSellToBank={() => {}}
+              player={player}
+              currentPlayer={currentPlayer}
+            />
           </DrawerContent>
         </Drawer>
         <div className={`flex items-center justify-between`}>
