@@ -1,6 +1,5 @@
 "use client";
 import CustomLink from "@/components/ui/cusotm-link";
-import Logo from "@/components/ui/cusotm-link";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
