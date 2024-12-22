@@ -5,7 +5,11 @@ import RoomForm from "@/components/room/join-create-room-steps";
 const CreateRoom = () => {
   return (
     <>
-      <RoomForm type="CREATE" buttonText2="Create" />
+      <RoomForm
+        type="CREATE"
+        placeholder="Create Room Code"
+        buttonText2="Create Room"
+      />
     </>
   );
 };

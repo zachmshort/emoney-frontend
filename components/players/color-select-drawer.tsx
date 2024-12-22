@@ -38,7 +38,7 @@ export function ColorSelect({ onColorSelect }: ColorSelectProps) {
     <Drawer>
       <DrawerTrigger asChild>
         <button
-          className={`w-64 p-4 border rounded-lg text-2xl text-start mt-4`}
+          className={`w-64 p-4 border rounded-lg text-2xl text-start mt-4 `}
         >
           {!selectedColor ? (
             <div className={`text-slate-400`}>Select Color</div>

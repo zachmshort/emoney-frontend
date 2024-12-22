@@ -1,23 +1,25 @@
 "use client";
 import { ColorSelect } from "../players/color-select-drawer";
-import { sulpherBold } from "@/components/ui/fonts";
+import { josephinBold } from "@/components/ui/fonts";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Logo from "../ui/cusotm-link";
 import { toast } from "sonner";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import CustomLink from "../ui/cusotm-link";
+import ButtonAction from "../ui/button-action";
 
 interface p {
   type?: string;
   buttonText1?: string;
   buttonText2?: string;
+  placeholder?: string;
 }
 
 const RoomForm = ({
   type = "JOIN",
   buttonText1 = "Next",
   buttonText2 = "Join",
+  placeholder = "Enter Room Code",
 }: p) => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -136,20 +138,19 @@ const RoomForm = ({
       <div className={`relative h-screen`}>
         <CustomLink text="E-Money" href="/" className="top-2 left-2" />
         <div
-          className={`flex flex-col items-center text-start justify-center h-full ${sulpherBold.className}`}
+          className={`flex flex-col items-center text-start justify-center h-full ${josephinBold.className}`}
         >
           {!showDetails ? (
             <>
               <input
-                placeholder="Enter Code"
-                className={`border p-4 bg-inherit rounded-lg text-2xl w-64`}
+                placeholder={placeholder}
+                className={`${josephinBold.className} border p-4 bg-inherit rounded-lg text-2xl w-64`}
                 value={code}
                 onChange={(e) => {
                   setCode(e.target.value);
                 }}
               />
-              <button
-                className={`border font rounded-lg p-4 border-yellow-200 w-64 mt-4 text-black text-2xl`}
+              <ButtonAction
                 onClick={() => {
                   if (!code) {
                     toast.error("Please enter a code");
@@ -157,15 +158,15 @@ const RoomForm = ({
                     checkExistingPlayer();
                   }
                 }}
-              >
-                {buttonText1}
-              </button>
+                text={buttonText1}
+                className={`mt-4`}
+              />
             </>
           ) : (
             <>
               <input
-                placeholder="Name"
-                className={`border p-4 bg-inherit rounded-lg text-2xl w-64 ring-none`}
+                placeholder="Your Name"
+                className={` border p-4 bg-inherit rounded-lg text-2xl w-64 ring-none`}
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
@@ -174,12 +175,11 @@ const RoomForm = ({
               <ColorSelect
                 onColorSelect={(color: string) => setSelectedColor(color)}
               />
-              <button
+              <ButtonAction
                 onClick={enterRoom}
-                className={`mt-4 text-2xl w-64 p-4 border rounded-lg`}
-              >
-                {buttonText2}
-              </button>
+                text={buttonText2}
+                className={`mt-4`}
+              />
             </>
           )}
         </div>

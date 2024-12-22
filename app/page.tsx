@@ -1,5 +1,5 @@
 import CustomLink from "@/components/ui/cusotm-link";
-import CustomButton from "@/components/ui/custom-button";
+import CustomButton from "@/components/ui/button-link";
 import { josephinBold } from "@/components/ui/fonts";
 
 const MonopolyPage = () => {
@@ -13,7 +13,7 @@ const MonopolyPage = () => {
           className="top-2 right-2"
         />
         <div
-          className={`${josephinBold.className} flex flex-col items-center justify-center gap-y-5 h-full `}
+          className={`${josephinBold.className} flex flex-col items-center justify-center gap-y-4 h-full `}
         >
           <CustomButton href="/join" text="Join Room" />
           <CustomButton href="/create" text="Create Room" />
