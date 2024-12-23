@@ -1,5 +1,4 @@
 "use client";
-
 import PlayerCard from "@/components/players/player-card";
 import { EventHistory, Player, Property, Room } from "@/types/schema";
 import Navbar from "../navbar/navbar";
@@ -30,7 +29,7 @@ const RoomView = ({
       roomId: string;
     }
   ) => void;
-  onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
+  onFreeParkingAction: (amount: number, type: string, playerId: string) => void;
   onBankerTransaction: (amount: string, type: string, playerId: string) => void;
   availableProperties: Property[];
   onPurchaseProperty: (

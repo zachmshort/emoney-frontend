@@ -1,3 +1,4 @@
+"use client";
 import { Player } from "@/types/schema";
 import { josephinBold } from "../ui/fonts";
 import { PlayerDetails } from "./player-card-content";

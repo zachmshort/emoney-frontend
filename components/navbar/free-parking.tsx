@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";
 
 interface FreeParkingDialogProps {
-  onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
+  onFreeParkingAction: (amount: number, type: string, playerId: string) => void;
   player: Player;
   freeParking: number;
   onClick: () => void;
@@ -31,7 +31,7 @@ const FreeParkingDialog = ({
       return;
     }
 
-    onFreeParkingAction(amount, type, player.id);
+    onFreeParkingAction(parseInt(amount), type, player.id);
     setAmount("");
   };
 

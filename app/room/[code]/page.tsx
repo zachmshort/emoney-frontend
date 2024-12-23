@@ -1,12 +1,5 @@
 "use client";
-import {
-  EventHistory,
-  Player,
-  PurchasePropertyPayload,
-  Room,
-  TransferPayload,
-  WebSocketPayload,
-} from "@/types/schema";
+import { EventHistory, Player, Room } from "@/types/schema";
 import { use, useEffect, useRef, useState } from "react";
 import RoomView from "@/components/room/room.client";
 import { getWsUrl } from "@/lib/utils/wsHelpers";
@@ -14,6 +7,11 @@ import { playerStore } from "@/lib/utils/playerHelpers";
 import { toast } from "sonner";
 import { josephinBold } from "@/components/ui/fonts";
 import { fetchRoomData } from "@/lib/utils/roomHelpers";
+import {
+  PurchasePropertyPayload,
+  TransferPayload,
+  WebSocketPayload,
+} from "@/types/payloads";
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   // variables set by websocket passed down to children that change as game progresses
@@ -95,7 +93,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     }
   };
   const handleFreeParkingAction = (
-    amount: string,
+    amount: number,
     type: "ADD" | "REMOVE",
     playerId: string
   ) => {

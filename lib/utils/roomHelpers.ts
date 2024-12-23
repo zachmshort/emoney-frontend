@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import { getEndpoints } from "./wsHelpers";
 import { Player } from "@/types/schema";
 
-export const fetchRoomData = async (
+const fetchRoomData = async (
   code: string,
   playerStore: any,
   setPlayer: Function,
@@ -61,3 +61,30 @@ export const fetchRoomData = async (
     toast.error("Failed to fetch room data");
   }
 };
+const fetchAvailableProperties = async (
+  roomCode: string,
+  setAvailableProperties: Function
+) => {
+  try {
+    const response = await fetch(
+      `https://emoney.up.railway.app/property/available/${roomCode}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch available properties");
+    }
+
+    const data = await response.json();
+    setAvailableProperties(data.availableProperties);
+  } catch (error) {
+    console.error("Error fetching available properties:", error);
+    toast.error("Unable to retrieve available properties");
+  }
+};
+export { fetchAvailableProperties, fetchRoomData };
