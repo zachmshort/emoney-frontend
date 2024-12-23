@@ -163,8 +163,10 @@ const RoomForm = ({
               />
               <ButtonAction
                 onClick={() => {
-                  if (!code) {
-                    toast.error("Please enter a code");
+                  if (!code || !roomName) {
+                    toast.error("Please type in a room name and code", {
+                      className: `${josephinBold.className}`,
+                    });
                   } else {
                     checkExistingPlayer();
                   }
