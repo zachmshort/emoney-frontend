@@ -10,12 +10,14 @@ interface SelectColorPropertiesProps {
   properties?: Property[];
   player?: Player;
   onPurchase?: (propertyId: string, buyerId: string, price: number) => void;
+  canPurchase?: boolean;
 }
 
 const SelectColorProperties = ({
   properties = [],
   player,
   onPurchase,
+  canPurchase = false,
 }: SelectColorPropertiesProps) => {
   const [currentView, setCurrentView] = useState<
     "colors" | "properties" | "confirmation"
@@ -37,7 +39,7 @@ const SelectColorProperties = ({
   }
 
   const handlePropertySelect = (property: Property) => {
-    if (player.balance < property.price) {
+    if (player.balance < property.price && canPurchase) {
       toast.error(
         `Insufficient funds to purchase ${property.name} ($${property.price})`
       );

@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 
 interface ManagePropertiesProps {
   player: Player;
-  //   currentPlayer: Player;
+  currentPlayer: Player;
   onBuildHouses: (propertyIds: string[], count: number) => void;
   onSellHouses: (propertyIds: string[], count: number) => void;
   onMortgage: (propertyId: string) => void;
@@ -18,7 +18,7 @@ interface ManagePropertiesProps {
 
 const ManageProperties = ({
   player,
-  //   currentPlayer,
+  currentPlayer,
   onBuildHouses,
   onSellHouses,
   onMortgage,
@@ -54,12 +54,32 @@ const ManageProperties = ({
   );
 
   const canBuildHouses = (properties: Property[]) => {
+    const allPropertiesInGroup = groupedProperties.find(
+      ([group]) => group === properties[0].group
+    );
+
+    // if player doesnt have all the cards in set or if its railroad/utility cannot buy houses
+    if (
+      !allPropertiesInGroup ||
+      allPropertiesInGroup.length !== properties.length ||
+      allPropertiesInGroup[0] === "railroad" ||
+      allPropertiesInGroup[0] === "utility"
+    ) {
+      return false;
+    }
+
+    // if the user has any hotels at all they cant buy houses because you have to evenly distribute houses. so you cant have a hotel on one property without atleast 4 houses on the rest
+    if (properties.some((p) => p.hotel > 0)) {
+      return false;
+    }
+
     const minHouses = Math.min(...properties.map((p) => p.houses));
     const maxHouses = Math.max(...properties.map((p) => p.houses));
+
     return (
       maxHouses - minHouses <= 1 &&
       !properties.some((p) => p.isMortgaged) &&
-      maxHouses < 5
+      maxHouses < 5 // max houses is  4
     );
   };
 
@@ -201,64 +221,69 @@ const ManageProperties = ({
           className="rounded"
           priority
         />
+        {player?.id === currentPlayer?.id && (
+          <>
+            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2">
+              <div className="flex flex-col gap-1">
+                {property.isMortgaged && (
+                  <span className="text-red-500">Mortgaged</span>
+                )}
+                {property.houses > 0 && (
+                  <span className="text-green-500">
+                    {property.houses} House{property.houses !== 1 && "s"}
+                  </span>
+                )}
+                {property.hotel > 0 && (
+                  <span className="text-blue-500">Hotel</span>
+                )}
+              </div>
+            </div>
 
-        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2">
-          <div className="flex flex-col gap-1">
-            {property.isMortgaged && (
-              <span className="text-red-500">Mortgaged</span>
-            )}
-            {property.houses > 0 && (
-              <span className="text-green-500">
-                {property.houses} House{property.houses !== 1 && "s"}
-              </span>
-            )}
-            {property.hotel > 0 && <span className="text-blue-500">Hotel</span>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-2 py-4">
-          {canBuild && (
-            <button
-              className="bg-green-600 text-white p-2 rounded text-sm"
-              onClick={() => handleBuildHouses(groupProperties)}
-            >
-              Build Houses
-            </button>
-          )}
-          {property.houses > 0 && (
-            <button
-              className="bg-red-600 text-white p-2 rounded text-sm"
-              onClick={() => onSellHouses([property.id], 1)}
-            >
-              Sell House
-            </button>
-          )}
-          {!property.isMortgaged && property.houses === 0 ? (
-            <button
-              className="bg-yellow-600 text-white p-2 rounded text-sm"
-              onClick={() => onMortgage(property.id)}
-            >
-              Mortgage (${property.price / 2})
-            </button>
-          ) : (
-            property.isMortgaged && (
-              <button
-                className="bg-blue-600 text-white p-2 rounded text-sm"
-                onClick={() => onUnmortgage(property.id)}
-              >
-                Unmortgage (${Math.floor(property.price * 0.55)})
-              </button>
-            )
-          )}
-          {property.houses === 0 && (
-            <button
-              className="bg-gray-600 text-white p-2 rounded text-sm"
-              onClick={() => onSellToBank(property.id)}
-            >
-              Sell to Bank
-            </button>
-          )}
-        </div>
+            <div className="grid grid-cols-1 gap-2 py-4">
+              {canBuild && (
+                <button
+                  className="bg-green-600 text-white p-2 rounded text-sm"
+                  onClick={() => handleBuildHouses(groupProperties)}
+                >
+                  Build Houses
+                </button>
+              )}
+              {property.houses > 0 && (
+                <button
+                  className="bg-red-600 text-white p-2 rounded text-sm"
+                  onClick={() => onSellHouses([property.id], 1)}
+                >
+                  Sell House
+                </button>
+              )}
+              {!property.isMortgaged && property.houses === 0 ? (
+                <button
+                  className="bg-yellow-600 text-white p-2 rounded text-sm"
+                  onClick={() => onMortgage(property.id)}
+                >
+                  Mortgage (${property.price / 2})
+                </button>
+              ) : (
+                property.isMortgaged && (
+                  <button
+                    className="bg-blue-600 text-white p-2 rounded text-sm"
+                    onClick={() => onUnmortgage(property.id)}
+                  >
+                    Unmortgage (${Math.floor(property.price * 0.55)})
+                  </button>
+                )
+              )}
+              {property.houses === 0 && (
+                <button
+                  className="bg-gray-600 text-white p-2 rounded text-sm"
+                  onClick={() => onSellToBank(property.id)}
+                >
+                  Sell to Bank
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </div>
     );
   };

@@ -72,7 +72,7 @@ const PlayerDetails = ({
               onSellHouses={() => {}}
               onSellToBank={() => {}}
               player={player}
-              // currentPlayer={currentPlayer}
+              currentPlayer={currentPlayer}
             />
           </DrawerContent>
         </Drawer>
@@ -88,7 +88,7 @@ const PlayerDetails = ({
           <Drawer>
             <DrawerTrigger asChild>
               <div
-                className={`shadow-xl w-[calc(100%-4rem)] text-center border rounded-full absolute bottom-6 p-4 right-1/2 transform translate-x-1/2`}
+                className={`shadow-xl w-[calc(100%-4rem)] text-center border rounded-full absolute bottom-6 p-4 right-1/2 transform translate-x-1/2 ${josephinBold.className}`}
               >
                 Pay or Request
               </div>
