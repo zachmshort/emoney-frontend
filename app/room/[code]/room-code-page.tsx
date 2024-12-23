@@ -70,7 +70,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   };
 
   const handleFreeParkingAction = (
-    amount: number,
+    amount: string,
     freeParkingType: "ADD" | "REMOVE",
     playerId: string
   ) => {

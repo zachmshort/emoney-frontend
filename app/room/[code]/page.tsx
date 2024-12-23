@@ -24,39 +24,20 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const [availableProperties, setAvailableProperties] = useState([]); // properties owned by bank, should be [] in late game
 
   const ws = useRef<WebSocket | null>(null);
+
   const handleBankerTransaction = (
     amount: string,
     targetPlayerId: string,
     transactionType: "BANKER_ADD" | "BANKER_REMOVE"
   ) => {
-    if (ws.current?.readyState === WebSocket.OPEN) {
-      try {
-        ws.current.send(
-          JSON.stringify({
-            type: "BANKER_TRANSACTION",
-            payload: {
-              type: "BANKER_TRANSACTION",
-              amount,
-              fromPlayerId: player?.id,
-              toPlayerId: targetPlayerId,
-              transactionType,
-              roomId: room?.id,
-            },
-          })
-        );
-        console.log("Banker transaction sent successfully");
-      } catch (error) {
-        console.error("Error sending banker transaction:", error);
-        toast.error("Failed to process banker transaction");
-      }
-    } else {
-      console.error("WebSocket not connected. State:", ws.current?.readyState);
-      toast.error("Connection lost. Trying to reconnect...");
-      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
-      if (storedPlayerId) {
-        initializeWebSocket(storedPlayerId);
-      }
-    }
+    sendMessage("BANKER_TRANSACTION", {
+      type: "BANKER_TRANSACTION",
+      amount,
+      fromPlayerId: player?.id,
+      toPlayerId: targetPlayerId,
+      transactionType,
+      roomId: room?.id,
+    });
   };
 
   const handlePurchaseProperty = (
@@ -64,68 +45,27 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     buyerId: string,
     price: number
   ) => {
-    if (ws.current?.readyState === WebSocket.OPEN) {
-      const purchasePayload: PurchasePropertyPayload = {
-        type: "PURCHASE_PROPERTY",
-        propertyId,
-        buyerId,
-        price,
-        roomId: code,
-      };
-
-      try {
-        ws.current.send(
-          JSON.stringify({
-            type: "PURCHASE_PROPERTY",
-            payload: purchasePayload,
-          })
-        );
-        console.log("Property purchase message sent successfully");
-      } catch (error) {
-        console.error("Error sending property purchase message:", error);
-        toast.error("Failed to send purchase request");
-      }
-    } else {
-      console.error("WebSocket not connected. State:", ws.current?.readyState);
-      toast.error("Connection lost. Trying to reconnect...");
-      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
-      if (storedPlayerId) {
-        initializeWebSocket(storedPlayerId);
-      }
-    }
+    sendMessage("PURCHASE_PROPERTY", {
+      type: "PURCHASE_PROPERTY",
+      propertyId,
+      buyerId,
+      price,
+      roomId: code,
+    });
   };
 
   const handleFreeParkingAction = (
-    amount: number,
-    type: "ADD" | "REMOVE",
+    amount: string,
+    freeParkingType: "ADD" | "REMOVE",
     playerId: string
   ) => {
-    if (ws.current?.readyState === WebSocket.OPEN) {
-      try {
-        ws.current.send(
-          JSON.stringify({
-            type: "FREE_PARKING",
-            payload: {
-              type,
-              amount,
-              playerId,
-              roomId: room?.id,
-            },
-          })
-        );
-        console.log("Free parking action sent successfully");
-      } catch (error) {
-        console.error("Error sending free parking action:", error);
-        toast.error("Failed to process Free Parking action");
-      }
-    } else {
-      console.error("WebSocket not connected. State:", ws.current?.readyState);
-      toast.error("Connection lost. Trying to reconnect...");
-      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
-      if (storedPlayerId) {
-        initializeWebSocket(storedPlayerId);
-      }
-    }
+    sendMessage("FREE_PARKING", {
+      type: "FREE_PARKING",
+      freeParkingType,
+      amount,
+      playerId,
+      roomId: room?.id,
+    });
   };
 
   const initializeWebSocket = (storedPlayerId: string) => {

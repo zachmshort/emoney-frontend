@@ -60,7 +60,7 @@ interface BankerTransactionPayload {
 interface FreeParkingPayload {
   type: "FREE_PARKING";
   freeParkingType: "ADD" | "REMOVE";
-  amount: number;
+  amount: string;
   playerId: string;
   roomId: string;
 }

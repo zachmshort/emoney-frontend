@@ -36,7 +36,7 @@ const Navbar = ({
     buyerId: string,
     price: number
   ) => void;
-  onFreeParkingAction: (amount: number, type: string, playerId: string) => void;
+  onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
   availableProperties?: Property[];
 }) => {
   const [showProperties, setShowProperties] = useState(false);
