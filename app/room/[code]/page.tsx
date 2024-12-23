@@ -317,10 +317,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     } else {
       console.error("WebSocket not connected. State:", ws.current?.readyState);
       toast.error("Connection lost. Trying to reconnect...");
-      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
-      if (storedPlayerId) {
-        initializeWebSocket(storedPlayerId);
-      }
     }
   };
   const fetchAvailableProperties = async (roomCode: string) => {
