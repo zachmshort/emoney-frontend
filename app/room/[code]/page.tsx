@@ -1,61 +1,29 @@
 "use client";
-import { EventHistory, Player, Room } from "@/types/schema";
+import {
+  EventHistory,
+  Player,
+  PurchasePropertyPayload,
+  Room,
+  TransferPayload,
+  WebSocketPayload,
+} from "@/types/schema";
 import { use, useEffect, useRef, useState } from "react";
 import RoomView from "@/components/room/room.client";
-import { getEndpoints, getWsUrl } from "@/lib/utils/wsHelpers";
+import { getWsUrl } from "@/lib/utils/wsHelpers";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import { toast } from "sonner";
 import { josephinBold } from "@/components/ui/fonts";
-
-export interface TransferPayload {
-  amount: string;
-  type: TransferType;
-  fromPlayerId?: string;
-  toPlayerId?: string;
-  reason: string;
-  roomId: string;
-}
-type TransferType =
-  | "SEND"
-  | "REQUEST"
-  | "ADD"
-  | "SUBTRACT"
-  | "BANKER_ADD"
-  | "BANKER_REMOVE";
-
-interface BankerTransactionPayload {
-  type: "BANKER_TRANSACTION";
-  amount: string;
-  fromPlayerId: string;
-  toPlayerId: string;
-  transactionType: "BANKER_ADD" | "BANKER_REMOVE";
-  roomId: string;
-}
-
-type WebSocketPayload =
-  | TransferPayload
-  | JoinPayload
-  | PurchasePropertyPayload
-  | BankerTransactionPayload;
-
-interface JoinPayload {
-  playerId: string;
-}
-
-interface PurchasePropertyPayload {
-  type: "PURCHASE_PROPERTY";
-  propertyId: string;
-  buyerId: string;
-  price: number;
-  roomId: string;
-}
+import { fetchRoomData } from "@/lib/utils/roomHelpers";
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
+  // variables set by websocket passed down to children that change as game progresses
   const { code } = use(params);
   const [player, setPlayer] = useState<Player | null>(null);
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
-  const [eventHistory, setEventHistory] = useState<EventHistory[]>([]);
+  const [eventHistory, setEventHistory] = useState<EventHistory[]>([]); // history of transactions, game creation, etc.
+  const [availableProperties, setAvailableProperties] = useState([]); // properties owned by bank, should be [] in late game
+
   const ws = useRef<WebSocket | null>(null);
   const handleBankerTransaction = (
     amount: string,
@@ -158,59 +126,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       }
     }
   };
-  const fetchRoomData = async () => {
-    try {
-      const storedPlayerId = playerStore.getPlayerIdForRoom(code);
-
-      if (!storedPlayerId) {
-        toast.error("No player ID found for this room");
-        return;
-      }
-
-      const roomResponse = await fetch(getEndpoints.room.getDetails(code), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const roomData = await roomResponse.json();
-
-      const playersWithProperties = await Promise.all(
-        roomData.players.map(async (p: Player) => {
-          const propertyResponse = await fetch(
-            getEndpoints.player.getDetails(p.id),
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          const propertyData = await propertyResponse.json();
-          return {
-            ...p,
-            properties: propertyData.properties,
-          };
-        })
-      );
-
-      const currentPlayer = playersWithProperties.find(
-        (p: Player) => p.id === storedPlayerId
-      );
-
-      const remainingPlayers = playersWithProperties.filter(
-        (p: Player) => p.id !== storedPlayerId
-      );
-
-      setPlayer(currentPlayer || null);
-      setOtherPlayers(remainingPlayers);
-      setRoom(roomData.room);
-      setEventHistory(roomData.eventHistory);
-    } catch (error) {
-      console.error("Failed to fetch room data:", error);
-      toast.error("Failed to fetch room data");
-    }
-  };
-  const [availableProperties, setAvailableProperties] = useState([]);
 
   const initializeWebSocket = (storedPlayerId: string) => {
     if (ws.current?.readyState === WebSocket.OPEN) return;
@@ -251,7 +166,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
-            fetchRoomData();
+            fetchRoomData(
+              code,
+              playerStore,
+              setPlayer,
+              setOtherPlayers,
+              setRoom,
+              setEventHistory
+            );
             break;
           case "FREE_PARKING":
             toast.success(message.payload.notification, {
@@ -260,7 +182,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
-            fetchRoomData();
+            fetchRoomData(
+              code,
+              playerStore,
+              setPlayer,
+              setOtherPlayers,
+              setRoom,
+              setEventHistory
+            );
             break;
           case "PLAYER_LEFT":
             console.log("Player left event received");
@@ -270,7 +199,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
-            fetchRoomData();
+            fetchRoomData(
+              code,
+              playerStore,
+              setPlayer,
+              setOtherPlayers,
+              setRoom,
+              setEventHistory
+            );
             break;
           case "BANKER_TRANSACTION":
             toast.success(message.payload.notification, {
@@ -279,7 +215,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
-            fetchRoomData();
+            fetchRoomData(
+              code,
+              playerStore,
+              setPlayer,
+              setOtherPlayers,
+              setRoom,
+              setEventHistory
+            );
             break;
           case "PURCHASE_PROPERTY":
             toast.success(message.payload.notification, {
@@ -288,7 +231,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
-            fetchRoomData();
+            fetchRoomData(
+              code,
+              playerStore,
+              setPlayer,
+              setOtherPlayers,
+              setRoom,
+              setEventHistory
+            );
             fetchAvailableProperties(code);
             break;
           case "TRANSFER":
@@ -298,10 +248,24 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               position: "top-center",
               className: `${josephinBold.className} text-xs text-center`,
             });
-            fetchRoomData();
+            fetchRoomData(
+              code,
+              playerStore,
+              setPlayer,
+              setOtherPlayers,
+              setRoom,
+              setEventHistory
+            );
             break;
           case "GAME_STATE_UPDATE":
-            fetchRoomData();
+            fetchRoomData(
+              code,
+              playerStore,
+              setPlayer,
+              setOtherPlayers,
+              setRoom,
+              setEventHistory
+            );
             break;
           default:
             console.log("Unknown message type received:", message.type);
@@ -324,7 +288,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     }
 
     initializeWebSocket(storedPlayerId);
-    fetchRoomData();
+    fetchRoomData(
+      code,
+      playerStore,
+      setPlayer,
+      setOtherPlayers,
+      setRoom,
+      setEventHistory
+    );
     fetchAvailableProperties(code);
 
     return () => {
