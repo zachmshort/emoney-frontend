@@ -13,6 +13,13 @@ import {
 import { sendMessage } from "@/lib/utils/sendWsMessage";
 import { ManagePropertiesPayload } from "@/types/payloads";
 
+interface WebSocketMessage {
+  type: string;
+  payload: {
+    notification: string;
+  };
+}
+
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   // variables set by websocket passed down to children that change as game progresses
   const { code } = use(params);
@@ -51,6 +58,44 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       price,
       roomId: code,
     });
+  };
+  const handleWebSocketNotification = (message: WebSocketMessage) => {
+    toast.success(message.payload.notification, {
+      duration: 4000,
+      icon: getIconForType(message.type),
+      position: "top-center",
+      className: `${josephinBold.className} text-xs text-center`,
+    });
+
+    fetchRoomData(
+      code,
+      playerStore,
+      setPlayer,
+      setOtherPlayers,
+      setRoom,
+      setEventHistory
+    );
+
+    if (["PURCHASE_PROPERTY", "MANAGE_PROPERTIES"].includes(message.type)) {
+      fetchAvailableProperties(code, setAvailableProperties);
+    }
+  };
+
+  const getIconForType = (type: string) => {
+    switch (type) {
+      case "PLAYER_JOINED":
+        return "🧍";
+      case "PLAYER_LEFT":
+        return "🧍";
+      case "BANKER_TRANSACTION":
+        return "🏦";
+      case "PROPERTY_CHANGE":
+        return "🧾";
+      case "TRANSFER":
+        return "💵";
+      default:
+        return "ℹ️";
+    }
   };
 
   const handleFreeParkingAction = (
@@ -116,7 +161,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       ws.current = new WebSocket(getWsUrl(code));
 
       ws.current.onopen = () => {
-        console.log("WebSocket connected to room:", code);
         sendMessage(ws.current, "JOIN", { playerId: storedPlayerId });
       };
 
@@ -124,139 +168,19 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         console.error("WebSocket error:", error);
       };
 
-      ws.current.onclose = (event) => {
-        console.log(
-          "WebSocket closed. Reconnecting...",
-          event.code,
-          event.reason
-        );
+      ws.current.onclose = () => {
         setTimeout(() => initializeWebSocket(storedPlayerId), 1000);
       };
 
       ws.current.onmessage = (event) => {
-        console.log("Raw WebSocket message received:", event.data);
-
         try {
           const message = JSON.parse(event.data);
-          console.log("Parsed WebSocket message:", message);
-
-          switch (message.type) {
-            case "PLAYER_JOINED":
-              console.log("Player joined event received");
-              toast.success(message.payload.notification || "Player Joined", {
-                duration: 4000,
-                icon: "🧍",
-                position: "top-center",
-                className: `${josephinBold.className} text-xs text-center`,
-              });
-              fetchRoomData(
-                code,
-                playerStore,
-                setPlayer,
-                setOtherPlayers,
-                setRoom,
-                setEventHistory
-              );
-              break;
-            case "FREE_PARKING":
-              toast.success(message.payload.notification, {
-                duration: 4000,
-                icon: "💰",
-                position: "top-center",
-                className: `${josephinBold.className} text-xs text-center`,
-              });
-              fetchRoomData(
-                code,
-                playerStore,
-                setPlayer,
-                setOtherPlayers,
-                setRoom,
-                setEventHistory
-              );
-              break;
-            case "PLAYER_LEFT":
-              console.log("Player left event received");
-              toast.success(message.payload.notification || "Player Left", {
-                duration: 4000,
-                icon: "🧍",
-                position: "top-center",
-                className: `${josephinBold.className} text-xs text-center`,
-              });
-              fetchRoomData(
-                code,
-                playerStore,
-                setPlayer,
-                setOtherPlayers,
-                setRoom,
-                setEventHistory
-              );
-              break;
-            case "BANKER_TRANSACTION":
-              toast.success(message.payload.notification, {
-                duration: 4000,
-                icon: "🏦",
-                position: "top-center",
-                className: `${josephinBold.className} text-xs text-center`,
-              });
-              fetchRoomData(
-                code,
-                playerStore,
-                setPlayer,
-                setOtherPlayers,
-                setRoom,
-                setEventHistory
-              );
-              break;
-            case "PURCHASE_PROPERTY":
-              toast.success(message.payload.notification, {
-                duration: 4000,
-                icon: "🏠",
-                position: "top-center",
-                className: `${josephinBold.className} text-xs text-center`,
-              });
-              fetchRoomData(
-                code,
-                playerStore,
-                setPlayer,
-                setOtherPlayers,
-                setRoom,
-                setEventHistory
-              );
-              fetchAvailableProperties(code, setAvailableProperties);
-              break;
-            case "TRANSFER":
-              toast.success(message.payload.notification, {
-                duration: 4000,
-                icon: "💵",
-                position: "top-center",
-                className: `${josephinBold.className} text-xs text-center`,
-              });
-              fetchRoomData(
-                code,
-                playerStore,
-                setPlayer,
-                setOtherPlayers,
-                setRoom,
-                setEventHistory
-              );
-              break;
-            case "GAME_STATE_UPDATE":
-              fetchRoomData(
-                code,
-                playerStore,
-                setPlayer,
-                setOtherPlayers,
-                setRoom,
-                setEventHistory
-              );
-              break;
-            default:
-              console.log("Unknown message type received:", message.type);
-          }
+          handleWebSocketNotification(message);
         } catch (error) {
           console.error("Error processing WebSocket message:", error);
         }
       };
+
       ws.current.onclose = () => {
         setTimeout(() => initializeWebSocket(storedPlayerId), 1000);
       };
