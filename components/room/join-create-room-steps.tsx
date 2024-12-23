@@ -53,16 +53,22 @@ const RoomForm = ({
       setShowDetails(true);
     } catch (error) {
       console.error("Error checking existing player:", error);
-      toast.error("Unable to verify player. Please try again.");
+      toast.error("Unable to verify player. Please try again.", {
+        className: `${josephinBold.className}`,
+      });
       setShowDetails(true);
     }
   };
 
   const joinRoom = async () => {
     if (!selectedColor) {
-      toast.error("Please select a color");
+      toast.error("Please select a color", {
+        className: `${josephinBold.className}`,
+      });
     } else if (!name) {
-      toast.error("Please enter a name");
+      toast.error("Please enter a name", {
+        className: `${josephinBold.className}`,
+      });
     }
     try {
       const payload = {
@@ -90,7 +96,10 @@ const RoomForm = ({
       }
     } catch (error) {
       console.error("Error joining room:", error);
-      toast.error(`${error.message}`);
+      toast.error(
+        `There was an error in attempting to join the room, please ensure it exists and try again.`,
+        { className: `${josephinBold.className}` }
+      );
     }
   };
 
@@ -122,7 +131,9 @@ const RoomForm = ({
       }
     } catch (error) {
       console.error("Error creating room:", error);
-      toast.error(`Failed to create room: ${error.message}`);
+      toast.error(`Failed to create room, please refresh and try again.`, {
+        className: `${josephinBold.className}`,
+      });
     }
   };
 
