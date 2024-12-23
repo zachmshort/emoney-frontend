@@ -12,6 +12,7 @@ import {
   TransferPayload,
   WebSocketPayload,
 } from "@/types/payloads";
+import { sendWebSocketMessage } from "@/lib/utils/sendWsMessage";
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   // variables set by websocket passed down to children that change as game progresses
@@ -57,6 +58,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       }
     }
   };
+
   const handlePurchaseProperty = (
     propertyId: string,
     buyerId: string,
@@ -92,6 +94,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       }
     }
   };
+
   const handleFreeParkingAction = (
     amount: number,
     type: "ADD" | "REMOVE",
@@ -302,22 +305,16 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   }, [code]);
 
   const sendMessage = (
-    type: "TRANSFER" | "JOIN" | "PURCHASE_PROPERTY",
+    type:
+      | "TRANSFER"
+      | "JOIN"
+      | "PURCHASE_PROPERTY"
+      | "BANKER_TRANSACTION"
+      | "FREE_PARKING"
+      | "MANAGE_PROPERTIES",
     payload: WebSocketPayload
   ) => {
-    if (ws.current?.readyState === WebSocket.OPEN) {
-      console.log("Attempting to send message:", { type, payload });
-      try {
-        ws.current.send(JSON.stringify({ type, payload }));
-        console.log("Message sent successfully");
-      } catch (error) {
-        console.error("Error sending message:", error);
-        toast.error("Failed to send message");
-      }
-    } else {
-      console.error("WebSocket not connected. State:", ws.current?.readyState);
-      toast.error("Connection lost. Trying to reconnect...");
-    }
+    sendWebSocketMessage(ws.current, type, payload);
   };
   const fetchAvailableProperties = async (roomCode: string) => {
     try {
