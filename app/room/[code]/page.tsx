@@ -16,7 +16,7 @@ import { ManagePropertiesPayload } from "@/types/payloads";
 interface WebSocketMessage {
   type: string;
   payload: {
-    notification: string;
+    notification?: string;
   };
 }
 
@@ -179,10 +179,6 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         } catch (error) {
           console.error("Error processing WebSocket message:", error);
         }
-      };
-
-      ws.current.onclose = () => {
-        setTimeout(() => initializeWebSocket(storedPlayerId), 1000);
       };
     },
     [code]
