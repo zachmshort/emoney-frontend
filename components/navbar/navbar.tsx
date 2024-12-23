@@ -117,15 +117,14 @@ const Navbar = ({
                 >
                   {eventHistory.map((event: EventHistory, index: number) => (
                     <div className={`${josephinNormal.className}`} key={index}>
-                      <div
-                        className="flex justify-between rounded-full items-center border mb-2 px-2 py-1 sm:py-2"
-                        style={{
-                          borderColor: event?.eventType?.[0] || "white",
-                        }}
-                      >
+                      <div className="flex justify-between rounded-full items-center mb-2 px-2 py-1 sm:py-2">
                         <span className={`text-xs sm:text-sm`}>
                           {event?.eventType?.[1] || "🧍"}
-                          {event.event}
+                          <p
+                            style={{ color: event?.eventType?.[0] || "white" }}
+                          >
+                            {event.event}
+                          </p>
                         </span>
                         <span
                           className={` text-gray-500 text-[.5rem] sm:text-xs text-end `}
