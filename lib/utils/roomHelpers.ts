@@ -1,14 +1,15 @@
 import { toast } from "sonner";
 import { getEndpoints } from "./wsHelpers";
-import { Player } from "@/types/schema";
+import { EventHistory, Player, Property, Room } from "@/types/schema";
+import { Dispatch, SetStateAction } from "react";
 
 const fetchRoomData = async (
   code: string,
-  playerStore: any,
-  setPlayer: Function,
-  setOtherPlayers: Function,
-  setRoom: Function,
-  setEventHistory: Function
+  playerStore: { getPlayerIdForRoom: (code: string) => string | null },
+  setPlayer: Dispatch<SetStateAction<Player | null>>,
+  setOtherPlayers: Dispatch<SetStateAction<Player[]>>,
+  setRoom: Dispatch<SetStateAction<Room | undefined>>,
+  setEventHistory: Dispatch<SetStateAction<EventHistory[]>>
 ) => {
   try {
     const storedPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -63,7 +64,7 @@ const fetchRoomData = async (
 };
 const fetchAvailableProperties = async (
   roomCode: string,
-  setAvailableProperties: Function
+  setAvailableProperties: Dispatch<SetStateAction<Property[]>>
 ) => {
   try {
     const response = await fetch(
