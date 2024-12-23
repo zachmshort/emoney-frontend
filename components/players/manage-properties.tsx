@@ -5,33 +5,32 @@ import { MdArrowBackIos } from "react-icons/md";
 import { josephinBold, josephinNormal } from "../ui/fonts";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { ManagePropertiesPayload } from "@/types/payloads";
 
 interface ManagePropertiesProps {
   player: Player;
   currentPlayer: Player;
-  onBuildHouses: (propertyIds: string[], count: number) => void;
-  onSellHouses: (propertyIds: string[], count: number) => void;
-  onMortgage: (propertyId: string) => void;
-  onUnmortgage: (propertyId: string) => void;
-  onSellToBank: (propertyId: string) => void;
+  onManageProperties: (
+    amount: number,
+    managementType: ManagePropertiesPayload["managementType"],
+    properties: { propertyId: string; count?: number }[],
+    playerId: string
+  ) => void;
 }
 
 const ManageProperties = ({
   player,
   currentPlayer,
-  onBuildHouses,
-  onSellHouses,
-  onMortgage,
-  onUnmortgage,
-  onSellToBank,
+  onManageProperties,
 }: ManagePropertiesProps) => {
   const [currentView, setCurrentView] = useState<"colors" | "properties">(
     "colors"
   );
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [houseBuildingMode, setHouseBuildingMode] = useState(false);
-  const [houseCount, setHouseCount] = useState(0);
-  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
+  const [selectedProperties, setSelectedProperties] = useState<
+    { propertyId: string; count?: number }[]
+  >([]);
 
   if (!player?.properties || player?.properties.length === 0) {
     return (
@@ -83,28 +82,35 @@ const ManageProperties = ({
     );
   };
 
-  const handleBuildHouses = (properties: Property[]) => {
-    const totalProperties = properties.length;
-    const maxHousesToBuild =
-      totalProperties * (5 - Math.max(...properties.map((p) => p.houses)));
+  const handleBuildHouses = (properties: Property[], houseCount: number) => {
+    const propertyDetails = properties.map((p) => ({
+      propertyId: p.id,
+      count: houseCount,
+    }));
+    const totalCost = houseCount * properties[0].houseCost;
 
-    if (maxHousesToBuild === 0) {
-      toast.error("Cannot build more houses on these properties");
-      return;
-    }
+    onManageProperties(
+      totalCost,
+      "ADD_HOUSES",
+      propertyDetails,
+      currentPlayer.id
+    );
+    setHouseBuildingMode(false);
+  };
 
-    setHouseBuildingMode(true);
-    setHouseCount(0);
-    setSelectedProperties([]);
+  const handleSellHouses = (property: Property, count: number) => {
+    onManageProperties(
+      -count * property.houseCost,
+      "REMOVE_HOUSES",
+      [{ propertyId: property.id, count }],
+      currentPlayer.id
+    );
   };
 
   const renderHouseBuildingDialog = (properties: Property[]) => {
-    // const minHouses = Math.min(...properties.map((p) => p.houses));
     const totalHousesAvailable = properties.length * 4;
     const currentHouses = properties.reduce((sum, p) => sum + p.houses, 0);
     const maxHouses = totalHousesAvailable - currentHouses;
-    const totalCost = houseCount * properties[0].houseCost;
-    const unbalancedCount = houseCount % properties.length;
     return (
       <Dialog open={houseBuildingMode} onOpenChange={setHouseBuildingMode}>
         <DialogContent>
@@ -114,90 +120,44 @@ const ManageProperties = ({
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setHouseCount(Math.max(0, houseCount - 1))}
-                className="h-12 w-12 rounded border-[1px] text-black"
+            {properties.map((property) => (
+              <div
+                key={property.id}
+                className="flex items-center justify-between"
               >
-                -
-              </button>
-              <span className={`text-black ${josephinBold.className}`}>
-                {houseCount} house{houseCount !== 1 && "s"} (${totalCost})
-              </span>
-              <button
-                onClick={() =>
-                  setHouseCount((prev) => Math.min(prev + 1, maxHouses))
-                }
-                className="h-12 w-12 rounded border-[1px] text-black"
-              >
-                +
-              </button>
-            </div>
-            {unbalancedCount > 0 ? (
-              <>
-                <div
-                  className={`${josephinNormal.className} space-y-2 text-black h-44`}
-                >
-                  <p>
-                    Select {unbalancedCount} properties to receive an extra
-                    house:
-                  </p>
-                  {properties.map((property) => (
-                    <div
-                      key={property.id}
-                      className={`p-2 border rounded ${
-                        selectedProperties.includes(property.id)
-                          ? "bg-blue-100"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        if (selectedProperties.includes(property.id)) {
-                          setSelectedProperties((prev) =>
-                            prev.filter((id) => id !== property.id)
-                          );
-                        } else if (
-                          selectedProperties.length < unbalancedCount
-                        ) {
-                          setSelectedProperties((prev) => [
-                            ...prev,
-                            property.id,
-                          ]);
-                        }
-                      }}
-                    >
-                      {property.name} (Currently {property.houses} houses)
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  className={`${
-                    houseCount === 0 ? "text-white" : "text-black"
-                  } select-none ${josephinBold.className} text-center h-44`}
-                >
-                  {houseCount / properties.length} House
-                  {houseCount / properties.length > 1 && "s"} Each
-                </div>
-              </>
-            )}
-
+                <span className={`text-black ${josephinBold.className}`}>
+                  {property.name}
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  max={maxHouses / selectedProperties.length}
+                  value={
+                    selectedProperties.find((p) => p.propertyId === property.id)
+                      ?.count || 0
+                  }
+                  onChange={(e) => {
+                    const count = Math.max(
+                      0,
+                      Math.min(maxHouses, Number(e.target.value))
+                    );
+                    setSelectedProperties((prev) =>
+                      prev.some((p) => p.propertyId === property.id)
+                        ? prev.map((p) =>
+                            p.propertyId === property.id ? { ...p, count } : p
+                          )
+                        : [...prev, { propertyId: property.id, count }]
+                    );
+                  }}
+                  className={`${josephinBold.className} border rounded px-2 text-black`}
+                />
+              </div>
+            ))}
             <button
-              className={`${josephinNormal.className} w-full p-2 bg-green-600 text-black  rounded`}
-              disabled={
-                unbalancedCount > 0 &&
-                selectedProperties.length !== unbalancedCount
-              }
-              onClick={() => {
-                onBuildHouses(
-                  properties.map((p) => p.id),
-                  houseCount
-                );
-                setHouseBuildingMode(false);
-              }}
+              className={`${josephinNormal.className} w-full p-2 bg-green-600 text-white rounded`}
+              onClick={() => handleBuildHouses(properties, maxHouses)}
             >
-              Confirm (${totalCost})
+              Confirm
             </button>
           </div>
         </DialogContent>
@@ -223,15 +183,26 @@ const ManageProperties = ({
         />
         {player?.id === currentPlayer?.id && (
           <>
-            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2">
+            <div className="">
               <div className="flex flex-col gap-1">
                 {property.isMortgaged && (
                   <span className="text-red-500">Mortgaged</span>
                 )}
                 {property.houses > 0 && (
-                  <span className="text-green-500">
-                    {property.houses} House{property.houses !== 1 && "s"}
-                  </span>
+                  <div className="flex gap-1 pt-1">
+                    {Array.from({
+                      length: property.houses / groupProperties.length,
+                    }).map((_, index) => (
+                      <div key={index}>
+                        <Image
+                          src="/house.png"
+                          width={40}
+                          height={40}
+                          alt="house"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 )}
                 {property.hotel > 0 && (
                   <span className="text-blue-500">Hotel</span>
@@ -243,7 +214,9 @@ const ManageProperties = ({
               {canBuild && (
                 <button
                   className="bg-green-600 text-white p-2 rounded text-sm"
-                  onClick={() => handleBuildHouses(groupProperties)}
+                  onClick={() => {
+                    setHouseBuildingMode(true);
+                  }}
                 >
                   Build Houses
                 </button>
@@ -251,7 +224,7 @@ const ManageProperties = ({
               {property.houses > 0 && (
                 <button
                   className="bg-red-600 text-white p-2 rounded text-sm"
-                  onClick={() => onSellHouses([property.id], 1)}
+                  onClick={() => handleSellHouses(property, 1)}
                 >
                   Sell House
                 </button>
@@ -259,7 +232,7 @@ const ManageProperties = ({
               {!property.isMortgaged && property.houses === 0 ? (
                 <button
                   className="bg-yellow-600 text-white p-2 rounded text-sm"
-                  onClick={() => onMortgage(property.id)}
+                  // onClick={() => onMortgage(property.id)}
                 >
                   Mortgage (${property.price / 2})
                 </button>
@@ -267,7 +240,7 @@ const ManageProperties = ({
                 property.isMortgaged && (
                   <button
                     className="bg-blue-600 text-white p-2 rounded text-sm"
-                    onClick={() => onUnmortgage(property.id)}
+                    // onClick={() => onUnmortgage(property.id)}
                   >
                     Unmortgage (${Math.floor(property.price * 0.55)})
                   </button>
@@ -276,7 +249,7 @@ const ManageProperties = ({
               {property.houses === 0 && (
                 <button
                   className="bg-gray-600 text-white p-2 rounded text-sm"
-                  onClick={() => onSellToBank(property.id)}
+                  // onClick={() => onSellToBank(property.id)}
                 >
                   Sell to Bank
                 </button>

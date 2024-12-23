@@ -11,6 +11,7 @@ import {
   fetchAvailableProperties,
 } from "@/lib/utils/roomHelpers";
 import { sendMessage } from "@/lib/utils/sendWsMessage";
+import { ManagePropertiesPayload } from "@/types/payloads";
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   // variables set by websocket passed down to children that change as game progresses
@@ -63,6 +64,21 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       amount,
       playerId,
       roomId: room?.id,
+    });
+  };
+
+  const handleManageProperties = (
+    amount: number,
+    managementType: ManagePropertiesPayload["managementType"],
+    properties: { propertyId: string; count?: number }[],
+    playerId: string
+  ) => {
+    sendMessage(ws.current, "MANAGE_PROPERTIES", {
+      managementType,
+      playerId,
+      properties,
+      roomId: room?.id,
+      amount,
     });
   };
 
@@ -275,15 +291,16 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   return (
     <>
       <RoomView
+        room={room}
         currentPlayer={player}
         otherPlayers={otherPlayers}
-        room={room}
-        onTransfer={handleTransfer}
         availableProperties={availableProperties}
+        eventHistory={eventHistory}
+        onTransfer={handleTransfer}
         onPurchaseProperty={handlePurchaseProperty}
         onFreeParkingAction={handleFreeParkingAction}
         onBankerTransaction={handleBankerTransaction}
-        eventHistory={eventHistory}
+        onManageProperties={handleManageProperties}
       />
     </>
   );

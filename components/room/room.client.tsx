@@ -4,7 +4,7 @@ import PlayerCard from "@/components/players/player-card";
 import { EventHistory, Player, Property, Room } from "@/types/schema";
 import Navbar from "../navbar/navbar";
 import { josephinBold } from "../ui/fonts";
-import { TransferType } from "@/types/payloads";
+import { ManagePropertiesPayload, TransferType } from "@/types/payloads";
 
 const RoomView = ({
   currentPlayer,
@@ -16,6 +16,7 @@ const RoomView = ({
   onPurchaseProperty,
   onFreeParkingAction,
   onBankerTransaction,
+  onManageProperties,
 }: {
   otherPlayers: Player[];
   eventHistory: EventHistory[];
@@ -39,6 +40,12 @@ const RoomView = ({
     propertyId: string,
     buyerId: string,
     price: number
+  ) => void;
+  onManageProperties: (
+    amount: number,
+    managementType: ManagePropertiesPayload["managementType"],
+    properties: { propertyId: string; count?: number }[],
+    playerId: string
   ) => void;
 }) => {
   const allPlayers = [...otherPlayers, currentPlayer];
@@ -73,6 +80,7 @@ const RoomView = ({
                 roomId={room?.id}
                 allPlayers={allPlayers}
                 onBankerTransaction={onBankerTransaction}
+                onManageProperties={onManageProperties}
               />
             </div>
 

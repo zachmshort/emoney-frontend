@@ -12,7 +12,7 @@ import { calculateMonopolies } from "../ui/helper-funcs";
 import { josephinBold, josephinNormal } from "../ui/fonts";
 import PlayerTags from "./player-tags";
 import ManageProperties from "./manage-properties";
-import { TransferType } from "@/types/payloads";
+import { ManagePropertiesPayload, TransferType } from "@/types/payloads";
 
 const PlayerDetails = ({
   player,
@@ -20,6 +20,7 @@ const PlayerDetails = ({
   allPlayers,
   onTransfer,
   roomId,
+  onManageProperties,
 }: {
   player: Player;
   allPlayers: Player[];
@@ -34,6 +35,12 @@ const PlayerDetails = ({
       reason: string;
       roomId: string;
     }
+  ) => void;
+  onManageProperties: (
+    amount: number,
+    managementType: ManagePropertiesPayload["managementType"],
+    properties: { propertyId: string; count?: number }[],
+    playerId: string
   ) => void;
 }) => {
   const [transferType, setTransferType] = useState<"SEND" | "REQUEST">("SEND");
@@ -91,11 +98,7 @@ const PlayerDetails = ({
               {player?.name}&apos; Properties
             </DrawerTitle>
             <ManageProperties
-              onBuildHouses={() => {}}
-              onMortgage={() => {}}
-              onUnmortgage={() => {}}
-              onSellHouses={() => {}}
-              onSellToBank={() => {}}
+              onManageProperties={onManageProperties}
               player={player}
               currentPlayer={currentPlayer}
             />

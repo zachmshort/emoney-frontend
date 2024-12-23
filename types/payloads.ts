@@ -24,27 +24,25 @@ export interface TransferPayload {
   roomId: string;
 }
 
-type ManagePropertiesPayload =
+export type ManagePropertiesPayload =
   | {
-      type: "ADD_HOUSES" | "REMOVE_HOUSES";
+      managementType: "ADD_HOUSES" | "REMOVE_HOUSES";
       playerId: string;
-      propertyIds: string[];
+      properties: { propertyId: string; count: number }[];
       roomId: string;
-      houseCount: number;
       amount: number;
     }
   | {
-      type: "ADD_HOTELS" | "REMOVE_HOTELS";
+      managementType: "ADD_HOTELS" | "REMOVE_HOTELS";
       playerId: string;
-      propertyIds: string[];
+      properties: { propertyId: string; count: number }[];
       roomId: string;
-      hotelCount: number;
       amount: number;
     }
   | {
-      type: "MORTGAGE" | "SELL_TO_BANK";
+      managementType: "MORTGAGE" | "SELL_TO_BANK";
       playerId: string;
-      propertyIds: string[];
+      properties: { propertyId: string }[];
       roomId: string;
       amount: number;
     };

@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { TransferType } from "@/types/payloads";
+import { ManagePropertiesPayload, TransferType } from "@/types/payloads";
 
 const PlayerCard = ({
   player,
@@ -21,6 +21,7 @@ const PlayerCard = ({
   onTransfer,
   roomId,
   onBankerTransaction,
+  onManageProperties,
 }: {
   player: Player;
   currentPlayer: Player;
@@ -36,12 +37,17 @@ const PlayerCard = ({
       roomId: string;
     }
   ) => void;
-
   roomId: string;
   onBankerTransaction: (
     amount: string,
     playerId: string,
     transactionType: string
+  ) => void;
+  onManageProperties?: (
+    amount: number,
+    managementType: ManagePropertiesPayload["managementType"],
+    properties: { propertyId: string; count?: number }[],
+    playerId: string
   ) => void;
 }) => {
   const [dialogState, setDialogState] = useState<"add" | "remove" | null>(null);
@@ -133,6 +139,7 @@ const PlayerCard = ({
               player={player}
               currentPlayer={currentPlayer}
               onTransfer={onTransfer}
+              onManageProperties={onManageProperties}
               allPlayers={allPlayers}
               roomId={roomId}
             />
