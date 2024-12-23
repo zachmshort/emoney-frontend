@@ -55,4 +55,5 @@ export interface EventHistory {
   roomId: string;
   event: string;
   timestamp: Date;
+  eventType: string[];
 }

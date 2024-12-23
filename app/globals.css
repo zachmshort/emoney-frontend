@@ -69,10 +69,6 @@
   }
 }
 
-body {
-  overflow: hidden;
-}
-
 .font {
 	text-decoration: none;
 	text-align: center;
@@ -95,4 +91,37 @@ body {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.drawer-content {
+  height: 75vh;
+  overflow-y: hidden;
+}
+
+.event-history-container {
+  height: calc(75vh - 120px);
+  overflow-y: auto;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 3px;
+}
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-x-auto::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: inherit;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
 }

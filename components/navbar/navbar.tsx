@@ -112,16 +112,30 @@ const Navbar = ({
                 <h2 className={`pt-5 pb-2 ${josephinBold.className}`}>
                   Event History
                 </h2>
-                {eventHistory.map((event: EventHistory, index: number) => (
-                  <div className={`${josephinNormal.className}`} key={index}>
-                    <div className="flex justify-between items-start">
-                      <span className={`text-sm`}>{event.event}</span>
-                      <span className={` text-gray-500 text-xs w-16 pt-[2px]`}>
-                        {formatTimeAgo(new Date(event.timestamp))}
-                      </span>
+                <div
+                  className={`event-history-container overflow-y-auto pb-20 sm:px-5 pt-2`}
+                >
+                  {eventHistory.map((event: EventHistory, index: number) => (
+                    <div className={`${josephinNormal.className}`} key={index}>
+                      <div
+                        className="flex justify-between rounded-full items-center border mb-2 px-2 py-1 sm:py-2"
+                        style={{
+                          borderColor: event?.eventType?.[0] || "white",
+                        }}
+                      >
+                        <span className={`text-xs sm:text-sm`}>
+                          {event?.eventType?.[1] || "ℹ️"}
+                          {event.event}
+                        </span>
+                        <span
+                          className={` text-gray-500 text-[.5rem] sm:text-xs text-end `}
+                        >
+                          {formatTimeAgo(new Date(event.timestamp))}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </>
             ) : (
               <>
