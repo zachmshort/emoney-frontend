@@ -4,7 +4,7 @@ import { toast } from "sonner";
 // ws - The WebSocket instance.
 // type - The type of message being sent.
 // payload - The payload to send.
-export const sendWebSocketMessage = (
+const sendWebSocketMessage = (
   ws: WebSocket | null,
   type:
     | "TRANSFER"
@@ -26,4 +26,17 @@ export const sendWebSocketMessage = (
     console.error("WebSocket not connected. State:", ws?.readyState);
     toast.error("Connection lost. Trying to reconnect...");
   }
+};
+export const sendMessage = (
+  ws: WebSocket | null,
+  type:
+    | "TRANSFER"
+    | "JOIN"
+    | "PURCHASE_PROPERTY"
+    | "BANKER_TRANSACTION"
+    | "FREE_PARKING"
+    | "MANAGE_PROPERTIES",
+  payload: WebSocketPayload
+) => {
+  sendWebSocketMessage(ws, type, payload);
 };

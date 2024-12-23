@@ -12,6 +12,7 @@ import { calculateMonopolies } from "../ui/helper-funcs";
 import { josephinBold, josephinNormal } from "../ui/fonts";
 import PlayerTags from "./player-tags";
 import ManageProperties from "./manage-properties";
+import { TransferType } from "@/types/payloads";
 
 const PlayerDetails = ({
   player,
@@ -26,7 +27,7 @@ const PlayerDetails = ({
   roomId: string;
   onTransfer: (
     amount: string,
-    type: "SEND" | "REQUEST",
+    transferType: TransferType,
     transferDetails: {
       fromPlayerId: string;
       toPlayerId: string;
@@ -35,9 +36,33 @@ const PlayerDetails = ({
     }
   ) => void;
 }) => {
-  const [type, setType] = useState<"SEND" | "REQUEST">("SEND");
+  const [transferType, setTransferType] = useState<"SEND" | "REQUEST">("SEND");
+  const handleTransfer = (
+    amount: number,
+    reason: string,
+    transferDetails: {
+      fromPlayerId: string;
+      toPlayerId: string;
+    }
+  ) => {
+    const payload = {
+      amount: amount.toString(),
+      transferType: transferType,
+      fromPlayerId: transferDetails.fromPlayerId,
+      toPlayerId: transferDetails.toPlayerId,
+      reason,
+      roomId,
+    };
+
+    onTransfer(payload.amount, payload.transferType as TransferType, {
+      fromPlayerId: payload.fromPlayerId,
+      toPlayerId: payload.toPlayerId,
+      reason: payload.reason,
+      roomId: payload.roomId,
+    });
+  };
   const getPropertiesToShow = () => {
-    if (type !== "SEND") {
+    if (transferType !== "SEND") {
       return currentPlayer?.properties;
     }
     return player?.properties;
@@ -97,29 +122,15 @@ const PlayerDetails = ({
               <DrawerTitle className={`text-black`}>
                 Choose Payment Type
               </DrawerTitle>
-              <SendReqToggle onToggle={(newType) => setType(newType)} />
+              <SendReqToggle onToggle={(newType) => setTransferType(newType)} />
               <PayRequestRent
                 properties={getPropertiesToShow()}
-                type={type}
-                fromPlayer={type === "SEND" ? currentPlayer : player}
-                toPlayer={type === "SEND" ? player : currentPlayer}
-                onTransferRequest={(amount, reason, transferDetails) => {
-                  const payload = {
-                    amount: amount.toString(),
-                    type: type,
-                    fromPlayerId: transferDetails.fromPlayerId,
-                    toPlayerId: transferDetails.toPlayerId,
-                    reason: reason,
-                    roomId: roomId,
-                  };
-
-                  onTransfer(payload.amount, payload.type, {
-                    fromPlayerId: payload.fromPlayerId,
-                    toPlayerId: payload.toPlayerId,
-                    reason: payload.reason,
-                    roomId: roomId,
-                  });
-                }}
+                type={transferType}
+                fromPlayer={transferType === "SEND" ? currentPlayer : player}
+                toPlayer={transferType === "SEND" ? player : currentPlayer}
+                onTransferRequest={(amount, reason, transferDetails) =>
+                  handleTransfer(amount, reason, transferDetails)
+                }
                 roomId={roomId}
               />
             </DrawerContent>

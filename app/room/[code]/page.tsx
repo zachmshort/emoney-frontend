@@ -6,13 +6,12 @@ import { getWsUrl } from "@/lib/utils/wsHelpers";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import { toast } from "sonner";
 import { josephinBold } from "@/components/ui/fonts";
-import { fetchRoomData } from "@/lib/utils/roomHelpers";
 import {
-  PurchasePropertyPayload,
-  TransferPayload,
-  WebSocketPayload,
-} from "@/types/payloads";
-import { sendWebSocketMessage } from "@/lib/utils/sendWsMessage";
+  fetchRoomData,
+  fetchAvailableProperties,
+} from "@/lib/utils/roomHelpers";
+import { TransferPayload } from "@/types/payloads";
+import { sendMessage } from "@/lib/utils/sendWsMessage";
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   // variables set by websocket passed down to children that change as game progresses
@@ -30,7 +29,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     targetPlayerId: string,
     transactionType: "BANKER_ADD" | "BANKER_REMOVE"
   ) => {
-    sendMessage("BANKER_TRANSACTION", {
+    sendMessage(ws.current, "BANKER_TRANSACTION", {
       type: "BANKER_TRANSACTION",
       amount,
       fromPlayerId: player?.id,
@@ -45,7 +44,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     buyerId: string,
     price: number
   ) => {
-    sendMessage("PURCHASE_PROPERTY", {
+    sendMessage(ws.current, "PURCHASE_PROPERTY", {
       type: "PURCHASE_PROPERTY",
       propertyId,
       buyerId,
@@ -59,12 +58,39 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     freeParkingType: "ADD" | "REMOVE",
     playerId: string
   ) => {
-    sendMessage("FREE_PARKING", {
+    sendMessage(ws.current, "FREE_PARKING", {
       type: "FREE_PARKING",
       freeParkingType,
       amount,
       playerId,
       roomId: room?.id,
+    });
+  };
+
+  const handleTransfer = (
+    amount: string,
+    transferType:
+      | "SEND"
+      | "REQUEST"
+      | "ADD"
+      | "SUBTRACT"
+      | "BANKER_ADD"
+      | "BANKER_REMOVE",
+    transferDetails: {
+      fromPlayerId?: string;
+      toPlayerId?: string;
+      reason: string;
+      roomId: string;
+    }
+  ) => {
+    sendMessage(ws.current, "TRANSFER", {
+      type: "TRANSFER",
+      amount,
+      transferType: transferType,
+      fromPlayerId: transferDetails.fromPlayerId,
+      toPlayerId: transferDetails.toPlayerId,
+      reason: transferDetails.reason,
+      roomId: transferDetails.roomId,
     });
   };
 
@@ -75,7 +101,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
 
     ws.current.onopen = () => {
       console.log("WebSocket connected to room:", code);
-      sendMessage("JOIN", { playerId: storedPlayerId });
+      sendMessage(ws.current, "JOIN", { playerId: storedPlayerId });
     };
 
     ws.current.onerror = (error) => {
@@ -180,7 +206,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
               setRoom,
               setEventHistory
             );
-            fetchAvailableProperties(code);
+            fetchAvailableProperties(code, setAvailableProperties);
             break;
           case "TRANSFER":
             toast.success(message.payload.notification, {
@@ -237,48 +263,12 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       setRoom,
       setEventHistory
     );
-    fetchAvailableProperties(code);
+    fetchAvailableProperties(code, setAvailableProperties);
 
     return () => {
       ws.current?.close();
     };
   }, [code]);
-
-  const sendMessage = (
-    type:
-      | "TRANSFER"
-      | "JOIN"
-      | "PURCHASE_PROPERTY"
-      | "BANKER_TRANSACTION"
-      | "FREE_PARKING"
-      | "MANAGE_PROPERTIES",
-    payload: WebSocketPayload
-  ) => {
-    sendWebSocketMessage(ws.current, type, payload);
-  };
-  const fetchAvailableProperties = async (roomCode: string) => {
-    try {
-      const response = await fetch(
-        `https://emoney.up.railway.app/property/available/${roomCode}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch available properties");
-      }
-
-      const data = await response.json();
-      setAvailableProperties(data.availableProperties);
-    } catch (error) {
-      console.error("Error fetching available properties:", error);
-      toast.error("Unable to retrieve available properties");
-    }
-  };
 
   return (
     <>
@@ -286,16 +276,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         currentPlayer={player}
         otherPlayers={otherPlayers}
         room={room}
-        onTransfer={(amount, type, transferDetails) => {
-          sendMessage("TRANSFER", {
-            amount,
-            type,
-            fromPlayerId: transferDetails.fromPlayerId,
-            toPlayerId: transferDetails.toPlayerId,
-            reason: transferDetails.reason,
-            roomId: transferDetails.roomId,
-          } as TransferPayload);
-        }}
+        onTransfer={handleTransfer}
         availableProperties={availableProperties}
         onPurchaseProperty={handlePurchaseProperty}
         onFreeParkingAction={handleFreeParkingAction}

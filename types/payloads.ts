@@ -15,8 +15,9 @@ export type TransferType =
   | "BANKER_REMOVE";
 
 export interface TransferPayload {
+  type: "TRANSFER";
   amount: string;
-  type: TransferType;
+  transferType: TransferType;
   fromPlayerId?: string;
   toPlayerId?: string;
   reason: string;

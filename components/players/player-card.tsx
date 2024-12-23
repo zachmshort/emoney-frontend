@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TransferType } from "@/types/payloads";
 
 const PlayerCard = ({
   player,
@@ -27,14 +28,15 @@ const PlayerCard = ({
   isBanker?: boolean;
   onTransfer: (
     amount: string,
-    type: string,
+    transferType: TransferType,
     transferDetails: {
       fromPlayerId: string;
-      roomId: string;
       toPlayerId: string;
       reason: string;
+      roomId: string;
     }
   ) => void;
+
   roomId: string;
   onBankerTransaction: (
     amount: string,
