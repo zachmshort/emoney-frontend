@@ -124,7 +124,7 @@ const Navbar = ({
                         }}
                       >
                         <span className={`text-xs sm:text-sm`}>
-                          {event?.eventType?.[1] || "ℹ️"}
+                          {event?.eventType?.[1] || "🧍"}
                           {event.event}
                         </span>
                         <span
