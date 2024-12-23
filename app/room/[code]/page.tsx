@@ -270,7 +270,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     return () => {
       ws.current?.close();
     };
-  }, [code, playerStore]);
+  }, [code]);
 
   return (
     <>
