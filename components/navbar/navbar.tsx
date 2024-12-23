@@ -113,14 +113,16 @@ const Navbar = ({
                   Event History
                 </h2>
                 <div
-                  className={`event-history-container overflow-y-auto pb-20 sm:px-5 pt-2`}
+                  className={`event-history-container overflow-y-auto pb-20 pt-2`}
                 >
                   {eventHistory.map((event: EventHistory, index: number) => (
                     <div className={`${josephinNormal.className}`} key={index}>
                       <div className="flex justify-between rounded-full items-center mb-2 py-1 sm:py-2">
                         <span className={`text-xs sm:text-sm`}>
-                          <div className={`flex justify-start items-center`}>
-                            <div>{event?.eventType?.[1] || "🧍"}</div>
+                          <div className={`flex justify-start items-start`}>
+                            <div className={`pr-[4px]`}>
+                              {event?.eventType?.[1] || "🧍"}
+                            </div>
                             <p
                               style={{
                                 color: event?.eventType?.[0] || "white",
