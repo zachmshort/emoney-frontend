@@ -77,7 +77,10 @@ const playerTags: PlayerTag[] = [
     howToEarn: "Have more hotels built than any other player",
     condition: (player, otherPlayers) => {
       const getHotelCount = (p: Player) =>
-        p?.properties?.reduce((sum, prop) => sum + (prop?.hotel || 0), 0) || 0;
+        p?.properties?.reduce(
+          (sum, prop) => sum + (prop?.developmentLevel || 0),
+          0
+        ) || 0;
 
       const playerHotels = getHotelCount(player);
       const otherHotels = otherPlayers.map(getHotelCount);
@@ -95,7 +98,10 @@ const playerTags: PlayerTag[] = [
       "Have 3 or more houses built and more houses than any other player",
     condition: (player, otherPlayers) => {
       const getHouseCount = (p: Player) =>
-        p?.properties?.reduce((sum, prop) => sum + (prop?.houses || 0), 0) || 0;
+        p?.properties?.reduce(
+          (sum, prop) => sum + (prop?.developmentLevel || 0),
+          0
+        ) || 0;
 
       const playerHouses = getHouseCount(player);
       const otherHouses = otherPlayers.map(getHouseCount);
@@ -188,8 +194,7 @@ const playerTags: PlayerTag[] = [
     condition: (player, otherPlayers) => {
       const getFullyDevelopedCount = (p: Player) =>
         p?.properties?.filter(
-          (prop) =>
-            (prop?.houses === 4 || prop?.hotel === 1) && !prop?.isMortgaged
+          (prop) => prop?.developmentLevel < 4 && !prop?.isMortgaged
         )?.length || 0;
 
       const playerDeveloped = getFullyDevelopedCount(player);
