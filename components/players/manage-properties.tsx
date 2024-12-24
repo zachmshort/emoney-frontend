@@ -232,7 +232,7 @@ const ManageProperties = ({
             <div className="flex items-center justify-between">
               <button
                 onClick={handleDecrement}
-                className="h-12 w-12  text-white bg-black rounded border-[1px] "
+                className="h-12 w-12 rounded-full shadhow-md  text-white border-neutral-400 border-[1px] "
               >
                 <strong className={``}>-</strong>
               </button>
@@ -252,7 +252,7 @@ const ManageProperties = ({
               )}
               <button
                 onClick={handleIncrement}
-                className="h-12 w-12 rounded border-[1px] text-white bg-black"
+                className="h-12 w-12 rounded-full shadhow-md  text-white border-neutral-400 border-[1px] "
               >
                 <strong>+</strong>
               </button>
