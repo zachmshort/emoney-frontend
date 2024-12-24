@@ -174,8 +174,8 @@ const RoomForm = ({
               />
               <ButtonAction
                 onClick={() => {
-                  if (!code || !roomName) {
-                    toast.error("Please type in a room name and code", {
+                  if (!code || (!roomName && type === "CREATE")) {
+                    toast.error("Please fill out the fields", {
                       className: `${josephinBold.className}`,
                     });
                   } else {

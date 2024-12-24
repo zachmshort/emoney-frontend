@@ -1,5 +1,3 @@
-import ManageProperties from "@/components/players/manage-properties";
-
 export interface Room {
   id: string;
   name: string;
@@ -29,9 +27,8 @@ export interface Property {
   name: string;
   color: string;
   price: number;
-  houses: number;
   group: string;
-  hotel: number;
+  developmentLevel: number;
   images: string[];
   isMortgaged: boolean;
   rentPrices: number[];

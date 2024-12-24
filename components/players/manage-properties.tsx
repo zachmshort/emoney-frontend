@@ -5,6 +5,10 @@ import { MdArrowBackIos } from "react-icons/md";
 import { josephinBold, josephinNormal } from "../ui/fonts";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { ManagePropertiesPayload } from "@/types/payloads";
+import {
+  getDisplayState,
+  getDisplayStateManage,
+} from "@/lib/utils/propertyHelpers";
 
 interface ManagePropertiesProps {
   player: Player;
@@ -35,19 +39,22 @@ const ManageProperties = ({
     }[]
   >([]);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-
+  console.log(player?.properties);
   useEffect(() => {
     if (selectedGroup && player.properties) {
       const groupProperties =
         groupedProperties.find(([group]) => group === selectedGroup)?.[1] || [];
       const initialHouseCount = groupProperties.reduce(
-        (sum, p) => sum + p.houses,
+        (sum, p) => sum + p.developmentLevel,
         0
       );
       setInitialHouses(initialHouseCount);
       setCurrentHouses(initialHouseCount);
       setPropertyCounts(
-        groupProperties.map((p) => ({ propertyId: p.id, count: p.houses }))
+        groupProperties.map((p) => ({
+          propertyId: p.id,
+          count: p.developmentLevel,
+        }))
       );
     }
   }, [selectedGroup, player.properties]);
@@ -72,64 +79,33 @@ const ManageProperties = ({
     }, {} as Record<string, Property[]>)
   );
 
-  // const canBuildHotels = (properties: Property[]) => {
-  //   const allPropertiesInGroup = groupedProperties.find(
-  //     ([group]) => group === properties[0].group
-  //   );
-
-  //   // player owns all properties in the group and they are not railroads or utilities
-  //   if (
-  //     !allPropertiesInGroup ||
-  //     allPropertiesInGroup[1].length !== properties.length ||
-  //     ["railroad", "utility"].includes(properties[0].group)
-  //   ) {
-  //     return false;
-  //   }
-
-  //   // check if the player already has hotels on all properties
-  //   if (properties.every((p) => p.hotel === 1)) {
-  //     return false;
-  //   }
-
-  //   // all properties have exactly 4 houses and none are mortgaged
-  //   if (properties.some((p) => p.houses !== 4 || p.isMortgaged)) {
-  //     return false;
-  //   }
-
-  //   return true;
-  // };
-
   const canManageHouses = (properties: Property[]) => {
     const allPropertiesInGroup = groupedProperties.find(
       ([group]) => group === properties[0].group
     );
-
     // if player doesnt have all the cards in set or if its railroad/utility cannot buy houses
     if (
       !allPropertiesInGroup ||
-      allPropertiesInGroup.length !== properties.length ||
+      allPropertiesInGroup[1].length !== properties.length ||
       allPropertiesInGroup[0] === "railroad" ||
       allPropertiesInGroup[0] === "utility"
     ) {
       return false;
     }
 
-    const minHouses = Math.min(...properties.map((p) => p.houses));
-    const maxHouses = Math.max(...properties.map((p) => p.houses));
-
-    return (
-      maxHouses - minHouses <= 1 &&
-      !properties.some((p) => p.isMortgaged) &&
-      maxHouses < 5
-    );
-  };
-
-  const canMortgageProperty = (properties: Property[]) => {
-    if (properties.some((p) => p.houses > 0)) {
+    if (properties.some((p) => p.isMortgaged)) {
       return false;
     }
 
-    if (properties.some((p) => p.hotel > 0)) {
+    return true;
+  };
+
+  const canMortgageProperty = (properties: Property[]) => {
+    if (properties.some((p) => p.developmentLevel > 0)) {
+      return false;
+    }
+
+    if (properties.some((p) => p.developmentLevel < 5)) {
       return false;
     }
 
@@ -141,6 +117,7 @@ const ManageProperties = ({
     managementType: "ADD_HOUSES" | "REMOVE_HOUSES" | "NO_CHANGE",
     totalCost: number
   ) => {
+    console.log(propertyCounts);
     onManageProperties(
       managementType === "ADD_HOUSES" ? -totalCost : totalCost,
       managementType,
@@ -178,13 +155,15 @@ const ManageProperties = ({
 
   const renderManageHouseDialog = (properties: Property[]) => {
     const totalHousesAvailable = properties.length * 4;
-    // const maxHouses = totalHousesAvailable - initialHouses;
+    const totalHotelsAvailable = properties.length;
+    const totalPropertiesAvailable =
+      totalHotelsAvailable + totalHousesAvailable;
 
     const distributeHouses = (totalHouses: number) => {
       setPropertyCounts(() => {
         const distribution = properties.map((p) => ({
           propertyId: p.id,
-          count: p.houses,
+          count: p.developmentLevel,
         }));
 
         const houseDifference = totalHouses;
@@ -214,7 +193,7 @@ const ManageProperties = ({
     };
 
     const handleIncrement = () => {
-      if (currentHouses < totalHousesAvailable) {
+      if (currentHouses < totalPropertiesAvailable) {
         const newHouseCount = currentHouses + 1;
         setCurrentHouses(newHouseCount);
         distributeHouses(newHouseCount - initialHouses);
@@ -239,7 +218,7 @@ const ManageProperties = ({
         : "NO_CHANGE";
 
     const BUY = transactionType === "ADD_HOUSES";
-
+    const numHouses = Math.abs(currentHouses - initialHouses);
     return (
       <Dialog open={houseBuildingMode} onOpenChange={setHouseBuildingMode}>
         <DialogContent>
@@ -260,12 +239,11 @@ const ManageProperties = ({
               </button>
               <span className={`text-black ${josephinBold.className}`}>
                 {transactionType === "ADD_HOUSES"
-                  ? "+"
+                  ? "Buy"
                   : transactionType === "NO_CHANGE"
                   ? ""
-                  : "-"}
-                {Math.abs(currentHouses - initialHouses)} house
-                {Math.abs(currentHouses - initialHouses) !== 1 && "s"} (
+                  : "Sell"}
+                {getDisplayStateManage(numHouses, properties.length)} (
                 {transactionType === "ADD_HOUSES"
                   ? "-"
                   : transactionType === "NO_CHANGE"
@@ -290,7 +268,7 @@ const ManageProperties = ({
                     {properties.find((p) => p.id === property.propertyId)?.name}
                   </span>
                   <span className={`text-black ${josephinBold.className}`}>
-                    {property.count} house{property.count !== 1 && "s"}
+                    {getDisplayState(property.count)}
                   </span>
                 </div>
               ))}
@@ -338,26 +316,35 @@ const ManageProperties = ({
             <div className="">
               <div className="flex flex-col gap-1">
                 <div className={`h-11`}>
-                  {property.houses > 0 && property.hotel === 0 && (
-                    <div className="flex gap-1 pt-1">
-                      {Array.from({
-                        length: property.houses,
-                      }).map((_, index) => (
-                        <div key={index}>
-                          <Image
-                            src="/house.png"
-                            width={40}
-                            height={40}
-                            alt="house"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {property.developmentLevel > 0 &&
+                    property.developmentLevel < 5 && (
+                      <div className="flex gap-1 pt-1">
+                        {Array.from({
+                          length: property.developmentLevel,
+                        }).map((_, index) => (
+                          <div key={index}>
+                            <Image
+                              src="/house.png"
+                              width={40}
+                              height={40}
+                              alt="house"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                  <div className="flex gap-1 pt-1">
+                    {property.developmentLevel === 5 && (
+                      <Image
+                        src="/hotel.png"
+                        width={40}
+                        height={40}
+                        alt="house"
+                      />
+                    )}
+                  </div>
                 </div>
-                {property.hotel > 0 && (
-                  <Image src="/hotel.png" width={40} height={40} alt="house" />
-                )}
               </div>
             </div>
 
@@ -371,7 +358,7 @@ const ManageProperties = ({
                       setHouseBuildingMode(true);
                     }}
                   >
-                    Manage Houses
+                    Develop Properties
                   </button>
 
                   {houseBuildingMode &&
@@ -399,7 +386,7 @@ const ManageProperties = ({
                   </button>
                 )
               )}
-              {property.houses === 0 && canMortgage && (
+              {property.developmentLevel === 0 && canMortgage && (
                 <button
                   className="bg-gray-600 text-white p-2 rounded text-sm"
                   onClick={() => handleSellToBank(property)}
