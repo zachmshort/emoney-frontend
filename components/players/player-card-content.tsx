@@ -94,8 +94,8 @@ const PlayerDetails = ({
             </div>
           </DrawerTrigger>
           <DrawerContent className={`bg-black h-[75vh] px-3 text-white`}>
-            <DrawerTitle className={`text-black`}>
-              {player?.name}&apos; Properties
+            <DrawerTitle className={`text-black select-none`}>
+              {player?.id}&apos; Properties
             </DrawerTitle>
             <ManageProperties
               onManageProperties={onManageProperties}
