@@ -26,6 +26,7 @@ const ManageProperties = ({
   currentPlayer,
   onManageProperties,
 }: ManagePropertiesProps) => {
+  console.log(player?.properties);
   const [currentView, setCurrentView] = useState<"colors" | "properties">(
     "colors"
   );
@@ -229,9 +230,9 @@ const ManageProperties = ({
             <div className="flex items-center justify-between">
               <button
                 onClick={handleDecrement}
-                className="h-12 w-12  rounded border-[1px] text-black"
+                className="h-12 w-12  text-white bg-black rounded border-[1px] "
               >
-                <strong>-</strong>
+                <strong className={``}>-</strong>
               </button>
               {!NO_CHANGE ? (
                 <>
@@ -249,7 +250,7 @@ const ManageProperties = ({
               )}
               <button
                 onClick={handleIncrement}
-                className="h-12 w-12 rounded border-[1px] text-black"
+                className="h-12 w-12 rounded border-[1px] text-white bg-black"
               >
                 <strong>+</strong>
               </button>
