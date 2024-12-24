@@ -150,10 +150,10 @@ const ManageProperties = ({
   };
 
   const renderManageHouseDialog = (properties: Property[]) => {
-    const totalHousesAvailable = properties.length * 4;
-    const totalHotelsAvailable = properties.length;
-    const totalPropertiesAvailable =
-      totalHotelsAvailable + totalHousesAvailable;
+    // const totalHousesAvailable = properties.length * 4;
+    // const totalHotelsAvailable = properties.length;
+    // const totalPropertiesAvailable =
+    //   totalHotelsAvailable + totalHousesAvailable;
 
     const distributeHouses = (totalHouses: number) => {
       setPropertyCounts(() => {
