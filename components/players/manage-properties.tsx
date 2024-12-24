@@ -104,11 +104,6 @@ const ManageProperties = ({
     if (properties.some((p) => p.developmentLevel > 0)) {
       return false;
     }
-
-    if (properties.some((p) => p.developmentLevel < 5)) {
-      return false;
-    }
-
     return true;
   };
 
@@ -218,6 +213,7 @@ const ManageProperties = ({
         : "NO_CHANGE";
 
     const BUY = transactionType === "ADD_HOUSES";
+    const NO_CHANGE = transactionType === "NO_CHANGE";
     const numHouses = Math.abs(currentHouses - initialHouses);
     return (
       <Dialog open={houseBuildingMode} onOpenChange={setHouseBuildingMode}>
@@ -226,7 +222,7 @@ const ManageProperties = ({
             <DialogTitle
               className={`${josephinNormal.className} text-center text-black`}
             >
-              Manage Houses
+              Develop Property
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -237,20 +233,20 @@ const ManageProperties = ({
               >
                 <strong>-</strong>
               </button>
-              <span className={`text-black ${josephinBold.className}`}>
-                {transactionType === "ADD_HOUSES"
-                  ? "Buy"
-                  : transactionType === "NO_CHANGE"
-                  ? ""
-                  : "Sell"}
-                {getDisplayStateManage(numHouses, properties.length)} (
-                {transactionType === "ADD_HOUSES"
-                  ? "-"
-                  : transactionType === "NO_CHANGE"
-                  ? ""
-                  : "+"}
-                ${BUY ? totalCost : totalCost / 2})
-              </span>
+              {!NO_CHANGE ? (
+                <>
+                  <span className={`text-black ${josephinBold.className}`}>
+                    {transactionType === "ADD_HOUSES" ? "Buy " : "Sell "}
+                    {getDisplayStateManage(numHouses, properties.length)} (
+                    {transactionType === "ADD_HOUSES" ? "-" : "+"}$
+                    {BUY ? totalCost : totalCost / 2})
+                  </span>
+                </>
+              ) : (
+                <div className={`text-black ${josephinBold.className}`}>
+                  No Change
+                </div>
+              )}
               <button
                 onClick={handleIncrement}
                 className="h-12 w-12 rounded border-[1px] text-black"
@@ -369,22 +365,21 @@ const ManageProperties = ({
                     )}
                 </>
               )}
-              {!property.isMortgaged && canMortgage ? (
+              {canMortgage && !property.isMortgaged && (
                 <button
                   className="bg-yellow-600 text-white p-2 rounded text-sm"
                   onClick={() => handleMortgage(property)}
                 >
                   Mortgage (${property.price / 2})
                 </button>
-              ) : (
-                property.isMortgaged && (
-                  <button
-                    className="bg-blue-600 text-white p-2 rounded text-sm"
-                    onClick={() => handleUnmortgage(property)}
-                  >
-                    Unmortgage (${Math.floor(property.price * 0.55)})
-                  </button>
-                )
+              )}
+              {property.isMortgaged && (
+                <button
+                  className="bg-blue-600 text-white p-2 rounded text-sm"
+                  onClick={() => handleUnmortgage(property)}
+                >
+                  Unmortgage (${Math.floor(property.price * 0.55)})
+                </button>
               )}
               {property.developmentLevel === 0 && canMortgage && (
                 <button

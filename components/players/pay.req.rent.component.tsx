@@ -243,14 +243,38 @@ const PayRequestRent = ({
                     {property.isMortgaged && (
                       <div className="text-red-500 text-sm">Mortgaged</div>
                     )}
-                    {property.houses > 0 && (
-                      <div className="text-green-500 text-sm">
-                        {property.houses} House{property.houses > 1 ? "s" : ""}
+                    <div className="flex flex-col gap-1">
+                      <div className={`h-11`}>
+                        {property.developmentLevel > 0 &&
+                          property.developmentLevel < 5 && (
+                            <div className="flex gap-1 pt-1">
+                              {Array.from({
+                                length: property.developmentLevel,
+                              }).map((_, index) => (
+                                <div key={index}>
+                                  <Image
+                                    src="/house.png"
+                                    width={40}
+                                    height={40}
+                                    alt="house"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                        <div className="flex gap-1 pt-1">
+                          {property.developmentLevel === 5 && (
+                            <Image
+                              src="/hotel.png"
+                              width={40}
+                              height={40}
+                              alt="house"
+                            />
+                          )}
+                        </div>
                       </div>
-                    )}
-                    {property.hotel > 0 && (
-                      <div className="text-blue-500 text-sm">Hotel</div>
-                    )}
+                    </div>
                   </div>
                 </div>
               ))}

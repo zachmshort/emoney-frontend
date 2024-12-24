@@ -25,27 +25,22 @@ const doesPlayerOwnFullSet = (
   property: Property,
   playerProperties: Property[]
 ): boolean => {
-  const propertiesInGroup = playerProperties.filter(
-    (p) => p.group === property.group
-  );
-
-  const ownedUnmortgagedCount = propertiesInGroup.filter(
-    (p) => !p.isMortgaged
-  ).length;
-
   const requiredPropertiesPerGroup: Record<string, number> = {
     brown: 2,
-    lightBlue: 3,
+    "light-blue": 3,
     pink: 3,
     orange: 3,
     red: 3,
     yellow: 3,
     green: 3,
-    darkBlue: 2,
+    "dark-blue": 2,
+    railroad: 4,
+    utility: 2,
   };
 
-  return ownedUnmortgagedCount === requiredPropertiesPerGroup[property.group];
+  return playerProperties.length === requiredPropertiesPerGroup[property.group];
 };
+
 const calculateMonopolies = (playerProperties: Property[] = []): number => {
   if (!playerProperties) return 0;
 
@@ -95,6 +90,7 @@ const getGroupedMonopolies = (playerProperties: Property[] = []) => {
 
   return Object.entries(groupedObj);
 };
+
 const calculateRent = (
   property: Property,
   properties: Property[]
@@ -107,22 +103,20 @@ const calculateRent = (
   }
 
   const hasFullSet = doesPlayerOwnFullSet(property, properties);
+  console.log(property);
+  console.log("has full set is ", hasFullSet, "for ", property.group);
   let rentIndex = 0;
   let rentMultiplier = 1;
   let rentReason = `base rent for ${property.name}`;
 
   if (hasFullSet) {
-    if (property.houses === 0 && property.hotel === 0) {
+    console.log(property.developmentLevel, "houses on", property.name);
+    if (property.developmentLevel === 0) {
       rentMultiplier = 2;
       rentReason = `double rent for ${property.name} (full ${property.group} set)`;
-    } else if (property.hotel === 1) {
-      rentIndex = 5;
-      rentReason = `hotel rent for ${property.name}`;
-    } else {
-      rentIndex = property.houses + 1;
-      rentReason = `rent for ${property.name} with ${property.houses} house${
-        property.houses > 1 ? "s" : ""
-      }`;
+    } else if (property.developmentLevel === 5) {
+      rentIndex = property.developmentLevel + 1;
+      rentReason = `rent for ${property.name} with a hotel`;
     }
   }
 
