@@ -68,7 +68,7 @@ const RoomView = ({
           roomId={room?.id}
         />
       </div>
-      <div className="flex-1 flex items-center">
+      <div className="flex-1 flex items-center overflow-x-auo">
         <div className="w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
           <div className="inline-flex gap-x-4 mx-4">
             <div className="flex-none snap-center">

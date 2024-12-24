@@ -190,20 +190,20 @@ const ManageProperties = ({
 
     const handleIncrement = () => {
       console.log("handle increment");
-      if (currentHouses < totalPropertiesAvailable) {
-        const newHouseCount = currentHouses + 1;
-        setCurrentHouses(newHouseCount);
-        distributeHouses(newHouseCount - initialHouses);
-      }
+      // if (currentHouses < totalPropertiesAvailable) {
+      const newHouseCount = currentHouses + 1;
+      setCurrentHouses(newHouseCount);
+      distributeHouses(newHouseCount - initialHouses);
+      // }
     };
 
     const handleDecrement = () => {
       console.log("handle decrement");
-      if (currentHouses > 0) {
-        const newHouseCount = currentHouses - 1;
-        setCurrentHouses(newHouseCount);
-        distributeHouses(newHouseCount - initialHouses);
-      }
+      // if (currentHouses > 0) {
+      const newHouseCount = currentHouses - 1;
+      setCurrentHouses(newHouseCount);
+      distributeHouses(newHouseCount - initialHouses);
+      // }
     };
 
     const totalCost =
