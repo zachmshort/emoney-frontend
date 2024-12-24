@@ -189,6 +189,7 @@ const ManageProperties = ({
     };
 
     const handleIncrement = () => {
+      console.log("handle increment");
       if (currentHouses < totalPropertiesAvailable) {
         const newHouseCount = currentHouses + 1;
         setCurrentHouses(newHouseCount);
@@ -197,6 +198,7 @@ const ManageProperties = ({
     };
 
     const handleDecrement = () => {
+      console.log("handle decrement");
       if (currentHouses > 0) {
         const newHouseCount = currentHouses - 1;
         setCurrentHouses(newHouseCount);
