@@ -81,7 +81,6 @@ const calculateRent = (
   let rentIndex = 0;
   let rentMultiplier = 1;
   let rentreason = `Base rent for ${property.name}`;
-  let baseAmount: number;
   let finalAmount: number;
 
   if (hasFullSet && commonProperty) {
@@ -109,7 +108,7 @@ const calculateRent = (
     rentreason = `rent for ${property.name} with ${properties.length} railroads`;
   }
 
-  baseAmount =
+  const baseAmount =
     property.rentPrices?.[rentIndex] ?? property.rentPrices?.[0] ?? 50;
 
   finalAmount = baseAmount * rentMultiplier;

@@ -23,7 +23,6 @@ const SelectColorProperties = ({
     "colors" | "properties" | "confirmation"
   >("colors");
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(
     null
   );
@@ -130,18 +129,17 @@ const SelectColorProperties = ({
       ) : currentView === "properties" ? (
         <>
           <h1 className="flex items-center justify-start" onClick={handleBack}>
-            {/* <MdArrowBackIos /> */}
+            <MdArrowBackIos />
           </h1>
           <div className="overflow-x-auto flex gap-4">
             {groupedProperties
               .find(([group]) => group === selectedGroup)?.[1]
-              .map((property) => (
-                <div className="relative">
+              .map((property: Property, index: number) => (
+                <div className="relative" key={index}>
                   <PropertyCard
                     property={property}
                     className="flex-shrink-0 cursor-pointer"
                     onClick={() => handlePropertySelect(property)}
-                    key={property.id}
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-center">
                     <span className="text-lg">${property?.price}</span>
@@ -162,8 +160,6 @@ const SelectColorProperties = ({
                   setSelectedGroup(group);
                   setCurrentView("properties");
                 }}
-                onMouseEnter={() => setHoveredGroup(group)}
-                onMouseLeave={() => setHoveredGroup(null)}
               />
             ))}
           </div>

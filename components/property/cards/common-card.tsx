@@ -56,7 +56,7 @@ const CommonPropertyCard = ({ property }: { property: Property }) => {
         <div
           className={`flex flex-col items-even space-y-[.1rem] justify-center`}
         >
-          {["1", "2", "3", "4"].map((house: any, index: number) => (
+          {["1", "2", "3", "4"].map((house: string, index: number) => (
             <div key={index} className={`flex justify-between  w-full`}>
               <p className={`text-start`}>
                 With {house} House{index !== 0 && "s"}
