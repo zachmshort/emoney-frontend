@@ -26,14 +26,7 @@ export interface TransferPayload {
 
 export type ManagePropertiesPayload =
   | {
-      managementType: "ADD_HOUSES" | "REMOVE_HOUSES" | "NO_CHANGE";
-      playerId: string;
-      properties: { propertyId: string; count: number }[];
-      roomId: string;
-      amount: number;
-    }
-  | {
-      managementType: "ADD_HOTELS" | "REMOVE_HOTELS";
+      managementType: "HOUSES";
       playerId: string;
       properties: { propertyId: string; count: number }[];
       roomId: string;

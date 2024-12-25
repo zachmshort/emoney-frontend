@@ -118,7 +118,7 @@ const ManageProperties = ({
     console.log(propertyCounts);
     onManageProperties(
       managementType === "ADD_HOUSES" ? -totalCost : totalCost,
-      managementType,
+      "HOUSES",
       propertyCounts,
       currentPlayer.id
     );
@@ -285,9 +285,7 @@ const ManageProperties = ({
                   handleChangeHouses(
                     propertyCounts,
                     transactionType,
-                    transactionType === "ADD_HOUSES"
-                      ? totalCost
-                      : -totalCost / 2
+                    BUY ? totalCost : -totalCost / 2
                   );
                   setHouseBuildingMode(false);
                 }}
