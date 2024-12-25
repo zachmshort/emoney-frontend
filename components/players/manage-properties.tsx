@@ -125,14 +125,14 @@ const ManageProperties = ({
     );
   };
 
-  const handleSellToBank = (property: Property) => {
-    onManageProperties(
-      property?.isMortgaged ? -property.price / 2 : -property.price,
-      "SELL",
-      [{ propertyId: property.id }],
-      currentPlayer.id
-    );
-  };
+  // const handleSellToBank = (property: Property) => {
+  //   onManageProperties(
+  //     property?.isMortgaged ? -property.price / 2 : -property.price,
+  //     "SELL",
+  //     [{ propertyId: property.id }],
+  //     currentPlayer.id
+  //   );
+  // };
 
   const handleMortgage = (property: Property) => {
     onManageProperties(
@@ -302,7 +302,6 @@ const ManageProperties = ({
     property: Property,
     groupProperties: Property[]
   ) => {
-    const canBuild = canManageHouses(groupProperties);
     const canMortgage = canMortgageProperty(groupProperties);
     return (
       <div className="relative group">
