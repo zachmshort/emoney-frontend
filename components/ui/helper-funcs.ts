@@ -71,7 +71,7 @@ const calculateRent = (
       reason: `${property.name} is mortgaged`,
     };
   }
-
+  console.log(properties);
   const commonProperty =
     property.group !== "utility" && property.group !== "utility";
   const railroad = property.group === "railroad";
@@ -97,7 +97,9 @@ const calculateRent = (
             }`
       }`;
     }
-  } else if (railroad) {
+  }
+
+  if (railroad) {
     if (properties[1].length === 3) {
       rentMultiplier = 4;
     } else if (properties[1].length === 4) {
@@ -105,7 +107,7 @@ const calculateRent = (
     } else {
       rentMultiplier = properties.length;
     }
-    rentreason = `rent for ${property.name} with ${properties.length} railroads`;
+    rentreason = `rent for ${property.name} with ${properties[1].length} railroads`;
   }
 
   const baseAmount =

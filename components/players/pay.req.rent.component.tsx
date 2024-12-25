@@ -40,7 +40,7 @@ const PayRequestRent = ({
   const [currentView, setCurrentView] = useState<
     "colors" | "properties" | "confirmation"
   >("colors");
-  const [roll, setRoll] = useState(12);
+  const [roll, setRoll] = useState("12");
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [transactionDetails, setTransactionDetails] =
     useState<TransactionDetails | null>(null);
@@ -50,7 +50,7 @@ const PayRequestRent = ({
       const { amount, reason } = calculateRent(
         transactionDetails.property,
         transactionDetails.propertyGroup,
-        roll
+        parseInt(roll)
       );
 
       setTransactionDetails({
@@ -89,7 +89,7 @@ const PayRequestRent = ({
     const { amount, reason } = calculateRent(
       property,
       [property.group, propertiesInGroup],
-      roll
+      parseInt(roll)
     );
 
     if (amount === 0) {
@@ -189,11 +189,25 @@ const PayRequestRent = ({
                 className={`w-24 pt-4 pl-1 border rounded text-black`}
                 value={roll}
                 onChange={(e) => {
-                  const newValue = parseInt(e.target.value) || 0;
-                  const clampedValue = Math.min(Math.max(newValue, 1), 12);
-                  setRoll(clampedValue);
+                  const inputValue = e.target.value;
+                  if (inputValue === "") {
+                    setRoll(inputValue);
+                    return;
+                  }
+                  const numericValue = Math.max(
+                    1,
+                    Math.min(parseInt(inputValue, 10) || 0, 12)
+                  );
+                  setRoll(numericValue.toString());
                 }}
-                type="number"
+                onBlur={() => {
+                  const numericValue = Math.max(
+                    1,
+                    Math.min(parseInt(roll, 10) || 1, 12)
+                  );
+                  setRoll(numericValue.toString());
+                }}
+                type="numeric"
                 min={1}
                 max={12}
               />
