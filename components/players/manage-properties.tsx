@@ -153,10 +153,10 @@ const ManageProperties = ({
   };
 
   const renderManageHouseDialog = (properties: Property[]) => {
-    const totalHousesAvailable = properties.length * 4;
-    const totalHotelsAvailable = properties.length;
-    const totalPropertiesAvailable =
-      totalHotelsAvailable + totalHousesAvailable;
+    // const totalHousesAvailable = properties.length * 4;
+    // const totalHotelsAvailable = properties.length;
+    // const totalPropertiesAvailable =
+    //   totalHotelsAvailable + totalHousesAvailable;
 
     const distributeHouses = (totalHouses: number) => {
       setPropertyCounts(() => {
@@ -193,20 +193,20 @@ const ManageProperties = ({
 
     const handleIncrement = () => {
       console.log("handle increment");
-      if (currentHouses < totalPropertiesAvailable) {
-        const newHouseCount = currentHouses + 1;
-        setCurrentHouses(newHouseCount);
-        distributeHouses(newHouseCount - initialHouses);
-      }
+      // if (currentHouses < totalPropertiesAvailable) {
+      const newHouseCount = currentHouses + 1;
+      setCurrentHouses(newHouseCount);
+      distributeHouses(newHouseCount - initialHouses);
+      // }
     };
 
     const handleDecrement = () => {
       console.log("handle decrement");
-      if (currentHouses > 0) {
-        const newHouseCount = currentHouses - 1;
-        setCurrentHouses(newHouseCount);
-        distributeHouses(newHouseCount - initialHouses);
-      }
+      // if (currentHouses > 0) {
+      const newHouseCount = currentHouses - 1;
+      setCurrentHouses(newHouseCount);
+      distributeHouses(newHouseCount - initialHouses);
+      // }
     };
 
     const totalCost =
