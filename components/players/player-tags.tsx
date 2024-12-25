@@ -244,13 +244,13 @@ const PlayerTags = ({
 
   return (
     <>
-      <div className="flex flex-wrap gap-2 mt-2">
+      <div className="flex flex-wrap gap-1 mt-2">
         {earnedTags.map((tag) => (
           <div
             key={tag.title}
             onClick={() => setSelectedTag(tag)}
             className={`
-            inline-flex items-center gap-2 px-3 py-1 rounded-full
+            inline-flex items-center px-2 py-1 rounded-full
             ${tag.color} text-white text-sm ${josephinBold.className}
             transform hover:scale-105 transition-transform cursor-pointer
           `}
