@@ -1,11 +1,11 @@
 import { Player, Property } from "@/types/schema";
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { MdArrowBackIos } from "react-icons/md";
 import { josephinBold } from "../ui/fonts";
 import { calculateRent } from "../ui/helper-funcs";
 import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";
+import PropertyCard from "../property/cards/card";
 
 interface PayRequestRentProps {
   properties?: Property[];
@@ -27,6 +27,7 @@ interface TransactionDetails {
   amount: number;
   reason: string;
   property: Property;
+  propertyGroup: [string, Property[]];
 }
 const PayRequestRent = ({
   properties = [],
@@ -39,12 +40,35 @@ const PayRequestRent = ({
   const [currentView, setCurrentView] = useState<
     "colors" | "properties" | "confirmation"
   >("colors");
+  const [roll, setRoll] = useState(12);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
   const [transactionDetails, setTransactionDetails] =
     useState<TransactionDetails | null>(null);
 
-  if (!properties || properties.length === 0) {
+  useEffect(() => {
+    if (transactionDetails && selectedGroup === "utility") {
+      const { amount, reason } = calculateRent(
+        transactionDetails.property,
+        transactionDetails.propertyGroup,
+        roll
+      );
+
+      setTransactionDetails({
+        ...transactionDetails,
+        amount,
+        reason,
+      });
+
+      const payingPlayer = type === "SEND" ? fromPlayer : toPlayer;
+      if (payingPlayer.balance < amount) {
+        toast.error(
+          `${payingPlayer.name} doesn't have sufficient funds (${amount})`
+        );
+      }
+    }
+  }, [roll, transactionDetails?.property, selectedGroup]);
+
+  if (!properties || properties?.length === 0) {
     return (
       <div className="flex items-start justify-center h-full">
         <p className={`text-sm ${josephinBold.className} text-white`}>
@@ -57,7 +81,16 @@ const PayRequestRent = ({
   }
 
   const handlePropertySelect = (property: Property) => {
-    const { amount, reason } = calculateRent(property, properties);
+    const propertyOwner = type === "SEND" ? toPlayer : fromPlayer;
+    const propertiesInGroup = properties.filter(
+      (p) => p.group === property.group && p.playerId === propertyOwner.id
+    );
+
+    const { amount, reason } = calculateRent(
+      property,
+      [property.group, propertiesInGroup],
+      roll
+    );
 
     if (amount === 0) {
       toast.error(reason);
@@ -72,10 +105,16 @@ const PayRequestRent = ({
       return;
     }
 
+    const propertyGroup: [string, Property[]] = [
+      property.group,
+      propertiesInGroup,
+    ];
+
     setTransactionDetails({
       amount,
       reason,
       property,
+      propertyGroup,
     });
     setCurrentView("confirmation");
   };
@@ -132,25 +171,6 @@ const PayRequestRent = ({
     }, {} as Record<string, Property[]>)
   );
 
-  const PrefetchImages = ({ group }: { group: string }) => {
-    const images = groupedProperties
-      .find(([g]) => g === group)?.[1]
-      .map((property) => property.images[0]);
-
-    return (
-      <>
-        {images?.map((image) => (
-          <link
-            key={image}
-            rel="prefetch"
-            href={`/property-images/${image}.png`}
-            as="image"
-          />
-        ))}
-      </>
-    );
-  };
-
   const balances = getUpdatedBalances();
 
   const renderConfirmationView = () => {
@@ -158,20 +178,40 @@ const PayRequestRent = ({
 
     return (
       <>
-        <h1
-          className="flex items-center justify-start mb-6"
-          onClick={handleBack}
-        >
-          <MdArrowBackIos />
-          <div>Back</div>
+        <h1 className="flex items-center justify-between">
+          <button onClick={handleBack} className={`flex`}>
+            <MdArrowBackIos />
+            <div>Back</div>
+          </button>
+          {selectedGroup === "utility" && (
+            <div className={`relative`}>
+              <input
+                className={`w-24 pt-4 pl-1 border rounded text-black`}
+                value={roll}
+                onChange={(e) => {
+                  const newValue = parseInt(e.target.value) || 0;
+                  const clampedValue = Math.min(Math.max(newValue, 1), 12);
+                  setRoll(clampedValue);
+                }}
+                type="number"
+                min={1}
+                max={12}
+              />
+              <p className={`text-xs text-black absolute top-1 left-1`}>
+                Dice Roll
+              </p>
+            </div>
+          )}
         </h1>
-        <div className="space-y-6">
+        <div className="space-y-5">
           <div className="space-y-4">
             <h2 className="text-xl">Confirm Transaction</h2>
             <div className="bg-gray-800 rounded-lg p-4 space-y-4">
               <div className="flex justify-between items-center">
                 <span>Amount:</span>
-                <span className="text-xl">${transactionDetails.amount}</span>
+                <span className="text-xl">
+                  ${transactionDetails?.amount || 0}
+                </span>
               </div>
               <div className="text-sm opacity-80">
                 {transactionDetails.reason}
@@ -184,18 +224,20 @@ const PayRequestRent = ({
             <div className="bg-gray-800 rounded-lg p-4 space-y-3">
               <div className="flex justify-between">
                 <span>{balances.payingPlayerName}</span>
-                <span className="text-red-400">${balances.payingBalance}</span>
+                <span className="text-red-400">
+                  ${balances?.payingBalance || fromPlayer.balance}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span>{balances.receivingPlayerName}</span>
+                <span>{balances?.receivingPlayerName}</span>
                 <span className="text-green-400">
-                  ${balances.receivingBalance}
+                  ${balances?.receivingBalance || toPlayer.balance}
                 </span>
               </div>
             </div>
           </div>
 
-          <DrawerClose className="w-full">
+          <DrawerClose asChild className="w-full">
             <button
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg mt-4"
               onClick={handleConfirmTransaction}
@@ -210,8 +252,6 @@ const PayRequestRent = ({
 
   return (
     <div className={`space-y-4 text-2xl ml-2 mt-2 ${josephinBold.className}`}>
-      {hoveredGroup && <PrefetchImages group={hoveredGroup} />}
-
       {currentView === "confirmation" ? (
         renderConfirmationView()
       ) : currentView === "properties" ? (
@@ -224,77 +264,31 @@ const PayRequestRent = ({
             {groupedProperties
               .find(([group]) => group === selectedGroup)?.[1]
               .map((property) => (
-                <div
+                <PropertyCard
                   key={property.id}
                   className={`flex-shrink-0 cursor-pointer ${
                     property.isMortgaged ? "opacity-50" : ""
                   }`}
-                  onClick={() => handlePropertySelect(property)}
-                >
-                  <Image
-                    src={`/property-images/${property.images[0]}.png`}
-                    alt={property.images[0]}
-                    width={200}
-                    height={300}
-                    className="rounded"
-                    priority
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-1">
-                    {property.isMortgaged && (
-                      <div className="text-red-500 text-sm">Mortgaged</div>
-                    )}
-                    <div className="flex flex-col gap-1">
-                      <div className={`h-11`}>
-                        {property.developmentLevel > 0 &&
-                          property.developmentLevel < 5 && (
-                            <div className="flex gap-1 pt-1">
-                              {Array.from({
-                                length: property.developmentLevel,
-                              }).map((_, index) => (
-                                <div key={index}>
-                                  <Image
-                                    src="/house.png"
-                                    width={40}
-                                    height={40}
-                                    alt="house"
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                        <div className="flex gap-1 pt-1">
-                          {property.developmentLevel === 5 && (
-                            <Image
-                              src="/hotel.png"
-                              width={40}
-                              height={40}
-                              alt="house"
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  property={property}
+                  onClick={() => {
+                    handlePropertySelect(property);
+                  }}
+                />
               ))}
           </div>
         </>
       ) : (
         <>
-          <h2>Select a Color</h2>
           <div className="grid grid-cols-4 sm:grid-cols-10 gap-2">
             {groupedProperties.map(([group, props]) => (
               <button
                 key={group}
-                className="p-2 rounded mb-2 border aspect-square w-full"
+                className="p-2 rounded border aspect-square w-full"
                 style={{ backgroundColor: props[0].color }}
                 onClick={() => {
                   setSelectedGroup(group);
                   setCurrentView("properties");
                 }}
-                onMouseEnter={() => setHoveredGroup(group)}
-                onMouseLeave={() => setHoveredGroup(null)}
               />
             ))}
           </div>

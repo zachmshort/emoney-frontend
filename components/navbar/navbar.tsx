@@ -1,3 +1,4 @@
+"use client";
 import { EventHistory, Player, Property } from "@/types/schema";
 import {
   Drawer,
@@ -149,7 +150,7 @@ const Navbar = ({
                   onClick={() => setShowProperties(true)}
                 >
                   <li>Bank&apos;s Properties</li>
-                  <li>{availableProperties.length}</li>
+                  <li>{availableProperties?.length || 0}</li>
                 </div>
                 <div
                   className={`flex justify-between mt-4`}

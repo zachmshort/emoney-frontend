@@ -10,11 +10,11 @@ const getButtonText = (type: string) => {
   switch (type) {
     case "SEND":
       return "Send";
-    case "REQUEST":
-      return "Request";
+    case "rEQUEST":
+      return "request";
     case "ADD":
       return "Add";
-    case "SUBTRACT":
+    case "SUBTrACT":
       return "Subtract";
     default:
       return "";
@@ -23,7 +23,7 @@ const getButtonText = (type: string) => {
 
 const doesPlayerOwnFullSet = (
   property: Property,
-  playerProperties: Property[]
+  properties: [string, Property[]]
 ): boolean => {
   const requiredPropertiesPerGroup: Record<string, number> = {
     brown: 2,
@@ -38,25 +38,9 @@ const doesPlayerOwnFullSet = (
     utility: 2,
   };
 
-  return playerProperties.length === requiredPropertiesPerGroup[property.group];
+  return properties[1].length === requiredPropertiesPerGroup[property.group];
 };
 
-const calculateMonopolies = (playerProperties: Property[] = []): number => {
-  if (!playerProperties) return 0;
-
-  const monopolyGroups = new Set<string>();
-
-  playerProperties.forEach((property) => {
-    if (
-      !monopolyGroups.has(property.group) &&
-      doesPlayerOwnFullSet(property, playerProperties)
-    ) {
-      monopolyGroups.add(property.group);
-    }
-  });
-
-  return monopolyGroups.size;
-};
 const formatTimeAgo = (date: Date) => {
   const now = new Date();
   const minutesAgo = differenceInMinutes(now, date);
@@ -75,25 +59,11 @@ const formatTimeAgo = (date: Date) => {
   }
   return `${minutesAgo} min ago`;
 };
-const getGroupedMonopolies = (playerProperties: Property[] = []) => {
-  if (!playerProperties) return [];
-
-  const groupedObj = playerProperties.reduce((acc, property) => {
-    if (doesPlayerOwnFullSet(property, playerProperties)) {
-      if (!acc[property.group]) {
-        acc[property.group] = [];
-      }
-      acc[property.group].push(property);
-    }
-    return acc;
-  }, {} as Record<string, Property[]>);
-
-  return Object.entries(groupedObj);
-};
 
 const calculateRent = (
   property: Property,
-  properties: Property[]
+  properties: [string, Property[]],
+  roll?: number
 ): { amount: number; reason: string } => {
   if (property.isMortgaged) {
     return {
@@ -102,39 +72,65 @@ const calculateRent = (
     };
   }
 
+  const commonProperty =
+    property.group !== "utility" && property.group !== "utility";
+  const railroad = property.group === "railroad";
+  const utility = property.group === "utility";
   const hasFullSet = doesPlayerOwnFullSet(property, properties);
-  console.log(property);
-  console.log("has full set is ", hasFullSet, "for ", property.group);
+
   let rentIndex = 0;
   let rentMultiplier = 1;
-  let rentReason = `base rent for ${property.name}`;
+  let rentreason = `Base rent for ${property.name}`;
+  let baseAmount: number;
+  let finalAmount: number;
 
-  if (hasFullSet) {
-    console.log(property.developmentLevel, "houses on", property.name);
+  if (hasFullSet && commonProperty) {
     if (property.developmentLevel === 0) {
       rentMultiplier = 2;
-      rentReason = `double rent for ${property.name} (full ${property.group} set)`;
-    } else if (property.developmentLevel === 5) {
-      rentIndex = property.developmentLevel + 1;
-      rentReason = `rent for ${property.name} with a hotel`;
+      rentreason = `rent for ${property.name} with full set`;
+    } else {
+      rentIndex = property.developmentLevel;
+      rentreason = `rent for ${property.name} with ${
+        property.developmentLevel === 5
+          ? "a hotel"
+          : `${property.developmentLevel} House${
+              property.developmentLevel > 1 && "s"
+            }`
+      }`;
     }
+  } else if (railroad) {
+    if (properties[1].length === 3) {
+      rentMultiplier = 4;
+    } else if (properties[1].length === 4) {
+      rentMultiplier = 8;
+    } else {
+      rentMultiplier = properties.length;
+    }
+    rentreason = `rent for ${property.name} with ${properties.length} railroads`;
   }
 
-  const baseAmount =
+  baseAmount =
     property.rentPrices?.[rentIndex] ?? property.rentPrices?.[0] ?? 50;
-  const finalAmount = baseAmount * rentMultiplier;
+
+  finalAmount = baseAmount * rentMultiplier;
+
+  if (utility) {
+    if (properties[1].length === 1) {
+      rentMultiplier = 4;
+    } else {
+      rentMultiplier = 10;
+    }
+    console.log("rent multiplier", rentMultiplier);
+    finalAmount = roll * rentMultiplier;
+    rentreason = `rent on ${property.name} with ${properties[1].length} utilit${
+      properties[1].length === 1 ? "y" : "ies"
+    } & roll of ${roll}`;
+  }
 
   return {
     amount: finalAmount,
-    reason: rentReason,
+    reason: rentreason,
   };
 };
 
-export {
-  getButtonText,
-  calculateRent,
-  doesPlayerOwnFullSet,
-  calculateMonopolies,
-  getGroupedMonopolies,
-  formatTimeAgo,
-};
+export { getButtonText, calculateRent, doesPlayerOwnFullSet, formatTimeAgo };

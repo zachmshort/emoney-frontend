@@ -8,7 +8,6 @@ import {
 import { useState } from "react";
 import SendReqToggle from "./pay-req-toggle-switch";
 import PayRequestRent from "./pay.req.rent.component";
-import { calculateMonopolies } from "../ui/helper-funcs";
 import { josephinBold, josephinNormal } from "../ui/fonts";
 import PlayerTags from "./player-tags";
 import ManageProperties from "./manage-properties";
@@ -74,7 +73,7 @@ const PlayerDetails = ({
     }
     return player?.properties;
   };
-  const monopoliesCount = calculateMonopolies(player?.properties);
+  // const monopoliesCount = calculateMonopolies(player?.properties);
 
   return (
     <>
@@ -93,7 +92,7 @@ const PlayerDetails = ({
               <div>{player?.properties?.length || 0}</div>
             </div>
           </DrawerTrigger>
-          <DrawerContent className={`bg-black h-[75vh] px-3 text-white`}>
+          <DrawerContent className={`bg-black h-[80vh] px-3 text-white`}>
             <DrawerTitle className={`text-black select-none`}>
               {player?.id}&apos; Properties
             </DrawerTitle>
@@ -106,7 +105,8 @@ const PlayerDetails = ({
         </Drawer>
         <div className={`flex items-center justify-between`}>
           <div>{currentPlayer?.id === player?.id && "My"} Monopolies</div>
-          <div>{monopoliesCount}</div>
+          {/* <div>{monopoliesCount}</div> */}
+          <div>0</div>
         </div>
         <PlayerTags
           player={player}

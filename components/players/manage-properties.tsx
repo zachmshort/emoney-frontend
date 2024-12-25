@@ -1,14 +1,15 @@
 import { Player, Property } from "@/types/schema";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { MdArrowBackIos } from "react-icons/md";
 import { josephinBold, josephinNormal } from "../ui/fonts";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { ManagePropertiesPayload } from "@/types/payloads";
 import {
   getDisplayState,
   getDisplayStateManage,
 } from "@/lib/utils/propertyHelpers";
+import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
+import { toast } from "sonner";
+import PropertyCard from "../property/cards/card";
 
 interface ManagePropertiesProps {
   player: Player;
@@ -40,7 +41,7 @@ const ManageProperties = ({
     }[]
   >([]);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  console.log(player?.properties);
+  const [propertiesToBuy, setPropertiesToBuy] = useState<Property[]>([]);
   useEffect(() => {
     if (selectedGroup && player.properties) {
       const groupProperties =
@@ -84,6 +85,7 @@ const ManageProperties = ({
     const allPropertiesInGroup = groupedProperties.find(
       ([group]) => group === properties[0].group
     );
+
     // if player doesnt have all the cards in set or if its railroad/utility cannot buy houses
     if (
       !allPropertiesInGroup ||
@@ -93,10 +95,11 @@ const ManageProperties = ({
     ) {
       return false;
     }
-
+    console.log("didint fail 1");
     if (properties.some((p) => p.isMortgaged)) {
       return false;
     }
+    console.log("didnt fail 2");
 
     return true;
   };
@@ -150,10 +153,10 @@ const ManageProperties = ({
   };
 
   const renderManageHouseDialog = (properties: Property[]) => {
-    // const totalHousesAvailable = properties.length * 4;
-    // const totalHotelsAvailable = properties.length;
-    // const totalPropertiesAvailable =
-    //   totalHotelsAvailable + totalHousesAvailable;
+    const totalHousesAvailable = properties.length * 4;
+    const totalHotelsAvailable = properties.length;
+    const totalPropertiesAvailable =
+      totalHotelsAvailable + totalHousesAvailable;
 
     const distributeHouses = (totalHouses: number) => {
       setPropertyCounts(() => {
@@ -190,20 +193,20 @@ const ManageProperties = ({
 
     const handleIncrement = () => {
       console.log("handle increment");
-      // if (currentHouses < totalPropertiesAvailable) {
-      const newHouseCount = currentHouses + 1;
-      setCurrentHouses(newHouseCount);
-      distributeHouses(newHouseCount - initialHouses);
-      // }
+      if (currentHouses < totalPropertiesAvailable) {
+        const newHouseCount = currentHouses + 1;
+        setCurrentHouses(newHouseCount);
+        distributeHouses(newHouseCount - initialHouses);
+      }
     };
 
     const handleDecrement = () => {
       console.log("handle decrement");
-      // if (currentHouses > 0) {
-      const newHouseCount = currentHouses - 1;
-      setCurrentHouses(newHouseCount);
-      distributeHouses(newHouseCount - initialHouses);
-      // }
+      if (currentHouses > 0) {
+        const newHouseCount = currentHouses - 1;
+        setCurrentHouses(newHouseCount);
+        distributeHouses(newHouseCount - initialHouses);
+      }
     };
 
     const totalCost =
@@ -219,78 +222,79 @@ const ManageProperties = ({
     const NO_CHANGE = transactionType === "NO_CHANGE";
     const numHouses = Math.abs(currentHouses - initialHouses);
     return (
-      <Dialog open={houseBuildingMode} onOpenChange={setHouseBuildingMode}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle
-              className={`${josephinNormal.className} text-center text-black`}
-            >
+      <>
+        {houseBuildingMode && (
+          <>
+            <div className={`${josephinNormal.className} text-center `}>
               Develop Property
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <button onClick={handleDecrement}>
+                  <CiCircleMinus className="h-12 w-12 text-white " />
+                </button>
+                {!NO_CHANGE ? (
+                  <>
+                    <span className={` ${josephinBold.className}`}>
+                      {transactionType === "ADD_HOUSES" ? "Buy " : "Sell "}
+                      {getDisplayStateManage(numHouses, properties.length)} (
+                      {transactionType === "ADD_HOUSES" ? "-" : "+"}$
+                      {BUY ? totalCost : totalCost / 2})
+                    </span>
+                  </>
+                ) : (
+                  <div className={` ${josephinBold.className}`}>No Change</div>
+                )}
+                <button onClick={handleIncrement}>
+                  <CiCirclePlus className="h-12 w-12 rounded-full shadhow-md  text-white " />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {propertyCounts.map((property) => (
+                  <div
+                    key={property.propertyId}
+                    className="flex justify-between items-center"
+                  >
+                    <span className={` ${josephinBold.className}`}>
+                      {
+                        properties.find((p) => p.id === property.propertyId)
+                          ?.name
+                      }
+                    </span>
+                    <span className={` ${josephinBold.className}`}>
+                      {getDisplayState(property.count)}
+                    </span>
+                  </div>
+                ))}
+              </div>
               <button
-                onClick={handleDecrement}
-                className="h-12 w-12 rounded-full shadhow-md  text-white border-neutral-400 border-[1px] "
+                className={`${josephinNormal.className} w-full p-2 ${
+                  BUY ? "bg-red-500" : "bg-green-600"
+                }  rounded`}
+                disabled={currentHouses === initialHouses}
+                onClick={() => {
+                  handleChangeHouses(
+                    propertyCounts,
+                    transactionType,
+                    transactionType === "ADD_HOUSES" ? totalCost : totalCost / 2
+                  );
+                  setHouseBuildingMode(false);
+                }}
               >
-                <strong className={``}>-</strong>
+                Confirm
               </button>
-              {!NO_CHANGE ? (
-                <>
-                  <span className={`text-black ${josephinBold.className}`}>
-                    {transactionType === "ADD_HOUSES" ? "Buy " : "Sell "}
-                    {getDisplayStateManage(numHouses, properties.length)} (
-                    {transactionType === "ADD_HOUSES" ? "-" : "+"}$
-                    {BUY ? totalCost : totalCost / 2})
-                  </span>
-                </>
-              ) : (
-                <div className={`text-black ${josephinBold.className}`}>
-                  No Change
-                </div>
-              )}
               <button
-                onClick={handleIncrement}
-                className="h-12 w-12 rounded-full shadhow-md  text-white border-neutral-400 border-[1px] "
+                className={`w-full border-[1px] border-grey-400 p-2 rounded ${josephinNormal.className}`}
+                onClick={() => {
+                  setHouseBuildingMode(false);
+                }}
               >
-                <strong>+</strong>
+                Cancel
               </button>
             </div>
-            <div className="space-y-2">
-              {propertyCounts.map((property) => (
-                <div
-                  key={property.propertyId}
-                  className="flex justify-between items-center"
-                >
-                  <span className={`text-black ${josephinBold.className}`}>
-                    {properties.find((p) => p.id === property.propertyId)?.name}
-                  </span>
-                  <span className={`text-black ${josephinBold.className}`}>
-                    {getDisplayState(property.count)}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <button
-              className={`${josephinNormal.className} w-full p-2 ${
-                BUY ? "bg-red-500" : "bg-green-600"
-              } text-black rounded`}
-              disabled={currentHouses === initialHouses}
-              onClick={() => {
-                handleChangeHouses(
-                  propertyCounts,
-                  transactionType,
-                  transactionType === "ADD_HOUSES" ? totalCost : totalCost / 2
-                );
-                setHouseBuildingMode(false);
-              }}
-            >
-              Confirm
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </>
+        )}
+      </>
     );
   };
 
@@ -302,72 +306,39 @@ const ManageProperties = ({
     const canMortgage = canMortgageProperty(groupProperties);
     return (
       <div className="relative group">
-        <Image
-          src={`/property-images/${property.images[0]}.png`}
-          alt={property.name}
-          width={200}
-          height={300}
-          className="rounded"
-          priority
-        />
+        <div className="relative">
+          {currentPlayer?.id !== property?.playerId &&
+            propertiesToBuy.some((p) => p.id === property.id) && (
+              <div className="absolute inset-0 bg-white opacity-50 rounded"></div>
+            )}
+          <PropertyCard
+            property={property}
+            onClick={() => {
+              if (currentPlayer?.id === property?.playerId) {
+                if (canManageHouses(groupProperties)) {
+                  setHouseBuildingMode(true);
+                  setSelectedGroup(property.group);
+                } else {
+                  toast.error("You cannot build on this property", {
+                    className: `${josephinBold.className}`,
+                  });
+                }
+              } else {
+                if (propertiesToBuy.some((p) => p.id === property.id)) {
+                  setPropertiesToBuy((prev) =>
+                    prev.filter((p) => p.id !== property.id)
+                  );
+                } else {
+                  setPropertiesToBuy((prev) => [...prev, property]);
+                }
+              }
+            }}
+          />
+        </div>
+
         {player?.id === currentPlayer?.id && (
           <>
-            <div className="">
-              <div className="flex flex-col gap-1">
-                <div className={`h-11`}>
-                  {property.developmentLevel > 0 &&
-                    property.developmentLevel < 5 && (
-                      <div className="flex gap-1 pt-1">
-                        {Array.from({
-                          length: property.developmentLevel,
-                        }).map((_, index) => (
-                          <div key={index}>
-                            <Image
-                              src="/house.png"
-                              width={40}
-                              height={40}
-                              alt="house"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                  <div className="flex gap-1 pt-1">
-                    {property.developmentLevel === 5 && (
-                      <Image
-                        src="/hotel.png"
-                        width={40}
-                        height={40}
-                        alt="house"
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-2 py-4">
-              {canBuild && (
-                <>
-                  <button
-                    className=" text-white p-2 rounded text-sm"
-                    style={{ backgroundColor: "#2E8332" }}
-                    onClick={() => {
-                      setHouseBuildingMode(true);
-                    }}
-                  >
-                    Develop Properties
-                  </button>
-
-                  {houseBuildingMode &&
-                    renderManageHouseDialog(
-                      groupedProperties.find(
-                        ([group]) => group === selectedGroup
-                      )[1]
-                    )}
-                </>
-              )}
+            <div className="grid grid-cols-1 gap-2 py-2">
               {canMortgage && !property.isMortgaged && (
                 <button
                   className="bg-yellow-600 text-white p-2 rounded text-sm"
@@ -384,18 +355,15 @@ const ManageProperties = ({
                   Unmortgage (${Math.floor(property.price * 0.55)})
                 </button>
               )}
-              {property.developmentLevel === 0 && canMortgage && (
+              {/* {property.developmentLevel === 0 && canMortgage && (
                 <button
                   className="bg-gray-600 text-white p-2 rounded text-sm"
                   onClick={() => handleSellToBank(property)}
                 >
                   Sell to Bank ($
-                  {Math.floor(
-                    property?.isMortgaged ? property.price / 2 : property.price
-                  )}
-                  )
+                  {Math.floor(property?.isMortgaged ? 0 : property.price / 2)})
                 </button>
-              )}
+              )} */}
             </div>
           </>
         )}
@@ -404,46 +372,56 @@ const ManageProperties = ({
   };
 
   return (
-    <div className={`space-y-4 !text-black ${josephinBold.className}`}>
+    <div className={`space-y-4 ! ${josephinBold.className}`}>
+      {propertiesToBuy?.length > 0 && (
+        <button
+          className={`fixed bottom-2 w-full right-1/2 transform translate-x-1/2 bg-slate-800 text-white`}
+        >
+          Make an Offer
+        </button>
+      )}
       {currentView === "properties" ? (
         <>
-          <h1
-            className="flex items-center justify-start text-white"
-            onClick={() => {
-              setCurrentView("colors");
-              setSelectedGroup(null);
-            }}
-          >
-            <MdArrowBackIos className={`text-white pb-1`} />
-            <span className="ml-2 text-white -1">Back</span>
-          </h1>
-          <div className="overflow-x-auto flex gap-4">
-            {groupedProperties
-              .find(([group]) => group === selectedGroup)?.[1]
-              .map((property) => (
-                <div key={property.id} className="flex-shrink-0">
-                  {renderPropertyManagement(
-                    property,
-                    groupedProperties.find(
-                      ([group]) => group === selectedGroup
-                    )[1]
-                  )}
-                </div>
-              ))}
-          </div>
-          {houseBuildingMode &&
+          {houseBuildingMode ? (
             renderManageHouseDialog(
               groupedProperties.find(([group]) => group === selectedGroup)[1]
-            )}
+            )
+          ) : (
+            <>
+              <h1
+                className="flex items-center justify-start text-white"
+                onClick={() => {
+                  setCurrentView("colors");
+                  setSelectedGroup(null);
+                }}
+              >
+                <MdArrowBackIos className={`text-white pb-1`} />
+                <span className="ml-2 text-white -1">Back</span>
+              </h1>
+              <div className="overflow-x-auto flex gap-4">
+                {groupedProperties
+                  .find(([group]) => group === selectedGroup)?.[1]
+                  .map((property) => (
+                    <div key={property.id} className="flex-shrink-0">
+                      {renderPropertyManagement(
+                        property,
+                        groupedProperties.find(
+                          ([group]) => group === selectedGroup
+                        )[1]
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
         </>
       ) : (
         <>
-          <h2 className={`text-white`}>Select a Color Group</h2>
           <div className="grid grid-cols-4 sm:grid-cols-10 gap-2">
             {groupedProperties.map(([group, props]) => (
               <button
                 key={group}
-                className="p-2 rounded mb-2 border aspect-square w-full"
+                className="p-2 rounded-sm border aspect-square w-full"
                 style={{ backgroundColor: props[0].color }}
                 onClick={() => {
                   setSelectedGroup(group);

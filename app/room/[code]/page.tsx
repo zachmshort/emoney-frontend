@@ -1,5 +1,5 @@
 "use client";
-import { EventHistory, Player, Room } from "@/types/schema";
+import { EventHistory, Player, Property, Room } from "@/types/schema";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import RoomView from "@/components/room/room.client";
 import { getWsUrl } from "@/lib/utils/wsHelpers";
@@ -12,6 +12,7 @@ import {
 } from "@/lib/utils/roomHelpers";
 import { sendMessage } from "@/lib/utils/sendWsMessage";
 import { ManagePropertiesPayload } from "@/types/payloads";
+import PropertyCard from "@/components/property/cards/common-card";
 
 interface WebSocketMessage {
   type: string;

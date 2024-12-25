@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -70,18 +68,18 @@
 }
 
 .font {
-	text-decoration: none;
-	text-align: center;
-	line-height: 1;
-	color: transparent;
-	-webkit-text-stroke: 1px yellow;
-	text-shadow: 0 0 0 #fff;
-	transition: all 250ms;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px yellow;
+  text-shadow: 0 0 0 #fff;
+  transition: all 250ms;
 }
 
 .font:hover {
-	text-shadow: 4px 4px 0 #fff;
-	transform: translate(-2px, -2px)
+  text-shadow: 4px 4px 0 #fff;
+  transform: translate(-2px, -2px);
 }
 
 .hide-scrollbar {
@@ -124,4 +122,8 @@ body::-webkit-scrollbar-track {
 body::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 4px;
+}
+
+.property-card-aspect-ratio {
+  aspect-ratio: 69/100;
 }

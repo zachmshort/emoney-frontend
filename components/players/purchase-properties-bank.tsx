@@ -1,10 +1,10 @@
 import { Player, Property } from "@/types/schema";
 import { useState } from "react";
-import Image from "next/image";
 import { MdArrowBackIos } from "react-icons/md";
 import { josephinBold } from "../ui/fonts";
 import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";
+import PropertyCard from "../property/cards/card";
 
 interface SelectColorPropertiesProps {
   properties?: Property[];
@@ -75,25 +75,6 @@ const SelectColorProperties = ({
     }, {} as Record<string, Property[]>)
   );
 
-  const PrefetchImages = ({ group }: { group: string }) => {
-    const images = groupedProperties
-      .find(([g]) => g === group)?.[1]
-      .map((property) => property.images[0]);
-
-    return (
-      <>
-        {images?.map((image) => (
-          <link
-            key={image}
-            rel="prefetch"
-            href={`/property-images/${image}.png`}
-            as="image"
-          />
-        ))}
-      </>
-    );
-  };
-
   const renderConfirmationView = () => {
     if (!selectedProperty) return null;
 
@@ -144,36 +125,26 @@ const SelectColorProperties = ({
 
   return (
     <div className={`space-y-2 text-2xl  ${josephinBold.className}`}>
-      {hoveredGroup && <PrefetchImages group={hoveredGroup} />}
-
       {currentView === "confirmation" ? (
         renderConfirmationView()
       ) : currentView === "properties" ? (
         <>
           <h1 className="flex items-center justify-start" onClick={handleBack}>
-            <MdArrowBackIos />
+            {/* <MdArrowBackIos /> */}
           </h1>
           <div className="overflow-x-auto flex gap-4">
             {groupedProperties
               .find(([group]) => group === selectedGroup)?.[1]
               .map((property) => (
-                <div
-                  key={property.id}
-                  className="flex-shrink-0 cursor-pointer"
-                  onClick={() => handlePropertySelect(property)}
-                >
-                  <div className="relative">
-                    <Image
-                      src={`/property-images/${property.images[0]}.png`}
-                      alt={property.images[0]}
-                      width={200}
-                      height={300}
-                      className="rounded"
-                      priority
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-center">
-                      <span className="text-lg">${property?.price}</span>
-                    </div>
+                <div className="relative">
+                  <PropertyCard
+                    property={property}
+                    className="flex-shrink-0 cursor-pointer"
+                    onClick={() => handlePropertySelect(property)}
+                    key={property.id}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-center">
+                    <span className="text-lg">${property?.price}</span>
                   </div>
                 </div>
               ))}
@@ -181,12 +152,11 @@ const SelectColorProperties = ({
         </>
       ) : (
         <>
-          <h2>Select a Color</h2>
           <div className="grid grid-cols-4 sm:grid-cols-10 gap-2">
             {groupedProperties.map(([group, props]) => (
               <button
                 key={group}
-                className="p-2 rounded mb-2 border aspect-square w-full"
+                className="p-2 rounded border aspect-square w-full"
                 style={{ backgroundColor: props[0].color }}
                 onClick={() => {
                   setSelectedGroup(group);
