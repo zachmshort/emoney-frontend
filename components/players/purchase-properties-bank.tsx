@@ -109,7 +109,7 @@ const SelectColorProperties = ({
             </div>
           </div>
 
-          <DrawerClose className="w-full">
+          <DrawerClose asChild className="w-full">
             <button
               className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg mt-4"
               onClick={handleConfirmPurchase}

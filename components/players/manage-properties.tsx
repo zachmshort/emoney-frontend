@@ -112,16 +112,10 @@ const ManageProperties = ({
 
   const handleChangeHouses = (
     propertyCounts: { propertyId: string; count: number }[],
-    managementType: "ADD_HOUSES" | "REMOVE_HOUSES" | "NO_CHANGE",
     totalCost: number
   ) => {
     console.log(propertyCounts);
-    onManageProperties(
-      managementType === "ADD_HOUSES" ? -totalCost : totalCost,
-      "HOUSES",
-      propertyCounts,
-      currentPlayer.id
-    );
+    onManageProperties(totalCost, "HOUSES", propertyCounts, currentPlayer.id);
   };
 
   // const handleSellToBank = (property: Property) => {
@@ -278,7 +272,6 @@ const ManageProperties = ({
                 onClick={() => {
                   handleChangeHouses(
                     propertyCounts,
-                    transactionType,
                     BUY ? totalCost : -totalCost / 2
                   );
                   setHouseBuildingMode(false);
