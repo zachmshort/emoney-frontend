@@ -53,7 +53,7 @@ const Navbar = ({
           </div>
         </DrawerTrigger>
         <DrawerContent
-          className={`${josephinNormal.className} h-[75vh] bg-black border-[1px] px-3 text-3xl `}
+          className={`${josephinNormal.className} h-[80vh] bg-black border-[1px] px-3 text-xl `}
         >
           <DrawerTitle className={`text-black`}>Menu</DrawerTitle>
           <ul className={`flex flex-col h-[75vh] relative`}>
