@@ -285,7 +285,9 @@ const ManageProperties = ({
                   handleChangeHouses(
                     propertyCounts,
                     transactionType,
-                    transactionType === "ADD_HOUSES" ? totalCost : totalCost / 2
+                    transactionType === "ADD_HOUSES"
+                      ? totalCost
+                      : -totalCost / 2
                   );
                   setHouseBuildingMode(false);
                 }}
