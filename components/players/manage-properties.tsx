@@ -270,11 +270,22 @@ const ManageProperties = ({
                 }  rounded`}
                 disabled={currentHouses === initialHouses}
                 onClick={() => {
-                  handleChangeHouses(
-                    propertyCounts,
-                    BUY ? totalCost : -totalCost / 2
-                  );
-                  setHouseBuildingMode(false);
+                  if (BUY && totalCost > player.balance) {
+                    toast.error(
+                      `Insufficent funds, you need $${
+                        totalCost - player.balance
+                      }`,
+                      {
+                        className: `${josephinBold.className}`,
+                      }
+                    );
+                  } else {
+                    handleChangeHouses(
+                      propertyCounts,
+                      BUY ? totalCost : -totalCost / 2
+                    );
+                    setHouseBuildingMode(false);
+                  }
                 }}
               >
                 Confirm
