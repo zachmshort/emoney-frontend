@@ -2,7 +2,13 @@ import { Property } from "@/types/schema";
 import { josephinBold, josephinLight, josephinNormal } from "../../ui/fonts";
 import Image from "next/image";
 
-const CommonPropertyCard = ({ property }: { property: Property }) => {
+const CommonPropertyCard = ({
+  property,
+  className2,
+}: {
+  property: Property;
+  className2?: string;
+}) => {
   return (
     <>
       <header
@@ -11,11 +17,13 @@ const CommonPropertyCard = ({ property }: { property: Property }) => {
       >
         <div className={`h-4 flex items-start justify-center w-full`}>
           {property.developmentLevel < 1 ? (
-            <h1 className={`text-black text-center  text-[.5rem]`}>
+            <h1
+              className={`text-black text-center  text-[.5rem] ${className2}`}
+            >
               TITLE DEED
             </h1>
           ) : (
-            <div className={``}>
+            <div className={`pt-1`}>
               {property.developmentLevel > 0 &&
                 property.developmentLevel < 5 && (
                   <div className="flex gap-1 pt-1">

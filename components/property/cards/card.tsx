@@ -7,10 +7,12 @@ import UtilityCard from "./utility-card";
 const PropertyCard = ({
   property,
   className,
+  className2,
   onClick,
 }: {
   property: Property;
   className?: string;
+  className2?: string;
   onClick?: () => void;
 }) => {
   return (
@@ -21,7 +23,7 @@ const PropertyCard = ({
         ) : property.group === "utility" ? (
           <UtilityCard property={property} />
         ) : (
-          <CommonPropertyCard property={property} />
+          <CommonPropertyCard className2={className2} property={property} />
         )}
       </PropertyCardContainer>
     </>

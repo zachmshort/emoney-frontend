@@ -315,6 +315,7 @@ const ManageProperties = ({
             )}
           <PropertyCard
             property={property}
+            className2={`pt-3`}
             onClick={() => {
               if (currentPlayer?.id === property?.playerId) {
                 if (canManageHouses(groupProperties)) {
