@@ -67,7 +67,6 @@ interface Trade {
   properties?: string[];
   amount?: number;
   immunity?: Immunity[];
-  note?: string;
 }
 
 export interface Offer {
@@ -80,4 +79,17 @@ export interface Offer {
   request: Trade;
   createdAt: Date;
   updatedAt: Date;
+  note?: string;
+}
+
+export interface OfferNoID {
+  roomId: string;
+  status: "PENDING" | "DENIED" | "ACCEPTED" | "COUNTERED";
+  fromPlayerId: string;
+  toPlayerId: string;
+  offer: Trade;
+  request: Trade;
+  createdAt: Date;
+  updatedAt: Date;
+  note?: string;
 }

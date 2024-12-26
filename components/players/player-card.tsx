@@ -12,6 +12,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ManagePropertiesPayload, TransferType } from "@/types/payloads";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../ui/drawer";
+import MakeOffer from "./make-offer/make-offer";
 
 const PlayerCard = ({
   player,
@@ -57,17 +64,31 @@ const PlayerCard = ({
       <div className="snap-center w-[360px] border bg-white border-black  aspect-[3/4] select-none relative">
         <div className={`p-3 w-full h-full border-black `}>
           <div className={`border border-black p-2 h-full`}>
-            <div
-              style={{ backgroundColor: color }}
-              className={`h-16 border-[1px] border-black w-full flex items-center ${
-                isBanker ? "justify-evenly" : "justify-center"
-              } ${josephinBold.className} text-2xl`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div style={{ color: "black" }} className={`!text-3xl pt-2`}>
-                {player?.name}
-              </div>
-            </div>{" "}
+            <Drawer>
+              <DrawerTrigger asChild>
+                <button
+                  style={{ backgroundColor: color }}
+                  className={`h-16 border-[1px] text-black ${josephinBold.className} text-center w-full border-black flex items-center justify-center text-3xl`}
+                >
+                  {player?.name}
+                </button>
+              </DrawerTrigger>
+              <DrawerContent
+                className={`overflow-y-auto min-h-[90vh] bg-black w-screen`}
+              >
+                <DrawerTitle
+                  className={`${josephinBold.className} text-center text-2xl pt-5 px-2`}
+                >
+                  Make an offer
+                </DrawerTitle>
+                <MakeOffer
+                  player={player}
+                  currentPlayer={currentPlayer}
+                  roomId={roomId}
+                />
+              </DrawerContent>
+            </Drawer>
+
             <PlayerDetails
               player={player}
               currentPlayer={currentPlayer}
