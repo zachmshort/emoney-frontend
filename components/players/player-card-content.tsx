@@ -139,14 +139,14 @@ const PlayerDetails = ({
             {currentPlayer?.isBanker && (
               <CiCircleMinus
                 onClick={() => setDialogState("remove")}
-                className={`text-black pb-1`}
+                className={`hover:cursor-pointer pb-1`}
               />
             )}
             <p> ${player?.balance || 0}</p>{" "}
             {currentPlayer?.isBanker && (
               <CiCirclePlus
                 onClick={() => setDialogState("add")}
-                className={`text-black `}
+                className={`hover:cursor-pointer pb-1`}
               />
             )}
           </div>
