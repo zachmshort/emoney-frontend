@@ -2,7 +2,6 @@ import { josephinBold } from "@/components/ui/fonts";
 import { OfferNoID } from "@/types/schema";
 import { useState } from "react";
 import { FaDollarSign } from "react-icons/fa";
-import { PiCurrencyDollarThin } from "react-icons/pi";
 
 const Amount = ({
   offer,

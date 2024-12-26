@@ -88,9 +88,9 @@ const MakeOffer = ({
     ),
     offer_properties: (
       <Properties
-      // offer={offer}
-      // updateOffer={updateOffer}
-      // properties={currentPlayer?.properties}
+        offer={offer}
+        updateOffer={updateOffer}
+        properties={currentPlayer?.properties}
       />
     ),
     // offer_immunity: (
@@ -111,9 +111,9 @@ const MakeOffer = ({
     ),
     request_properties: (
       <Properties
-      // properties={player?.properties}
-      // offer={offer}
-      // updateOffer={updateOffer}
+        properties={player?.properties}
+        offer={offer}
+        updateOffer={updateOffer}
       />
     ),
     // request_immunity: (
