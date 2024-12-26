@@ -160,7 +160,7 @@ const PlayerDetails = ({
             </div>
           </DrawerTrigger>
           <DrawerContent
-            className={`bg-black h-[500px] px-3 text-white  mt-0 border-t border-x border-b-none`}
+            className={`bg-black h-[600px] px-3 text-white  mt-0 border-t border-x border-b-none`}
           >
             <DrawerTitle className={`text-black select-none`}>
               {player?.id}&apos; Properties
