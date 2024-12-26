@@ -2,15 +2,6 @@
 import { Player } from "@/types/schema";
 import { josephinBold } from "../ui/fonts";
 import { PlayerDetails } from "./player-card-content";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { ManagePropertiesPayload, TransferType } from "@/types/payloads";
 import {
   Drawer,
@@ -24,7 +15,6 @@ const PlayerCard = ({
   player,
   currentPlayer,
   allPlayers,
-  isBanker = false,
   onTransfer,
   roomId,
   onBankerTransaction,
@@ -33,7 +23,6 @@ const PlayerCard = ({
   player: Player;
   currentPlayer: Player;
   allPlayers: Player[];
-  isBanker?: boolean;
   onTransfer: (
     amount: string,
     transferType: TransferType,
@@ -76,11 +65,7 @@ const PlayerCard = ({
               <DrawerContent
                 className={`overflow-y-auto min-h-[90vh] bg-black w-screen`}
               >
-                <DrawerTitle
-                  className={`${josephinBold.className} text-center text-2xl pt-5 px-2`}
-                >
-                  Make an offer
-                </DrawerTitle>
+                <DrawerTitle className={`hidden`}>Make an offer</DrawerTitle>
                 <MakeOffer
                   player={player}
                   currentPlayer={currentPlayer}

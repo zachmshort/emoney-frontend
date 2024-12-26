@@ -83,7 +83,7 @@ const PlayerDetails = ({
     }
     return player?.properties;
   };
-  // const monopoliesCount = calculateMonopolies(player?.properties);
+
   const [dialogState, setDialogState] = useState<"add" | "remove" | null>(null);
   const [amount, setAmount] = useState("");
 
@@ -96,6 +96,7 @@ const PlayerDetails = ({
     setAmount("");
     setDialogState(null);
   };
+
   return (
     <>
       <div

@@ -74,7 +74,6 @@ const RoomView = ({
             <div className="flex-none snap-center">
               <PlayerCard
                 player={currentPlayer}
-                isBanker={currentPlayer?.isBanker}
                 currentPlayer={currentPlayer}
                 onTransfer={onTransfer}
                 roomId={room?.id}
@@ -88,7 +87,6 @@ const RoomView = ({
               <div key={oPlayer?.id} className="flex-none snap-center ">
                 <PlayerCard
                   player={oPlayer}
-                  isBanker={currentPlayer?.isBanker}
                   currentPlayer={currentPlayer}
                   onTransfer={onTransfer}
                   allPlayers={allPlayers}

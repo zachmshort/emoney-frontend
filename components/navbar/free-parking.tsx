@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { josephinBold, josephinNormal } from "../ui/fonts";
 import { Player } from "@/types/schema";
-import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";
 import Toast from "../ui/toasts";
-import { Gi3dGlasses } from "react-icons/gi";
 import { PiMoneyWavyThin, PiXThin } from "react-icons/pi";
 
 interface FreeParkingDialogProps {

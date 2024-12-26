@@ -8,7 +8,6 @@ import {
   getDisplayStateManage,
 } from "@/lib/utils/propertyHelpers";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
-import { toast } from "sonner";
 import PropertyCard from "../property/cards/card";
 import Toast from "../ui/toasts";
 import { PiHouseSimpleThin, PiMoneyWavyThin } from "react-icons/pi";

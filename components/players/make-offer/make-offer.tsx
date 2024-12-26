@@ -1,6 +1,6 @@
 import { JSX, useState } from "react";
-import { josephinNormal } from "../../ui/fonts";
-import { Offer, OfferNoID, Player } from "@/types/schema";
+import { josephinBold, josephinNormal } from "@/components/ui/fonts";
+import { OfferNoID, Player } from "@/types/schema";
 import Amount from "./amount";
 import Properties from "./properties";
 import Immunity from "./immunity";
@@ -41,6 +41,7 @@ const MakeOffer = ({
   const [offer, setOffer] = useState<OfferNoID>(() =>
     newOffer(currentPlayer?.id, roomId, player?.id)
   );
+
   const [view, setView] = useState<
     | "offer_amount"
     | "request_amount"
@@ -78,11 +79,35 @@ const MakeOffer = ({
 
   const viewComponents: { [key: string]: JSX.Element } = {
     offer_amount: <Amount offer={offer} updateOffer={updateOffer} />,
-    offer_properties: <Properties offer={offer} updateOffer={updateOffer} />,
-    offer_immunity: <Immunity offer={offer} updateOffer={updateOffer} />,
+    offer_properties: (
+      <Properties
+      // offer={offer}
+      // updateOffer={updateOffer}
+      // properties={currentPlayer?.properties}
+      />
+    ),
+    offer_immunity: (
+      <Immunity
+      // properties={player?.properties}
+      // offer={offer}
+      // updateOffer={updateOffer}
+      />
+    ),
     request_amount: <Amount offer={offer} updateOffer={updateOffer} />,
-    request_properties: <Properties offer={offer} updateOffer={updateOffer} />,
-    request_immunity: <Immunity offer={offer} updateOffer={updateOffer} />,
+    request_properties: (
+      <Properties
+      // properties={player?.properties}
+      // offer={offer}
+      // updateOffer={updateOffer}
+      />
+    ),
+    request_immunity: (
+      <Immunity
+      // properties={player?.properties}
+      // offer={offer}
+      // updateOffer={updateOffer}
+      />
+    ),
   };
 
   return (
@@ -91,7 +116,7 @@ const MakeOffer = ({
         {view ? (
           <>
             <button
-              className={`border p-3 rounded w-full ${josephinNormal.className}`}
+              className={`border py-4 rounded w-full mt-5 text-2xl ${josephinBold.className}`}
               onClick={() => setView(null)}
             >
               Back
@@ -100,6 +125,13 @@ const MakeOffer = ({
           </>
         ) : (
           <>
+            <header>
+              <p
+                className={`${josephinBold.className} text-center text-2xl pt-5 px-2`}
+              >
+                Make an Offer
+              </p>
+            </header>
             <div
               className={`flex w-full items-center justify-between mt-2 px-3`}
             >
