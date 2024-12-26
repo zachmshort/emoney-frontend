@@ -16,6 +16,7 @@ import { playerStore } from "@/lib/utils/playerHelpers";
 import { IoCopyOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import { formatTimeAgo } from "../ui/helper-funcs";
+import ReturnToMenu from "../ui/return-to-menu";
 
 const Navbar = ({
   freeParking,
@@ -56,26 +57,23 @@ const Navbar = ({
           className={`${josephinNormal.className} h-[80vh] bg-black border-[1px] px-3 text-xl `}
         >
           <DrawerTitle className={`text-black`}>Menu</DrawerTitle>
+
           <ul className={`flex flex-col h-[75vh] relative`}>
+            {(showProperties || showFreeParking || showEvents) && (
+              <ReturnToMenu
+                onClick={() => {
+                  setShowProperties(false);
+                  setShowFreeParking(false);
+                  setShowEvents(false);
+                }}
+              />
+            )}
             {showProperties ? (
               <>
                 <div
-                  className={`flex justify-between`}
-                  onClick={() => {
-                    setShowProperties(false);
-                    setShowFreeParking(false);
-                  }}
-                >
-                  <li
-                    className={`border w-full text-center text-sm py-2 rounded shadow-xl`}
-                  >
-                    Return to Main Menu
-                  </li>
-                </div>
-                <div
                   className={`${josephinBold.className} bg-black h-full  text-2xl overflow-y-auto`}
                 >
-                  <DrawerTitle className={`select-none text-black`}>
+                  <DrawerTitle className={`select-none text-black h-0`}>
                     Properties for Sale
                   </DrawerTitle>
                   <SelectColorProperties
@@ -97,24 +95,7 @@ const Navbar = ({
             ) : showEvents ? (
               <>
                 <div
-                  className={`flex justify-between`}
-                  onClick={() => {
-                    setShowProperties(false);
-                    setShowFreeParking(false);
-                    setShowEvents(false);
-                  }}
-                >
-                  <li
-                    className={`border w-full text-center py-2 rounded shadow-xl text-sm`}
-                  >
-                    Return to Main Menu
-                  </li>
-                </div>
-                <h2 className={`pt-5 pb-2 ${josephinBold.className}`}>
-                  Event History
-                </h2>
-                <div
-                  className={`event-history-container overflow-y-auto pb-20 pt-2`}
+                  className={`event-history-container overflow-y-auto pb-20`}
                 >
                   {eventHistory.map((event: EventHistory, index: number) => (
                     <div className={`${josephinNormal.className}`} key={index}>

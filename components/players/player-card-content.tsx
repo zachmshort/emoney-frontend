@@ -12,6 +12,10 @@ import { josephinBold, josephinNormal } from "../ui/fonts";
 import PlayerTags from "./player-tags";
 import ManageProperties from "./manage-properties";
 import { ManagePropertiesPayload, TransferType } from "@/types/payloads";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 
 const PlayerDetails = ({
   player,
@@ -20,6 +24,7 @@ const PlayerDetails = ({
   onTransfer,
   roomId,
   onManageProperties,
+  onBankerTransaction,
 }: {
   player: Player;
   allPlayers: Player[];
@@ -40,6 +45,11 @@ const PlayerDetails = ({
     managementType: ManagePropertiesPayload["managementType"],
     properties: { propertyId: string; count?: number }[],
     playerId: string
+  ) => void;
+  onBankerTransaction: (
+    amount: string,
+    playerId: string,
+    transactionType: string
   ) => void;
 }) => {
   const [transferType, setTransferType] = useState<"SEND" | "REQUEST">("SEND");
@@ -74,16 +84,72 @@ const PlayerDetails = ({
     return player?.properties;
   };
   // const monopoliesCount = calculateMonopolies(player?.properties);
+  const [dialogState, setDialogState] = useState<"add" | "remove" | null>(null);
+  const [amount, setAmount] = useState("");
 
+  const handleBankerAction = (isAdd: boolean) => {
+    onBankerTransaction(
+      amount,
+      player.id,
+      isAdd ? "BANKER_ADD" : "BANKER_REMOVE"
+    );
+    setAmount("");
+    setDialogState(null);
+  };
   return (
     <>
       <div
         className={`px-4 text-black flex flex-col items-evenly gap-y-2 justify-between ${josephinNormal.className} text-2xl`}
       >
-        <div
-          className={`${josephinBold.className} absolute top-[6.5rem] right-1/2 transform translate-x-1/2`}
+        <Dialog
+          open={dialogState !== null}
+          onOpenChange={(open) => !open && setDialogState(null)}
         >
-          ${player?.balance || 0}
+          <DialogContent
+            className={`sm:max-w-[425px] ${josephinBold.className} text-black`}
+          >
+            <DialogHeader>
+              <DialogTitle>
+                {dialogState === "add" ? "Add Money to" : "Remove Money from"}{" "}
+                {player?.name}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="flex items-center gap-4">
+                <Input
+                  type="number"
+                  placeholder="Enter amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="col-span-3"
+                />
+                <Button
+                  onClick={() => handleBankerAction(dialogState === "add")}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <div
+          className={`${josephinBold.className} w-full absolute top-[6.5rem] right-1/2 transform translate-x-1/2`}
+        >
+          <div className={`flex items-center justify-center space-x-5 w-full`}>
+            {currentPlayer?.isBanker && (
+              <CiCircleMinus
+                onClick={() => setDialogState("remove")}
+                className={`text-black pb-1`}
+              />
+            )}
+            <p> ${player?.balance || 0}</p>{" "}
+            {currentPlayer?.isBanker && (
+              <CiCirclePlus
+                onClick={() => setDialogState("add")}
+                className={`text-black `}
+              />
+            )}
+          </div>
         </div>
         <Drawer>
           <DrawerTrigger asChild>
@@ -92,7 +158,9 @@ const PlayerDetails = ({
               <div>{player?.properties?.length || 0}</div>
             </div>
           </DrawerTrigger>
-          <DrawerContent className={`bg-black h-[80vh] px-3 text-white`}>
+          <DrawerContent
+            className={`bg-black h-[500px] px-3 text-white  mt-0 border-t border-x border-b-none`}
+          >
             <DrawerTitle className={`text-black select-none`}>
               {player?.id}&apos; Properties
             </DrawerTitle>
@@ -103,11 +171,11 @@ const PlayerDetails = ({
             />
           </DrawerContent>
         </Drawer>
-        <div className={`flex items-center justify-between`}>
+        {/* <div className={`flex items-center justify-between`}>
           <div>{currentPlayer?.id === player?.id && "My"} Monopolies</div>
-          {/* <div>{monopoliesCount}</div> */}
+          <div>{monopoliesCount}</div>
           <div>0</div>
-        </div>
+        </div> */}
         <PlayerTags
           player={player}
           allPlayers={allPlayers.filter((p) => p?.id !== player?.id)}

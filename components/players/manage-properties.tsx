@@ -10,6 +10,9 @@ import {
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import { toast } from "sonner";
 import PropertyCard from "../property/cards/card";
+import Toast from "../ui/toasts";
+import { PiHouseSimpleThin, PiMoneyWavyThin } from "react-icons/pi";
+import { doesPlayerOwnFullSet } from "../ui/helper-funcs";
 
 interface ManagePropertiesProps {
   player: Player;
@@ -80,25 +83,38 @@ const ManageProperties = ({
     }, {} as Record<string, Property[]>)
   );
 
-  const canManageHouses = (properties: Property[]) => {
-    const allPropertiesInGroup = groupedProperties.find(
-      ([group]) => group === properties[0].group
+  const canManageHouses = (properties: Property[], property: Property) => {
+    const groupedProperties: [string, Property[]][] = Object.entries(
+      properties.reduce((acc, prop) => {
+        if (!acc[prop.group]) acc[prop.group] = [];
+        acc[prop.group].push(prop);
+        return acc;
+      }, {} as Record<string, Property[]>)
     );
 
+    const allPropertiesInGroup = groupedProperties.find(
+      ([group]) => group === property.group
+    );
+    const group: [string, Property[]] = [
+      allPropertiesInGroup[0],
+      allPropertiesInGroup[1],
+    ];
+    const ownsFullSet = doesPlayerOwnFullSet(property, group);
     // if player doesnt have all the cards in set or if its railroad/utility cannot buy houses
+    if (!ownsFullSet) {
+      return "You do not own all properties in this group.";
+    }
+
     if (
-      !allPropertiesInGroup ||
-      allPropertiesInGroup[1].length !== properties.length ||
       allPropertiesInGroup[0] === "railroad" ||
       allPropertiesInGroup[0] === "utility"
     ) {
-      return false;
+      return "You cannot build houses on railroads or utilities.";
     }
-    console.log("didint fail 1");
+
     if (properties.some((p) => p.isMortgaged)) {
-      return false;
+      return "Some properties in this group are mortgaged.";
     }
-    console.log("didnt fail 2");
 
     return true;
   };
@@ -271,14 +287,14 @@ const ManageProperties = ({
                 disabled={currentHouses === initialHouses}
                 onClick={() => {
                   if (BUY && totalCost > player.balance) {
-                    toast.error(
-                      `Insufficent funds, you need $${
-                        totalCost - player.balance
-                      }`,
-                      {
-                        className: `${josephinBold.className}`,
-                      }
-                    );
+                    Toast({
+                      message: `Insufficent funds
+                      `,
+                      details: `You need $${totalCost - player.balance}`,
+                      icon: (
+                        <PiMoneyWavyThin className="text-red-700 text-xl" />
+                      ),
+                    });
                   } else {
                     handleChangeHouses(
                       propertyCounts,
@@ -322,13 +338,18 @@ const ManageProperties = ({
             className2={`pt-3`}
             onClick={() => {
               if (currentPlayer?.id === property?.playerId) {
-                if (canManageHouses(groupProperties)) {
+                const canManage = canManageHouses(groupProperties, property);
+                if (canManage !== true) {
+                  Toast({
+                    message: "You cannot build on this property",
+                    details: canManage,
+                    icon: (
+                      <PiHouseSimpleThin className="text-red-700 text-xl" />
+                    ),
+                  });
+                } else {
                   setHouseBuildingMode(true);
                   setSelectedGroup(property.group);
-                } else {
-                  toast.error("You cannot build on this property", {
-                    className: `${josephinBold.className}`,
-                  });
                 }
               } else {
                 if (propertiesToBuy.some((p) => p.id === property.id)) {

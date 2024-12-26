@@ -3,6 +3,9 @@ import { josephinBold, josephinNormal } from "../ui/fonts";
 import { Player } from "@/types/schema";
 import { toast } from "sonner";
 import { DrawerClose } from "../ui/drawer";
+import Toast from "../ui/toasts";
+import { Gi3dGlasses } from "react-icons/gi";
+import { PiMoneyWavyThin, PiXThin } from "react-icons/pi";
 
 interface FreeParkingDialogProps {
   onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
@@ -21,22 +24,12 @@ const FreeParkingDialog = ({
   const [type, setType] = useState<"ADD" | "REMOVE">("ADD");
 
   const handleSubmit = () => {
-    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
-      toast.error("Please enter a valid amount");
-      return;
-    }
-
-    if (type === "REMOVE" && Number(amount) > freeParking) {
-      toast.error("Not enough funds in Free Parking");
-      return;
-    }
-
     onFreeParkingAction(amount, type, player.id);
     setAmount("");
   };
 
   return (
-    <div className="mt-">
+    <div className="">
       <div className={`${josephinNormal.className} text-xl mb-4`}>
         Free Parking: ${freeParking}
       </div>
@@ -84,7 +77,30 @@ const FreeParkingDialog = ({
           className={`flex-1 py-3 text-center bg-white rounded-md ${
             type === "ADD" ? "text-green-600" : "text-blue-600"
           }`}
-          onClick={handleSubmit}
+          onClick={() => {
+            if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+              Toast({
+                message: "Please enter a valid amount",
+                icon: <PiXThin className="text-red-700 text-xl" />,
+              });
+              return;
+            } else if (type === "REMOVE" && Number(amount) > freeParking) {
+              Toast({
+                icon: <PiMoneyWavyThin className="text-red-700 text-xl" />,
+                message: "Not enough money in free parking",
+              });
+              return;
+            } else if (type === "ADD" && Number(amount) > player.balance) {
+              Toast({
+                icon: <PiMoneyWavyThin className="text-red-700 text-xl" />,
+                message: "Insufficient funds",
+                details: `You need $${Number(amount) - player.balance}`,
+              });
+              return;
+            } else {
+              handleSubmit();
+            }
+          }}
         >
           {type === "ADD" ? "Add to Pot" : "Collect"}
         </DrawerClose>

@@ -1,3 +1,5 @@
+import { Group } from "next/dist/shared/lib/router/utils/route-regex";
+
 export interface Room {
   id: string;
   name: string;
@@ -53,4 +55,29 @@ export interface EventHistory {
   event: string;
   timestamp: Date;
   eventType: string[];
+}
+
+interface Immunity {
+  propertyId?: string;
+  propertyGroup?: string;
+  count: number;
+}
+
+interface Trade {
+  properties?: string[];
+  amount?: number;
+  immunity?: Immunity[];
+  note?: string;
+}
+
+export interface Offer {
+  id: string;
+  roomId: string;
+  status: "PENDING" | "DENIED" | "ACCEPTED" | "COUNTERED";
+  fromPlayerId: string;
+  toPlayerId: string;
+  offer: Trade;
+  request: Trade;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -85,7 +85,7 @@ const RoomView = ({
             </div>
 
             {otherPlayers?.map((oPlayer) => (
-              <div key={oPlayer?.id} className="flex-none snap-center">
+              <div key={oPlayer?.id} className="flex-none snap-center ">
                 <PlayerCard
                   player={oPlayer}
                   isBanker={currentPlayer?.isBanker}

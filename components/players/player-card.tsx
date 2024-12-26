@@ -50,18 +50,6 @@ const PlayerCard = ({
     playerId: string
   ) => void;
 }) => {
-  const [dialogState, setDialogState] = useState<"add" | "remove" | null>(null);
-  const [amount, setAmount] = useState("");
-
-  const handleBankerAction = (isAdd: boolean) => {
-    onBankerTransaction(
-      amount,
-      player.id,
-      isAdd ? "BANKER_ADD" : "BANKER_REMOVE"
-    );
-    setAmount("");
-    setDialogState(null);
-  };
   const color = player?.color || "#fff";
 
   return (
@@ -76,70 +64,16 @@ const PlayerCard = ({
               } ${josephinBold.className} text-2xl`}
               onClick={(e) => e.stopPropagation()}
             >
-              {isBanker && (
-                <>
-                  <button
-                    onClick={() => setDialogState("remove")}
-                    className={`text-black pt-2`}
-                  >
-                    -
-                  </button>
-                </>
-              )}
               <div style={{ color: "black" }} className={`!text-3xl pt-2`}>
                 {player?.name}
               </div>
-              {isBanker && (
-                <>
-                  <button
-                    onClick={() => setDialogState("add")}
-                    className={`text-black pt-2`}
-                  >
-                    +
-                  </button>
-                </>
-              )}
-            </div>
-
-            <Dialog
-              open={dialogState !== null}
-              onOpenChange={(open) => !open && setDialogState(null)}
-            >
-              <DialogContent
-                className={`sm:max-w-[425px] ${josephinBold.className} text-black`}
-              >
-                <DialogHeader>
-                  <DialogTitle>
-                    {dialogState === "add"
-                      ? "Add Money to"
-                      : "Remove Money from"}{" "}
-                    {player?.name}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="flex items-center gap-4">
-                    <Input
-                      type="number"
-                      placeholder="Enter amount"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      className="col-span-3"
-                    />
-                    <Button
-                      onClick={() => handleBankerAction(dialogState === "add")}
-                    >
-                      Confirm
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
+            </div>{" "}
             <PlayerDetails
               player={player}
               currentPlayer={currentPlayer}
               onTransfer={onTransfer}
               onManageProperties={onManageProperties}
+              onBankerTransaction={onBankerTransaction}
               allPlayers={allPlayers}
               roomId={roomId}
             />
