@@ -3,7 +3,7 @@ import { josephinBold, josephinNormal } from "@/components/ui/fonts";
 import { OfferNoID, Player } from "@/types/schema";
 import Amount from "./amount";
 import Properties from "./properties";
-import Immunity from "./immunity";
+// import Immunity from "./immunity";
 
 const newOffer = (
   fromPlayerId: string,
@@ -17,12 +17,12 @@ const newOffer = (
   offer: {
     properties: [],
     amount: 0,
-    immunity: [],
+    // immunity: [],
   },
   request: {
     properties: [],
     amount: 0,
-    immunity: [],
+    // immunity: [],
   },
   note: "",
   createdAt: new Date(),
@@ -47,8 +47,8 @@ const MakeOffer = ({
     | "request_amount"
     | "offer_properties"
     | "request_properties"
-    | "offer_immunity"
-    | "request_immunity"
+    // | "offer_immunity"
+    // | "request_immunity"
     | null
   >(null);
 
@@ -78,7 +78,14 @@ const MakeOffer = ({
   };
 
   const viewComponents: { [key: string]: JSX.Element } = {
-    offer_amount: <Amount offer={offer} updateOffer={updateOffer} />,
+    offer_amount: (
+      <Amount
+        offer={offer}
+        updateOffer={updateOffer}
+        type={"offer"}
+        balance={currentPlayer.balance}
+      />
+    ),
     offer_properties: (
       <Properties
       // offer={offer}
@@ -86,14 +93,22 @@ const MakeOffer = ({
       // properties={currentPlayer?.properties}
       />
     ),
-    offer_immunity: (
-      <Immunity
-      // properties={player?.properties}
-      // offer={offer}
-      // updateOffer={updateOffer}
+    // offer_immunity: (
+    //   <Immunity
+    //   // properties={player?.properties}
+    //   // offer={offer}
+    //   // updateOffer={updateOffer}
+    //   />
+    // ),
+    request_amount: (
+      <Amount
+        offer={offer}
+        updateOffer={updateOffer}
+        type="request"
+        name={player.name}
+        balance={player.balance}
       />
     ),
-    request_amount: <Amount offer={offer} updateOffer={updateOffer} />,
     request_properties: (
       <Properties
       // properties={player?.properties}
@@ -101,13 +116,13 @@ const MakeOffer = ({
       // updateOffer={updateOffer}
       />
     ),
-    request_immunity: (
-      <Immunity
-      // properties={player?.properties}
-      // offer={offer}
-      // updateOffer={updateOffer}
-      />
-    ),
+    // request_immunity: (
+    //   <Immunity
+    //   // properties={player?.properties}
+    //   // offer={offer}
+    //   // updateOffer={updateOffer}
+    //   />
+    // ),
   };
 
   return (
@@ -138,23 +153,31 @@ const MakeOffer = ({
               <h1 className={`text-2xl`}>I&apos;m offering</h1>
               <div className={`flex flex-col gap-y-3`}>
                 <button
-                  className={` border border-white p-3 rounded-full`}
+                  className={` border 
+                  ${!offer?.offer?.amount ? "border-white" : `border-red-700`}
+                    border-white p-3 rounded-full`}
                   onClick={() => setView("offer_amount")}
                 >
-                  Cash
+                  {!offer?.offer?.amount ? "Cash" : `$${offer?.offer?.amount}`}
                 </button>
                 <button
                   onClick={() => setView("offer_properties")}
-                  className={` border border-white p-3 rounded-full`}
+                  className={` border border-white p-3 rounded-full
+                  ${
+                    offer?.offer?.properties.length === 0
+                      ? "border-white"
+                      : `border-red-700`
+                  }
+                    border-white p-3 rounded-full`}
                 >
                   Properties
                 </button>
-                <button
+                {/* <button
                   onClick={() => setView("offer_immunity")}
                   className={` border border-white p-3 rounded-full`}
                 >
                   Immunity
-                </button>
+                </button> */}
               </div>
             </div>
             <hr className={`my-4`} />
@@ -165,22 +188,44 @@ const MakeOffer = ({
               <div className={`flex flex-col gap-y-3`}>
                 <button
                   onClick={() => setView("request_amount")}
-                  className={` border border-white p-3 rounded-full`}
+                  className={`
+                   
+                  ${
+                    !offer?.request?.amount
+                      ? "border-white"
+                      : `border-green-700`
+                  }
+                   
+                    border border-white p-3 rounded-full`}
                 >
-                  Cash
+                  {!offer?.request?.amount
+                    ? "Cash"
+                    : `$${offer.request.amount}`}
                 </button>
                 <button
-                  className={` border border-white p-3 rounded-full`}
+                  className={` 
+                  ${
+                    offer?.request?.properties.length === 0
+                      ? "border-white"
+                      : `border-green-700`
+                  }
+                    border border-white p-3 rounded-full`}
                   onClick={() => setView("request_properties")}
                 >
                   Properties
                 </button>
-                <button
+                {/* <button
                   onClick={() => setView("request_immunity")}
-                  className={` border border-white p-3 rounded-full`}
+                  className={`
+                  ${
+                    offer?.request?.immunity.length === 0
+                      ? "border-white"
+                      : `border-green-700`
+                  }
+                    border border-white p-3 rounded-full`}
                 >
                   Immunity
-                </button>
+                </button> */}
               </div>
             </div>
           </>

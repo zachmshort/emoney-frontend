@@ -57,16 +57,16 @@ export interface EventHistory {
   eventType: string[];
 }
 
-interface Immunity {
-  propertyId?: string;
-  propertyGroup?: string;
-  count: number;
-}
+// interface Immunity {
+//   propertyId?: string;
+//   propertyGroup?: string;
+//   count: number;
+// }
 
 interface Trade {
   properties?: string[];
   amount?: number;
-  immunity?: Immunity[];
+  // immunity?: Immunity[];
 }
 
 export interface Offer {
