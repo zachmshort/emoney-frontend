@@ -59,6 +59,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       roomId: code,
     });
   };
+
   const handleWebSocketNotification = (message: WebSocketMessage) => {
     toast.success(message.payload.notification, {
       duration: 4000,

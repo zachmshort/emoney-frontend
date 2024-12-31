@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { getEndpoints } from "./wsHelpers";
 import { EventHistory, Player, Property, Room } from "@/types/schema";
 import { Dispatch, SetStateAction } from "react";
+import { TbChevronsDownLeft } from "react-icons/tb";
 
 const fetchRoomData = async (
   code: string,
@@ -52,7 +53,7 @@ const fetchRoomData = async (
     const remainingPlayers = playersWithProperties.filter(
       (p: Player) => p.id !== storedPlayerId
     );
-
+    console.log(remainingPlayers);
     setPlayer(currentPlayer || null);
     setOtherPlayers(remainingPlayers);
     setRoom(roomData.room);
@@ -62,6 +63,7 @@ const fetchRoomData = async (
     toast.error("Failed to fetch room data");
   }
 };
+
 const fetchAvailableProperties = async (
   roomCode: string,
   setAvailableProperties: Dispatch<SetStateAction<Property[]>>
@@ -88,4 +90,5 @@ const fetchAvailableProperties = async (
     toast.error("Unable to retrieve available properties");
   }
 };
+
 export { fetchAvailableProperties, fetchRoomData };

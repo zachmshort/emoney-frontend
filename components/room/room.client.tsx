@@ -32,7 +32,6 @@ const RoomView = ({
       roomId: string;
     }
   ) => void;
-
   onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
   onBankerTransaction: (amount: string, type: string, playerId: string) => void;
   availableProperties: Property[];
