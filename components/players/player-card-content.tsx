@@ -172,11 +172,6 @@ const PlayerDetails = ({
             />
           </DrawerContent>
         </Drawer>
-        {/* <div className={`flex items-center justify-between`}>
-          <div>{currentPlayer?.id === player?.id && "My"} Monopolies</div>
-          <div>{monopoliesCount}</div>
-          <div>0</div>
-        </div> */}
         <PlayerTags
           player={player}
           allPlayers={allPlayers.filter((p) => p?.id !== player?.id)}

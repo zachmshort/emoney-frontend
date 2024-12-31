@@ -400,13 +400,6 @@ const ManageProperties = ({
 
   return (
     <div className={`space-y-4 ! ${josephinBold.className}`}>
-      {propertiesToBuy?.length > 0 && (
-        <button
-          className={`fixed bottom-2 w-full right-1/2 transform translate-x-1/2 bg-slate-800 text-white`}
-        >
-          Make an Offer
-        </button>
-      )}
       {currentView === "properties" ? (
         <>
           {houseBuildingMode ? (

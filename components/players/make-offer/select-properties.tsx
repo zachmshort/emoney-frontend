@@ -6,7 +6,7 @@ import { MdArrowBackIos } from "react-icons/md";
 
 interface p {
   properties?: Property[];
-  player?: Player;
+  // player?: Player;
   offer: OfferNoID;
   updateOffer: (
     key: keyof OfferNoID,
@@ -17,7 +17,7 @@ interface p {
 
 const MakeOfferProperties = ({
   properties = [],
-  player,
+  // player,
   offer,
   type,
   updateOffer,

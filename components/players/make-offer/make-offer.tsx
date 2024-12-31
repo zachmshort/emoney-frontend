@@ -4,7 +4,6 @@ import { josephinBold, josephinNormal } from "@/components/ui/fonts";
 import { OfferNoID, Player } from "@/types/schema";
 import Amount from "./amount";
 import Properties from "./properties";
-import { off } from "process";
 // import Immunity from "./immunity";
 
 const newOffer = (
