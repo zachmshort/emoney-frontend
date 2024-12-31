@@ -9,11 +9,11 @@ import {
 } from "@/lib/utils/propertyHelpers";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import PropertyCard from "../property/cards/card";
-import Toast from "../ui/toasts";
+import Toast from "@/components/ui/toasts";
 import { PiHouseSimpleThin, PiMoneyWavyThin } from "react-icons/pi";
-import { doesPlayerOwnFullSet } from "../ui/helper-funcs";
+import { doesPlayerOwnFullSet } from "@/components/ui/helper-funcs";
 
-interface ManagePropertiesProps {
+interface p {
   player: Player;
   currentPlayer: Player;
   onManageProperties: (
@@ -24,11 +24,7 @@ interface ManagePropertiesProps {
   ) => void;
 }
 
-const ManageProperties = ({
-  player,
-  currentPlayer,
-  onManageProperties,
-}: ManagePropertiesProps) => {
+const ManageProperties = ({ player, currentPlayer, onManageProperties }: p) => {
   const [currentView, setCurrentView] = useState<"colors" | "properties">(
     "colors"
   );
