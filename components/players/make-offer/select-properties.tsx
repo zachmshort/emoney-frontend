@@ -1,6 +1,6 @@
 import PropertyCard from "@/components/property/cards/card";
 import { josephinBold } from "@/components/ui/fonts";
-import { OfferNoID, Player, Property } from "@/types/schema";
+import { OfferNoID, Property } from "@/types/schema";
 import { useState } from "react";
 import { MdArrowBackIos } from "react-icons/md";
 

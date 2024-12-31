@@ -2,7 +2,6 @@ import { toast } from "sonner";
 import { getEndpoints } from "./wsHelpers";
 import { EventHistory, Player, Property, Room } from "@/types/schema";
 import { Dispatch, SetStateAction } from "react";
-import { TbChevronsDownLeft } from "react-icons/tb";
 
 const fetchRoomData = async (
   code: string,
