@@ -63,6 +63,7 @@ const Amount = ({
       <div className={`flex w-full items-center gap-x-3`}>
         {[10, 25, 50, 75, 100].map((num: number, index: number) => (
           <button
+            key={index}
             className={`
             border w-24 p-2 rounded-full
             ${

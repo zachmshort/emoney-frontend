@@ -12,21 +12,21 @@ interface p {
     key: keyof OfferNoID,
     value: Partial<OfferNoID[keyof OfferNoID]>
   ) => void;
+  type: "offer" | "request";
 }
 
 const MakeOfferProperties = ({
   properties = [],
   player,
   offer,
+  type,
   updateOffer,
 }: p) => {
   const [currentView, setCurrentView] = useState<"colors" | "properties">(
     "colors"
   );
+
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(
-    null
-  );
 
   if (!properties || properties.length === 0) {
     return (
@@ -37,9 +37,25 @@ const MakeOfferProperties = ({
       </div>
     );
   }
-
+  const isPropertySelected = (propertyId: string): boolean => {
+    const currentProperties = offer[type]?.properties || [];
+    return currentProperties.includes(propertyId);
+  };
   const handlePropertySelect = (property: Property) => {
-    setSelectedProperty(property);
+    const currentProperties = offer[type]?.properties || [];
+
+    const propertyExists = currentProperties.includes(property.id);
+
+    let updatedProperties: string[];
+    if (propertyExists) {
+      updatedProperties = currentProperties.filter((id) => id !== property.id);
+    } else {
+      updatedProperties = [...currentProperties, property.id];
+    }
+
+    updateOffer(type, {
+      properties: updatedProperties,
+    });
   };
 
   const handleBack = () => {
@@ -71,7 +87,16 @@ const MakeOfferProperties = ({
                 <div className="relative" key={index}>
                   <PropertyCard
                     property={property}
-                    className="flex-shrink-0 cursor-pointer"
+                    className={`
+                      flex-shrink-0 cursor-pointer
+                      ${
+                        isPropertySelected(property.id)
+                          ? type === "offer"
+                            ? "bg-red-700"
+                            : "bg-green-700"
+                          : ""
+                      }
+                    `}
                     onClick={() => handlePropertySelect(property)}
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-center">

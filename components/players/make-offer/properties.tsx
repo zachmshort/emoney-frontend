@@ -5,6 +5,7 @@ const Properties = ({
   properties,
   updateOffer,
   offer,
+  type,
 }: {
   offer: OfferNoID;
   updateOffer: (
@@ -12,6 +13,7 @@ const Properties = ({
     value: Partial<OfferNoID[keyof OfferNoID]>
   ) => void;
   properties?: Property[];
+  type: "request" | "offer";
 }) => {
   return (
     <>
@@ -19,6 +21,7 @@ const Properties = ({
         properties={properties}
         updateOffer={updateOffer}
         offer={offer}
+        type={type}
       />
     </>
   );

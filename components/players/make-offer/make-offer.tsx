@@ -1,8 +1,10 @@
+"use client";
 import { JSX, useState } from "react";
 import { josephinBold, josephinNormal } from "@/components/ui/fonts";
 import { OfferNoID, Player } from "@/types/schema";
 import Amount from "./amount";
 import Properties from "./properties";
+import { off } from "process";
 // import Immunity from "./immunity";
 
 const newOffer = (
@@ -91,6 +93,7 @@ const MakeOffer = ({
         offer={offer}
         updateOffer={updateOffer}
         properties={currentPlayer?.properties}
+        type="offer"
       />
     ),
     // offer_immunity: (
@@ -114,6 +117,7 @@ const MakeOffer = ({
         properties={player?.properties}
         offer={offer}
         updateOffer={updateOffer}
+        type="request"
       />
     ),
     // request_immunity: (
@@ -124,7 +128,8 @@ const MakeOffer = ({
     //   />
     // ),
   };
-
+  console.log(offer.request.properties);
+  console.log(offer.offer.properties);
   return (
     <>
       <section className={`${josephinNormal.className} w-full px-2`}>
@@ -155,26 +160,28 @@ const MakeOffer = ({
                 <button
                   className={` border 
                   ${!offer?.offer?.amount ? "border-white" : `border-red-700`}
-                    border-white p-3 rounded-full`}
+                     w-48 p-3 rounded-md`}
                   onClick={() => setView("offer_amount")}
                 >
                   {!offer?.offer?.amount ? "Cash" : `$${offer?.offer?.amount}`}
                 </button>
                 <button
                   onClick={() => setView("offer_properties")}
-                  className={` border border-white p-3 rounded-full
+                  className={` border border-white p-3 rounded-md
                   ${
                     offer?.offer?.properties.length === 0
                       ? "border-white"
                       : `border-red-700`
                   }
-                    border-white p-3 rounded-full`}
+                    p-3 rounded-md`}
                 >
+                  {offer.offer.properties.length > 0 &&
+                    offer.offer.properties.length}{" "}
                   Properties
                 </button>
                 {/* <button
                   onClick={() => setView("offer_immunity")}
-                  className={` border border-white p-3 rounded-full`}
+                  className={` border border-white p-3 rounded-md`}
                 >
                   Immunity
                 </button> */}
@@ -196,7 +203,7 @@ const MakeOffer = ({
                       : `border-green-700`
                   }
                    
-                    border border-white p-3 rounded-full`}
+                    border p-3 rounded-md w-48`}
                 >
                   {!offer?.request?.amount
                     ? "Cash"
@@ -209,9 +216,11 @@ const MakeOffer = ({
                       ? "border-white"
                       : `border-green-700`
                   }
-                    border border-white p-3 rounded-full`}
+                    border p-3 rounded-md`}
                   onClick={() => setView("request_properties")}
                 >
+                  {offer.request.properties.length > 0 &&
+                    offer.request.properties.length}{" "}
                   Properties
                 </button>
                 {/* <button
@@ -222,7 +231,7 @@ const MakeOffer = ({
                       ? "border-white"
                       : `border-green-700`
                   }
-                    border border-white p-3 rounded-full`}
+                    border border-white p-3 rounded-md`}
                 >
                   Immunity
                 </button> */}
