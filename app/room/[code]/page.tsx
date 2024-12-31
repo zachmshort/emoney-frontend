@@ -95,7 +95,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       case "TRANSFER":
         return "💵";
       case "MANAGE_PROPERTIES":
-        return "💵";
+        return "🏠";
       default:
         return "ℹ️";
     }
