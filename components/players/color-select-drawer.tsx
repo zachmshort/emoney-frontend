@@ -12,15 +12,54 @@ import { sulpherBold } from "@/components/ui/fonts";
 import { useState } from "react";
 
 const colors = [
-  { name: "Dark Blue", value: "bg-blue-700", hex: "#1d4ed8" },
-  { name: "Grey", value: "bg-neutral-500", hex: "#737373" },
-  { name: "Green", value: "bg-emerald-300", hex: "#6ee7b7" },
-  { name: "Light Blue", value: "bg-sky-400", hex: "#38bdf8" },
-  { name: "Purple", value: "bg-violet-500", hex: "#8b5cf6" },
-  { name: "Orange", value: "bg-orange-500", hex: "#f97316" },
-  { name: "Red", value: "bg-red-500", hex: "#ef4444" },
-  { name: "Pink", value: "bg-pink-500", hex: "#ec4899" },
-  { name: "Yellow", value: "bg-yellow-500", hex: "#eab308" },
+  // Blues
+  { hex: "#93c5fd" }, // Blue 300
+  { hex: "#60a5fa" }, // Blue 400
+  { hex: "#3b82f6" }, // Blue 500
+  { hex: "#2563eb" }, // Blue 600
+  { hex: "#1d4ed8" }, // Blue 700
+
+  // Greens
+  { hex: "#6ee7b7" }, // Teal 300
+  { hex: "#2dd4bf" }, // Teal 400
+  { hex: "#4ade80" }, // Green 400
+  { hex: "#22c55e" }, // Green 500
+  { hex: "#16a34a" }, // Green 600
+
+  // Yellows and Oranges
+  { hex: "#fde047" }, // Yellow 300
+  { hex: "#fbbf24" }, // Yellow 400
+  { hex: "#eab308" }, // Amber 500
+  { hex: "#f59e0b" }, // Amber 400
+  { hex: "#fb923c" }, // Orange 400
+
+  // Reds and Pinks
+  { hex: "#f87171" }, // Red 400
+  { hex: "#ef4444" }, // Red 500
+  { hex: "#f43f5e" }, // Rose 500
+  { hex: "#ec4899" }, // Pink 500
+  { hex: "#b91c1c" }, // Red 700
+
+  // Purples
+  { hex: "#c084fc" }, // Purple 300
+  { hex: "#a78bfa" }, // Violet 400
+  { hex: "#8b5cf6" }, // Violet 500
+  { hex: "#d946ef" }, // Fuchsia 500
+  { hex: "#6d28d9" }, // Violet 700
+
+  // Browns and Auburns
+  { hex: "#d97706" }, // Amber Brown 300
+  { hex: "#bb764c" }, // Copper Brown 400
+  { hex: "#a05a2c" }, // Auburn 500
+  { hex: "#b45309" }, // Brown 600
+  { hex: "#92400e" }, // Brown 700
+
+  // Dark Shades
+  { hex: "#6b7280" }, // Neutral Gray 500
+  { hex: "#4b5563" }, // Slate 600
+  { hex: "#374151" }, // Cool Gray 700
+  { hex: "#1f2937" }, // Gray 800
+  { hex: "#111827" }, // Black 900
 ];
 
 interface ColorSelectProps {
@@ -29,8 +68,6 @@ interface ColorSelectProps {
 
 export function ColorSelect({ onColorSelect }: ColorSelectProps) {
   const [selectedColor, setSelectedColor] = useState<{
-    name: string;
-    value: string;
     hex: string;
   } | null>(null);
 
@@ -38,39 +75,35 @@ export function ColorSelect({ onColorSelect }: ColorSelectProps) {
     <Drawer>
       <DrawerTrigger asChild>
         <button
-          className={`w-64 p-4 border rounded-lg text-2xl text-start mt-4 `}
+          className={`w-64 p-4 border rounded text-2xl text-start mt-4 `}
+          style={{ backgroundColor: selectedColor?.hex || "#000" }}
         >
           {!selectedColor ? (
             <div className={`text-slate-400`}>Select Color</div>
           ) : (
-            <div className={`flex items-center justify-start gap-x-3`}>
-              <div
-                className={`w-3 h-3 rounded-full ${selectedColor.value}`}
-              ></div>
-              {selectedColor.name}
-            </div>
+            <div className={`h-8`}></div>
           )}
         </button>
       </DrawerTrigger>
       <DrawerContent
-        className={`${sulpherBold.className} bg-black text-white h-[70vh]`}
+        className={`${sulpherBold.className} bg-black text-white h-full overflow-y-auto  px-2`}
       >
         <DrawerHeader>
-          <DrawerTitle className={`text-black`}>Select Color</DrawerTitle>
-          <div className="grid grid-cols-4 sm:grid-cols-10 gap-2">
-            {colors.map((color, index) => (
-              <DrawerClose
-                className="p-2 rounded mb-2 border aspect-square w-full"
-                style={{ backgroundColor: color.hex }}
-                key={index}
-                onClick={() => {
-                  setSelectedColor(color);
-                  onColorSelect(color.hex);
-                }}
-              />
-            ))}
-          </div>
+          <DrawerTitle className={`hidden`}>Select Color</DrawerTitle>
         </DrawerHeader>
+        <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+          {colors.map((color, index) => (
+            <DrawerClose
+              className="p-1 rounded border aspect-square w-full"
+              style={{ backgroundColor: color.hex }}
+              key={index}
+              onClick={() => {
+                setSelectedColor(color);
+                onColorSelect(color.hex);
+              }}
+            />
+          ))}
+        </div>
       </DrawerContent>
     </Drawer>
   );

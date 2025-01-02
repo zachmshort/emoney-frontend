@@ -157,7 +157,7 @@ const RoomForm = ({
               {type === "CREATE" && (
                 <input
                   placeholder={`New Room Name`}
-                  className={`${josephinBold.className} border p-4 bg-inherit rounded-lg text-2xl w-64`}
+                  className={`${josephinBold.className} border p-4 bg-inherit rounded text-2xl w-64`}
                   value={roomName}
                   onChange={(e) => {
                     setRoomName(e.target.value);
@@ -166,7 +166,7 @@ const RoomForm = ({
               )}
               <input
                 placeholder={placeholder}
-                className={`${josephinBold.className} border p-4 bg-inherit rounded-lg text-2xl w-64 mt-4`}
+                className={`${josephinBold.className} border p-4 bg-inherit rounded text-2xl w-64 mt-4`}
                 value={code}
                 onChange={(e) => {
                   setCode(e.target.value);
@@ -190,7 +190,7 @@ const RoomForm = ({
             <>
               <input
                 placeholder="Your Name"
-                className={` border p-4 bg-inherit rounded-lg text-2xl w-64 ring-none`}
+                className={` border p-4 bg-inherit rounded-sm text-2xl w-64 ring-none`}
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
