@@ -212,8 +212,20 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   }, [code]);
   if (!room)
     return (
-      <div className={`flex items-center justify-center h-screen w-full`}>
-        <div className="loader" />
+      <div id="loading">
+        <div className={`dice ${josephinBold.className}`}>
+          <div className="front">1</div>
+          <div className="back">6</div>
+          <div className="left">2</div>
+          <div className="right">5</div>
+          <div className="top">3</div>
+          <div className="bottom">4</div>
+        </div>
+        <p
+          className={`border border-yellow-200 p-3 rounded-sm ${josephinBold.className}`}
+        >
+          LOADING
+        </p>
       </div>
     );
 
