@@ -12,6 +12,7 @@ import {
 } from "@/lib/utils/roomHelpers";
 import { sendMessage } from "@/lib/utils/sendWsMessage";
 import { ManagePropertiesPayload } from "@/types/payloads";
+import Loader from "@/components/ui/loader";
 
 interface WebSocketMessage {
   type: string;
@@ -210,24 +211,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       ws.current?.close();
     };
   }, [code]);
-  if (!room)
-    return (
-      <div id="loading">
-        <div className={`dice ${josephinBold.className}`}>
-          <div className="front">1</div>
-          <div className="back">6</div>
-          <div className="left">2</div>
-          <div className="right">5</div>
-          <div className="top">3</div>
-          <div className="bottom">4</div>
-        </div>
-        <p
-          className={`border border-yellow-200 p-3 rounded-sm ${josephinBold.className}`}
-        >
-          LOADING
-        </p>
-      </div>
-    );
+  if (!room) return <Loader />;
 
   return (
     <>
