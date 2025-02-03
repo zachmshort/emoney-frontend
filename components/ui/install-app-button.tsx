@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { josephinLight } from "./fonts";
+import {
+  MdOutlineInstallDesktop,
+  MdOutlineInstallMobile,
+} from "react-icons/md";
 
 const FloatingInstallButton = ({ className }: { className?: string }) => {
   const [isStandalone, setIsStandalone] = useState(false);
@@ -15,11 +18,9 @@ const FloatingInstallButton = ({ className }: { className?: string }) => {
   }
 
   return (
-    <Link
-      href="/install"
-      className={`font text-xl ${josephinLight.className} ${className}`}
-    >
-      Install App
+    <Link href="/install" className={`${className}`}>
+      <MdOutlineInstallMobile className={`block sm:hidden color text-2xl`} />
+      <MdOutlineInstallDesktop className={`hidden sm:block color text-2xl`} />
     </Link>
   );
 };

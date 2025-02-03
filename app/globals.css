@@ -76,7 +76,9 @@
   text-shadow: 0 0 0 #fff;
   transition: all 250ms;
 }
-
+.color {
+  color: yellow !important;
+}
 .font:hover {
   text-shadow: 4px 4px 0 #fff;
   transform: translate(-2px, -2px);

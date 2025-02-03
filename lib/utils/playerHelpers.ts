@@ -23,4 +23,12 @@ export const playerStore = {
       }
     });
   },
+
+  trimRoom(val: string) {
+    val.replace("room_", "");
+    val.replace("_playerId", "");
+    return val;
+  },
+
+ 
 };

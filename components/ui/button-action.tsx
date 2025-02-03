@@ -1,4 +1,7 @@
 "use client";
+
+import { josephinBold } from "./fonts";
+
 const ButtonAction = ({
   text,
   onClick,
@@ -12,7 +15,7 @@ const ButtonAction = ({
     <>
       <button
         onClick={onClick}
-        className={`border font rounded-sm px-4 py-5 border-yellow-200 w-64  text-2xl ${className}`}
+        className={`border ${josephinBold.className} font rounded-sm px-4 py-5 border-yellow-200 w-64  text-2xl ${className}`}
       >
         {text}
       </button>
