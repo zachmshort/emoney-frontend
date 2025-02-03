@@ -210,6 +210,12 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       ws.current?.close();
     };
   }, [code]);
+  if (!room)
+    return (
+      <div className={`flex items-center justify-center h-screen w-full`}>
+        <div className="loader" />
+      </div>
+    );
 
   return (
     <>

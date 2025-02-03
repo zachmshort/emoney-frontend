@@ -37,7 +37,7 @@ const MyRoomsPage = () => {
           rooms.map((room, index) => (
             <Link
               key={index}
-              href={`/rooms/${room}`}
+              href={`/room/${room}`}
               className={`font ${josephinLight.className} text-2xl`}
             >
               {room}

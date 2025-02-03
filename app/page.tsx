@@ -1,9 +1,8 @@
 import CustomLink from "@/components/ui/cusotm-link";
 import CustomButton from "@/components/ui/button-link";
-// import { josephinBold } from "@/components/ui/fonts";
 import InstallButton from "@/components/ui/install-app-button";
 import Link from "next/link";
-import { josephinLight, josephinNormal } from "@/components/ui/fonts";
+import { josephinNormal } from "@/components/ui/fonts";
 
 const MonopolyPage = () => {
   return (
