@@ -107,7 +107,7 @@ const PlayerDetails = ({
           onOpenChange={(open) => !open && setDialogState(null)}
         >
           <DialogContent
-            className={`sm:max-w-[425px] ${josephinBold.className} text-black`}
+            className={`sm:max-w-[425px] ${josephinBold.className} text-black top-1/3`}
           >
             <DialogHeader>
               <DialogTitle>
