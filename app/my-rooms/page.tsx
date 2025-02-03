@@ -1,38 +1,57 @@
 "use client";
-import Toast from "@/components/ui/toasts";
-import { playerStore } from "@/lib/utils/playerHelpers";
+import ButtonLink from "@/components/ui/button-link";
+import { josephinBold, josephinLight } from "@/components/ui/fonts";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { IoIosArrowBack } from "react-icons/io";
 
-const MyRoomsPage = async () => {
+const MyRoomsPage = () => {
   const [rooms, setRooms] = useState<string[]>([]);
-  const getRooms = () => {
-    if (typeof window !== "undefined" && window.localStorage) {
-      Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith("room_")) {
-          const val = playerStore.trimRoom(key);
-          rooms.push(val);
-        } else {
-          Toast({ type: "error", message: "No Rooms found on this device" });
-        }
-        return rooms;
-      });
-    }
-  };
 
   useEffect(() => {
-    const fetchedRooms = getRooms();
-    console.log(fetchedRooms);
+    if (typeof window !== "undefined" && window.localStorage) {
+      const storedRooms = Object.keys(localStorage)
+        .filter((key) => key.startsWith("room_"))
+        .map((key) => key.replace("room_", ""))
+        .map((key) => key.replace("_playerId", ""));
+
+      setRooms(storedRooms);
+    }
   }, []);
 
   return (
-    <>
-      {/* {fetchedRooms.map((room: any, index: number) => ( */}
-      {/* <> */}
-      {/* <Link href={room}></Link> */}
-      {/* </> */}
-      {/* ))} */}
-    </>
+    <div>
+      <div className={`h-16 fixed top-0 w-full bg-black border-b`}>
+        <div className={`flex items-center justify-between px-2 h-full`}>
+          <Link href={`/`}>
+            <IoIosArrowBack className={`text-2xl color`} />
+          </Link>
+          <h1 className={`${josephinBold.className} text-2xl color`}>
+            Existing Rooms
+          </h1>
+          <div />
+        </div>
+      </div>
+      <div className="flex items-center justify-start mt-20 gap-y-4 flex-col w-full min-h-screen">
+        {rooms.length > 0 ? (
+          rooms.map((room, index) => (
+            <Link
+              key={index}
+              href={`/rooms/${room}`}
+              className={`font ${josephinLight.className} text-2xl`}
+            >
+              {room}
+            </Link>
+          ))
+        ) : (
+          <div className={`flex items-center justify-center gap-y-4`}>
+            <p>No rooms found.</p>
+            <ButtonLink href="/join" text="Join a Room" />
+            <ButtonLink href="/create" text="Create a Room" />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
