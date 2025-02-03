@@ -1,13 +1,14 @@
 "use client";
 import ButtonLink from "@/components/ui/button-link";
 import { josephinBold, josephinLight } from "@/components/ui/fonts";
+import Loader from "@/components/ui/loader";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 
 const MyRoomsPage = () => {
   const [rooms, setRooms] = useState<string[]>([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const storedRooms = Object.keys(localStorage)
@@ -16,8 +17,13 @@ const MyRoomsPage = () => {
         .map((key) => key.replace("_playerId", ""));
 
       setRooms(storedRooms);
+      setLoading(false);
     }
   }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div>
