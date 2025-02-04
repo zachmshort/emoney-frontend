@@ -1,7 +1,6 @@
 "use client";
 import ButtonLink from "@/components/ui/button-link";
 import { josephinBold, josephinLight } from "@/components/ui/fonts";
-import Loader from "@/components/ui/loader";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
@@ -16,17 +15,35 @@ const MyRoomsPage = () => {
         .map((key) => key.replace("room_", ""))
         .map((key) => key.replace("_playerId", ""));
 
-      setRooms(storedRooms);
-      setLoading(false);
+      setTimeout(() => {
+        setRooms(storedRooms);
+        setLoading(false);
+      }, 500);
     }
   }, []);
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div id="loading" className={`${josephinBold.className}`}>
+        <div className="dice">
+          <div className="front">1</div>
+          <div className="back">6</div>
+          <div className="left">2</div>
+          <div className="right">5</div>
+          <div className="top">3</div>
+          <div className="bottom">4</div>
+        </div>
+        <p
+          className={`color !text-xl border-yellow-100 border h-12 w-[200px] justify-center flex items-center rounded-sm`}
+        >
+          LOADING
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className={`min-h-screen overflow-y-auto`}>
       <div className={`h-16 fixed top-0 w-full bg-black border-b`}>
         <div className={`flex items-center justify-between px-2 h-full`}>
           <Link href={`/`}>
@@ -50,8 +67,10 @@ const MyRoomsPage = () => {
             </Link>
           ))
         ) : (
-          <div className={`flex items-center justify-center gap-y-4`}>
-            <p>No rooms found.</p>
+          <div
+            className={`${josephinBold.className} flex items-center justify-center gap-y-4 flex-col w-full min-h-screen`}
+          >
+            <p className={`color`}>No rooms found.</p>
             <ButtonLink href="/join" text="Join a Room" />
             <ButtonLink href="/create" text="Create a Room" />
           </div>
