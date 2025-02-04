@@ -2,20 +2,17 @@ import CustomLink from "@/components/ui/cusotm-link";
 import CustomButton from "@/components/ui/button-link";
 import InstallButton from "@/components/ui/install-app-button";
 import Link from "next/link";
-import { josephinNormal } from "@/components/ui/fonts";
+import { IoDiceOutline } from "react-icons/io5";
 
 const MonopolyPage = () => {
   return (
     <>
       <div className={`relative h-screen`}>
         <CustomLink href="/" text="E-Money" className="top-2 left-2" />
-        <Link
-          href="/my-rooms"
-          className={` ${josephinNormal.className} text-xl top-2 right-1/2 transform translate-x-1/2 color absolute`}
-        >
-          My Rooms
+        <Link href={`/my-rooms`}>
+          <IoDiceOutline className={`top-2 right-2 absolute color text-2xl`} />
         </Link>
-        <InstallButton className="top-2 right-2 absolute" />
+        <InstallButton className="top-2 right-10 absolute" />
         <div
           className={`
            
