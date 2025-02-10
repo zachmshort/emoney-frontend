@@ -210,6 +210,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       ws.current?.close();
     };
   }, [code]);
+
   if (!room)
     return (
       <div id="loading" className={`${josephinBold.className}`}>

@@ -45,8 +45,8 @@ const MyRoomsPage = () => {
   return (
     <div className={`min-h-screen overflow-y-auto`}>
       <div className={`h-16 fixed top-0 w-full bg-black border-b`}>
-        <div className={`flex items-center justify-between px-2 h-full`}>
-          <Link href={`/`}>
+        <div className={`flex items-center justify-center px-2 h-full`}>
+          <Link href={`/`} className={`absolute left-2 top-4`}>
             <IoIosArrowBack className={`text-2xl color`} />
           </Link>
           <h1 className={`${josephinBold.className} text-2xl color`}>
@@ -68,11 +68,11 @@ const MyRoomsPage = () => {
           ))
         ) : (
           <div
-            className={`${josephinBold.className} flex items-center justify-center gap-y-4 flex-col w-full min-h-screen`}
+            className={`${josephinBold.className} flex items-center justify-center gap-y-4 flex-col w-full h-[50vh]`}
           >
             <p className={`color`}>No rooms found.</p>
-            <ButtonLink href="/join" text="Join a Room" />
-            <ButtonLink href="/create" text="Create a Room" />
+            <ButtonLink href="/join" text="Join Room" />
+            <ButtonLink href="/create" text="Create Room" />
           </div>
         )}
       </div>

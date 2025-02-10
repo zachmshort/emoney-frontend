@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import CustomLink from "../ui/cusotm-link";
 import ButtonAction from "../ui/button-action";
+import { Slider } from "../ui/slider";
 
 interface p {
   type?: string;
@@ -23,10 +24,14 @@ const RoomForm = ({
 }: p) => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [startingCash, setStartingCash] = useState("");
   const [showDetails, setShowDetails] = useState(false);
   const router = useRouter();
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [roomName, setRoomName] = useState("");
+  const [showGameRules, setShowGameRules] = useState(false);
+  const [houses, setHouses] = useState(32);
+  const [hotels, setHotels] = useState(12);
   const checkExistingPlayer = async () => {
     try {
       const existingPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -152,60 +157,113 @@ const RoomForm = ({
         <div
           className={`flex flex-col items-center text-start justify-center h-full ${josephinBold.className}`}
         >
-          {!showDetails ? (
-            <>
-              {type === "CREATE" && (
+          <>
+            {!showGameRules ? (
+              <>
+                {!showDetails ? (
+                  <>
+                    {type === "CREATE" && (
+                      <input
+                        placeholder={`New Room Name`}
+                        className={`${josephinBold.className} border p-4 bg-inherit rounded text-2xl w-64`}
+                        value={roomName}
+                        onChange={(e) => {
+                          setRoomName(e.target.value);
+                        }}
+                      />
+                    )}
+                    <input
+                      placeholder={placeholder}
+                      className={`${josephinBold.className} border p-4 bg-inherit rounded text-2xl w-64 mt-4`}
+                      value={code}
+                      onChange={(e) => {
+                        setCode(e.target.value);
+                      }}
+                    />
+                    <ButtonAction
+                      onClick={() => {
+                        if (!code || (!roomName && type === "CREATE")) {
+                          toast.error("Please fill out the fields", {
+                            className: `${josephinBold.className}`,
+                          });
+                        } else {
+                          checkExistingPlayer();
+                        }
+                      }}
+                      text={buttonText1}
+                      className={`mt-4`}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <input
+                      placeholder="Your Name"
+                      className={` border p-4 bg-inherit rounded-sm text-2xl w-64 ring-none`}
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                    />
+                    <ColorSelect
+                      onColorSelect={(color: string) => setSelectedColor(color)}
+                    />
+                    <ButtonAction
+                      onClick={() => {
+                        setShowGameRules(true);
+                      }}
+                      text="Game Rules"
+                      className={`mt-4`}
+                    />
+                    <ButtonAction
+                      onClick={enterRoom}
+                      text={buttonText2}
+                      className={`mt-4`}
+                    />
+                  </>
+                )}
+              </>
+            ) : (
+              <>
                 <input
-                  placeholder={`New Room Name`}
-                  className={`${josephinBold.className} border p-4 bg-inherit rounded text-2xl w-64`}
-                  value={roomName}
+                  placeholder="Starting Cash"
+                  className={`w-64 border p-4 bg-inherit rounded-sm text-2xl ring-none`}
+                  value={startingCash}
                   onChange={(e) => {
-                    setRoomName(e.target.value);
+                    setStartingCash(e.target.value);
                   }}
                 />
-              )}
-              <input
-                placeholder={placeholder}
-                className={`${josephinBold.className} border p-4 bg-inherit rounded text-2xl w-64 mt-4`}
-                value={code}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                }}
-              />
-              <ButtonAction
-                onClick={() => {
-                  if (!code || (!roomName && type === "CREATE")) {
-                    toast.error("Please fill out the fields", {
-                      className: `${josephinBold.className}`,
-                    });
-                  } else {
-                    checkExistingPlayer();
-                  }
-                }}
-                text={buttonText1}
-                className={`mt-4`}
-              />
-            </>
-          ) : (
-            <>
-              <input
-                placeholder="Your Name"
-                className={` border p-4 bg-inherit rounded-sm text-2xl w-64 ring-none`}
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
-              <ColorSelect
-                onColorSelect={(color: string) => setSelectedColor(color)}
-              />
-              <ButtonAction
-                onClick={enterRoom}
-                text={buttonText2}
-                className={`mt-4`}
-              />
-            </>
-          )}
+                <ButtonAction
+                  text="Use Default"
+                  onClick={() => {
+                    setStartingCash("1500");
+                  }}
+                  className={`mt-4`}
+                />
+                <hr className={`border-t my-4 border-white w-64`} />
+                <p>Houses Available: {houses < 88 ? houses : "No Limit"}</p>
+                <Slider
+                  className={`w-64 bg-white rounded-sm`}
+                  min={0}
+                  max={88}
+                  value={[houses]}
+                  onValueChange={(e: number[]) => {
+                    setHouses(e[0]);
+                  }}
+                />
+                <hr className={`border-t my-4 border-white w-64`} />
+                <p>Hotels Available: {hotels < 22 ? hotels : "No Limit"}</p>
+                <Slider
+                  className={`w-64 bg-white rounded-sm`}
+                  min={0}
+                  max={22}
+                  value={[hotels]}
+                  onValueChange={(e: number[]) => {
+                    setHotels(e[0]);
+                  }}
+                />
+              </>
+            )}
+          </>
         </div>
       </div>
     </>
