@@ -24,7 +24,7 @@ const MyRoomsPage = () => {
 
   if (loading) {
     return (
-      <div id="loading" className={`${josephinBold.className}`}>
+      <div id="loading" className={`${josephinBold.className} w-full min-h-screen flex flex-col items-center justify-center`}>
         <div className="dice">
           <div className="front">1</div>
           <div className="back">6</div>
