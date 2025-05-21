@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ColorSelect } from "../players/color-select-drawer";
@@ -19,12 +20,41 @@ interface p {
   placeholder?: string;
 }
 
+type RoomFormData = {
+  name:string
+  startingCash:string
+  code:string
+  playerName:string
+  playerColor:string
+  houses:string, 
+  hotels:string, 
+}
+
+const initialFormData:RoomFormData = {
+  name: "",
+  code: "",
+  playerName: "",
+  playerColor: "",
+  startingCash: "",
+  houses: "",
+  hotels: "",
+};
+
+// updateFormData: <K extends keyof ListingFormData>(
+//     field: K,
+//     value: ListingFormData[K]
+//   ) => void;
+//   formData: ListingFormData;
+//
+
 const RoomForm = ({
   type = "JOIN",
   buttonText1 = "Next",
   buttonText2 = "Join",
   placeholder = "Enter Room Code",
 }: p) => {
+
+  const [formData, setFormData] = useState<RoomFormData>(initialFormData);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [startingCash, setStartingCash] = useState("");

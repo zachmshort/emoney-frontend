@@ -1,15 +1,7 @@
-"use client";
-
-import RoomForm from "@/components/room/join-create-room-steps";
+import CreateRoomForm from "@/components/room/create";
 
 const CreateRoom = () => {
-  return (
-      <RoomForm
-        type="CREATE"
-        placeholder="New Room Code"
-        buttonText2="Create Room"
-      />
-  );
+  return <CreateRoomForm />;
 };
 
 export default CreateRoom;

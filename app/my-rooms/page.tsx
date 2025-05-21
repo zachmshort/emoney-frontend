@@ -1,7 +1,8 @@
 "use client";
-import ButtonLink from "@/components/ui/button-link";
+
 import { josephinBold, josephinLight } from "@/components/ui/fonts";
-import Link from "next/link";
+import NextLink from "next/link";
+import Link from "@/components/ui/link";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 
@@ -42,42 +43,69 @@ const MyRoomsPage = () => {
     );
   }
 
+  const existingRooms = rooms.length > 0
+
   return (
     <div className={`min-h-screen overflow-y-auto`}>
-      <div className={`h-16 fixed top-0 w-full bg-black border-b`}>
+      <Header />
+      
+      <div className="flex items-center justify-start mt-20 gap-y-4 flex-col w-full min-h-screen">
+        {existingRooms ? <ExistingRooms rooms={rooms} />
+         : (
+          
+          <NoExistingRoomsFound />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const NoExistingRoomsFound = ()=> {
+  return (
+<div
+            className={`${josephinBold.className} flex items-center justify-center gap-y-4 flex-col w-full h-[50vh]`}
+          >
+            <p className={`color`}>No rooms found</p>
+            <Link href="/join" >Join Room</Link>
+            <Link href="/create" >Create Room</Link>
+          </div>
+  )
+}
+
+const ExistingRooms = (rooms)=> {
+  return (
+
+  <>
+           {rooms.map((room, index) => (
+            <NextLink
+              key={index}
+              href={`/room/${room}`}
+              className={`font ${josephinLight.className} text-2xl`}
+            >
+              {room}
+            </NextLink>
+
+          ))}
+
+  </>
+
+  )
+}
+
+const Header = () => {
+return (
+<div className={`h-16 fixed top-0 w-full bg-black border-b`}>
         <div className={`flex items-center justify-center px-2 h-full`}>
-          <Link href={`/`} className={`absolute left-2 top-4`}>
+          <NextLink href={`/`} className={`absolute left-2 top-4`}>
             <IoIosArrowBack className={`text-2xl color`} />
-          </Link>
+          </NextLink>
           <h1 className={`${josephinBold.className} text-2xl color`}>
             Existing Rooms
           </h1>
           <div />
         </div>
       </div>
-      <div className="flex items-center justify-start mt-20 gap-y-4 flex-col w-full min-h-screen">
-        {rooms.length > 0 ? (
-          rooms.map((room, index) => (
-            <Link
-              key={index}
-              href={`/room/${room}`}
-              className={`font ${josephinLight.className} text-2xl`}
-            >
-              {room}
-            </Link>
-          ))
-        ) : (
-          <div
-            className={`${josephinBold.className} flex items-center justify-center gap-y-4 flex-col w-full h-[50vh]`}
-          >
-            <p className={`color`}>No rooms found.</p>
-            <ButtonLink href="/join" text="Join Room" />
-            <ButtonLink href="/create" text="Create Room" />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+)
+}
 
 export default MyRoomsPage;
