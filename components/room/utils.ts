@@ -12,7 +12,7 @@ export type CreateRoomFormData = BaseRoomFormData & {
   hotels: number;
 };
 
-export const InitialCreateRoomFormData:CreateRoomFormData= {
+export const InitialCreateRoomFormData: CreateRoomFormData = {
   roomName: "",
   roomCode: "",
   playerName: "",
@@ -22,28 +22,24 @@ export const InitialCreateRoomFormData:CreateRoomFormData= {
   hotels: 12,
 };
 
-export const InitialJoinRoomFormData:JoinRoomFormData= {
+export const InitialJoinRoomFormData: JoinRoomFormData = {
   playerName: "",
   playerColor: "",
   roomCode: "",
 };
 
-export interface JoinProps{
-  updateFormData: <K extends keyof JoinRoomFormData >(
+export interface JoinProps {
+  updateFormData: <K extends keyof JoinRoomFormData>(
     field: K,
-    value: JoinRoomFormData[K]
+    value: JoinRoomFormData[K],
   ) => void;
   formData: JoinRoomFormData;
 }
 
-
-export interface CreateProps{
+export interface CreateProps {
   updateFormData: <K extends keyof CreateRoomFormData>(
     field: K,
-    value: CreateRoomFormData[K]
+    value: CreateRoomFormData[K],
   ) => void;
   formData: CreateRoomFormData;
 }
-
-
-

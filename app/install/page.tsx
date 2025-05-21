@@ -21,7 +21,7 @@ function InstallPrompt() {
 
     setIsIOS(
       /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-        !(window as WindowWithMSStream).MSStream
+        !(window as WindowWithMSStream).MSStream,
     );
 
     setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
@@ -36,7 +36,7 @@ function InstallPrompt() {
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
-        handleBeforeInstallPrompt
+        handleBeforeInstallPrompt,
       );
     };
   }, []);

@@ -21,45 +21,51 @@ const STEP = {
 };
 
 const CreateRoomForm = () => {
-  const [formData, setFormData] = useState<CreateRoomFormData>(InitialCreateRoomFormData);
+  const [formData, setFormData] = useState<CreateRoomFormData>(
+    InitialCreateRoomFormData,
+  );
   const [step, setStep] = useState<number>(STEP.ROOM_DETAILS);
   const router = useRouter();
 
   const updateFormData = <F extends keyof CreateRoomFormData>(
     field: F,
-    value: CreateRoomFormData[F]
+    value: CreateRoomFormData[F],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const { execute: createRoomExecute, loading: creating } = usePublicAction(roomApi.create, {
-    onSuccess(data) {
-      playerStore.setPlayerIdForRoom(data.roomCode, data.playerId);
-      router.push(`/rooms/${data.roomCode}`);
+  const { execute: createRoomExecute, loading: creating } = usePublicAction(
+    roomApi.create,
+    {
+      onSuccess(data) {
+        playerStore.setPlayerIdForRoom(data.roomCode, data.playerId);
+        router.push(`/rooms/${data.roomCode}`);
+      },
+      onError(error) {
+        toast.error("Failed to create room", {
+          description: error?.message || "Please try again.",
+          className: josephinBold.className,
+        });
+      },
     },
-    onError(error) {
-      toast.error("Failed to create room", {
-        description: error?.message || "Please try again.",
-        className: josephinBold.className,
-      });
-    },
-  });
+  );
 
-  const { execute: checkPlayerExecute, loading: checkingPlayer } = usePublicAction(playerApi.getDetails, {
-    onSuccess(data) {
-      if (data.isValid) {
-        router.push(`/rooms/${formData.roomCode}`);
-      } else {
+  const { execute: checkPlayerExecute, loading: checkingPlayer } =
+    usePublicAction(playerApi.getDetails, {
+      onSuccess(data) {
+        if (data.isValid) {
+          router.push(`/rooms/${formData.roomCode}`);
+        } else {
+          setStep(STEP.PLAYER_DETAILS);
+        }
+      },
+      onError(error) {
         setStep(STEP.PLAYER_DETAILS);
-      }
-    },
-    onError(error) {
-      setStep(STEP.PLAYER_DETAILS);
-      toast.error(error.error, {
-        className: josephinBold.className,
-      });
-    },
-  });
+        toast.error(error.error, {
+          className: josephinBold.className,
+        });
+      },
+    });
 
   const checkPlayerAlreadyInRoom = async () => {
     const existingPlayerId = playerStore.getPlayerIdForRoom(formData.roomCode);
@@ -104,7 +110,9 @@ const CreateRoomForm = () => {
           }
         }}
         disabled={checkingPlayer}
-      >Next</Button>
+      >
+        Next
+      </Button>
     </>
   );
 
@@ -115,9 +123,15 @@ const CreateRoomForm = () => {
         value={formData.playerName}
         onChange={(e) => updateFormData("playerName", e.target.value)}
       />
-      <ColorSelect onColorSelect={(color) => updateFormData("playerColor", color)} />
-      <Button onClick={() => setStep(STEP.GAME_RULES)} className="mt-4">Game Rules</Button>
-      <Button onClick={handleCreateRoom} className="mt-4" disabled={creating}>Create Room</Button>
+      <ColorSelect
+        onColorSelect={(color) => updateFormData("playerColor", color)}
+      />
+      <Button onClick={() => setStep(STEP.GAME_RULES)} className="mt-4">
+        Game Rules
+      </Button>
+      <Button onClick={handleCreateRoom} className="mt-4" disabled={creating}>
+        Create Room
+      </Button>
     </>
   );
 
@@ -126,14 +140,20 @@ const CreateRoomForm = () => {
       <BaseRoomInput
         placeholder="Starting Cash"
         value={formData.startingCash}
-        onChange={(e) => updateFormData("startingCash", parseInt(e.target.value))}
+        onChange={(e) =>
+          updateFormData("startingCash", parseInt(e.target.value))
+        }
       />
       <Button
         onClick={() => updateFormData("startingCash", 1500)}
         className="mt-4"
-      >Use Default</Button>
+      >
+        Use Default
+      </Button>
       <hr className="border-t my-4 border-white w-64" />
-      <p>Houses Available: {formData.houses < 88 ? formData.houses : "No Limit"}</p>
+      <p>
+        Houses Available: {formData.houses < 88 ? formData.houses : "No Limit"}
+      </p>
       <Slider
         className="w-64 bg-white rounded-sm"
         min={0}
@@ -142,7 +162,9 @@ const CreateRoomForm = () => {
         onValueChange={(e: number[]) => updateFormData("houses", e[0])}
       />
       <hr className="border-t my-4 border-white w-64" />
-      <p>Hotels Available: {formData.hotels < 22 ? formData.hotels : "No Limit"}</p>
+      <p>
+        Hotels Available: {formData.hotels < 22 ? formData.hotels : "No Limit"}
+      </p>
       <Slider
         className="w-64 bg-white rounded-sm"
         min={0}
@@ -156,7 +178,9 @@ const CreateRoomForm = () => {
   return (
     <div className="relative h-screen">
       <CustomLink text="E-Money" href="/" className="top-2 left-2" />
-      <div className={`flex flex-col items-center justify-center h-full ${josephinBold.className}`}>
+      <div
+        className={`flex flex-col items-center justify-center h-full ${josephinBold.className}`}
+      >
         {step === STEP.ROOM_DETAILS && RoomDetailsStep()}
         {step === STEP.PLAYER_DETAILS && PlayerDetailsStep()}
         {step === STEP.GAME_RULES && GameRulesStep()}

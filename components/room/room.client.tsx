@@ -30,7 +30,7 @@ const RoomView = ({
       toPlayerId: string;
       reason: string;
       roomId: string;
-    }
+    },
   ) => void;
   onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
   onBankerTransaction: (amount: string, type: string, playerId: string) => void;
@@ -38,13 +38,13 @@ const RoomView = ({
   onPurchaseProperty: (
     propertyId: string,
     buyerId: string,
-    price: number
+    price: number,
   ) => void;
   onManageProperties: (
     amount: number,
     managementType: ManagePropertiesPayload["managementType"],
     properties: { propertyId: string; count?: number }[],
-    playerId: string
+    playerId: string,
   ) => void;
 }) => {
   const allPlayers = [...otherPlayers, currentPlayer];
