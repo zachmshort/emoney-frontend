@@ -36,7 +36,7 @@ const handleApiResponse = (promise: any) => {
 
 const API_VERSION = "v1";
 
-const ROOMS_BASE = `/api/${API_VERSION}/rooms`;
+const ROOMS_BASE = `/${API_VERSION}/rooms`;
 const ROOM = (code: string) => `${ROOMS_BASE}/${code}`;
 
 const ROOM_PLAYERS = (code: string) => `${ROOM(code)}/players`;
@@ -59,6 +59,7 @@ async function apiRequest<T = any>(
   params?: Record<string, string>,
 ): Promise<ApiResponse<T>> {
   const url = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  console.log(url, "url in /emoney-frontend/utils/api.service.ts")
   const config = params ? { params } : undefined;
 
   let promise: any;

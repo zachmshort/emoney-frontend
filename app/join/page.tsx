@@ -1,11 +1,9 @@
-"use client";
+import Join from "@/components/room/join";
 
-import RoomForm from "@/components/room/join-create-room-steps";
-
-const JoinRoomPage = () => {
+const JoinPage = () => {
   return (
-    <RoomForm />
+    <Join />
   );
 };
 
-export default JoinRoomPage;
+export default JoinPage;

@@ -1,7 +1,7 @@
-import CreateRoomForm from "@/components/room/create";
+import Create from "@/components/room/create";
 
-const CreateRoom = () => {
-  return <CreateRoomForm />;
+const CreatePage = () => {
+  return <Create />;
 };
 
-export default CreateRoom;
+export default CreatePage;
