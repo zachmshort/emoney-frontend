@@ -36,7 +36,14 @@ const handleApiResponse = (promise: any) => {
 
 const API_VERSION = "v1";
 
-const PROTECTED_BASE = `${API_VERSION}/protected`;
+const ROOMS_BASE = `/api/${API_VERSION}/rooms`;
+const ROOM = (code: string) => `${ROOMS_BASE}/${code}`;
+
+const ROOM_PLAYERS = (code: string) => `${ROOM(code)}/players`;
+const ROOM_PLAYER = (code: string, playerId: string) => `${ROOM_PLAYERS(code)}/${playerId}`;
+
+const PLAYER_PROPERTIES = (code: string, playerId: string) => `${ROOM_PLAYER(code, playerId)}/properties`;
+const PLAYER_PROPERTY = (code: string, playerId: string, propertyId: string) => `${PLAYER_PROPERTIES(code, playerId)}/${propertyId}`;
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -73,54 +80,24 @@ async function apiRequest<T = any>(
   return handleApiResponse(promise);
 }
 
-
 export const roomApi = {
+  create: (data: any) => apiRequest("post", ROOMS_BASE, data),                       // /rooms
+  getPlayers: (code: string) => apiRequest("get", ROOM_PLAYERS(code)),               // /rooms/:code/players
+  getProperties: (code: string) => apiRequest("get", `${ROOM(code)}/properties`),    // /rooms/:code/properties
 };
 
-export const listingApi = {
-  getAll: (userId: string, fields?: string) =>
-    apiRequest(
-      "get",
-      LISTINGS_BASE(userId),
-      undefined,
-      fields ? { fields } : undefined,
-    ),
+export const playerApi = {
+  join: (code: string, data: any) => apiRequest("post", ROOM_PLAYERS(code), data),   // /rooms/:code/players
 
-  generateDescription: (userId: string, data: any) =>
-    apiRequest("post", `${LISTINGS_BASE(userId)}/description`, data),
+  getDetails: (code: string, playerId: string) =>
+    apiRequest("get", ROOM_PLAYER(code, playerId)),                                  // GET /rooms/:code/players/:playerId
 
-  validateTitle: (userId: string, data: any) =>
-    apiRequest("post", `${LISTINGS_BASE(userId)}/validate-title`, data),
+  addProperty: (code: string, playerId: string, propertyId: string) =>
+    apiRequest("post", PLAYER_PROPERTY(code, playerId, propertyId)),                 // POST /rooms/:code/players/:playerId/properties/:propertyId
 
-  createNewTitle: (userId: string, data: any) =>
-    apiRequest("post", `${LISTINGS_BASE(userId)}/new-title`, data),
+  removeProperty: (code: string, playerId: string, propertyId: string) =>
+    apiRequest("delete", PLAYER_PROPERTY(code, playerId, propertyId)),               // DELETE /rooms/:code/players/:playerId/properties/:propertyId
 
-  getMyListingsPage: (userId: string) =>
-    apiRequest("get", MY_LISTINGS_BASE(userId)),
-
-  getMyListingsIDPage: (userId: string, listingId: string) =>
-    apiRequest("get", MY_LISTING_BASE(userId, listingId)),
-
-  getOne: (userId: string, listingId: string, fields?: string) =>
-    apiRequest(
-      "get",
-      LISTING_BASE(userId, listingId),
-      undefined,
-      fields ? { fields } : undefined,
-    ),
-
-  create: (userId: string, data: any) =>
-    apiRequest("post", LISTINGS_BASE(userId), data),
-
-  update: (userId: string, listingId: string, data: any) =>
-    apiRequest("put", LISTING_BASE(userId, listingId), data),
-
-  updateMany: (userId: string, data: any) =>
-    apiRequest("put", LISTINGS_BASE(userId), data),
-
-  delete: (userId: string, listingId: string) =>
-    apiRequest("delete", LISTING_BASE(userId, listingId)),
-
-  deleteMany: (userId: string, data: any) =>
-    apiRequest("delete", LISTINGS_BASE(userId), data),
+  mortgageProperty: (code: string, playerId: string, propertyId: string) =>
+    apiRequest("post", `${PLAYER_PROPERTY(code, playerId, propertyId)}/mortgage`),   // POST /rooms/:code/players/:playerId/properties/:propertyId/mortgage
 };

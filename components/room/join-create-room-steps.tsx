@@ -9,6 +9,8 @@ import { playerStore } from "@/lib/utils/playerHelpers";
 import CustomLink from "../ui/cusotm-link";
 import ButtonAction from "../ui/button-action";
 import { Slider } from "../ui/slider";
+import { usePublicAction } from "@/hooks/use-public-fetch";
+import { roomApi } from "@/utils/api.service";
 
 interface p {
   type?: string;
@@ -33,6 +35,15 @@ const RoomForm = ({
   const [showGameRules, setShowGameRules] = useState(false);
   const [houses, setHouses] = useState(32);
   const [hotels, setHotels] = useState(12);
+
+  const {execute, error,loading, data} = usePublicAction(roomApi.create, {
+    onSuccess(data) {
+        
+    },
+    onError(error) {
+        
+    },
+  })
   const checkExistingPlayer = async () => {
     try {
       const existingPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -76,6 +87,7 @@ const RoomForm = ({
         className: `${josephinBold.className}`,
       });
     }
+
     try {
       const payload = {
         roomCode: code,
