@@ -4,9 +4,7 @@ import RoomForm from "@/components/room/join-create-room-steps";
 
 const JoinRoomPage = () => {
   return (
-    <>
-      <RoomForm />
-    </>
+    <RoomForm />
   );
 };
 
