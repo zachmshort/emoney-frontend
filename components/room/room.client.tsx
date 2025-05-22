@@ -50,6 +50,10 @@ const RoomView = ({
   ) => void;
 }) => {
   const allPlayers = [...otherPlayers, currentPlayer];
+  console.log(
+    loading,
+    "loadign in /emoney-frontend/components/room/room.client.tsx",
+  );
   return (
     <div className="min-h-screen w-full relative flex flex-col">
       <div className="sticky top-0 z-50 bg-white">
