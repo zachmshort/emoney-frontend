@@ -9,7 +9,7 @@ import CustomLink from "../ui/cusotm-link";
 import { Slider } from "../ui/slider";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import { usePublicAction } from "@/hooks/use-public-fetch";
-import { playerApi, roomApi } from "@/utils/api.service";
+import { playerApi, roomApi } from "@/lib/utils/api.service";
 import { CreateRoomFormData, InitialCreateRoomFormData } from "./utils";
 import Button from "../ui/button-custom";
 import { BaseRoomInput } from "./room-code-input";
