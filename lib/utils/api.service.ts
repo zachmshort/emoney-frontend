@@ -88,6 +88,8 @@ export const roomApi = {
   getPlayers: (code: string) => apiRequest("get", ROOM_PLAYERS(code)),
   getProperties: (code: string) =>
     apiRequest("get", `${ROOM(code)}/properties`),
+  checkExistingRoom: (code: string) =>
+    apiRequest("get", `${ROOM(code)}/exists`),
 };
 
 export const playerApi = {

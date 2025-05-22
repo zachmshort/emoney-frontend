@@ -9,7 +9,7 @@ import CustomLink from "../ui/cusotm-link";
 import { Slider } from "../ui/slider";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import { usePublicAction } from "@/hooks/use-public-fetch";
-import { playerApi, roomApi } from "@/lib/utils/api.service";
+import { roomApi } from "@/lib/utils/api.service";
 import { CreateRoomFormData, InitialCreateRoomFormData } from "./utils";
 import Button from "../ui/button-custom";
 import { BaseRoomInput } from "./room-code-input";
@@ -50,17 +50,27 @@ const CreateRoomForm = () => {
     },
   );
 
-  const { execute: checkPlayerExecute, loading: checkingPlayer } =
-    usePublicAction(playerApi.getDetails, {
-      onSuccess(data: { roomCode: string; isValid: boolean }) {
-        if (data.isValid) {
-          router.push(`/room/${formData.roomCode}`);
-        } else {
+  const { execute: checkExistingRoomExecute, loading: checkingExistingRoom } =
+    usePublicAction(roomApi.checkExistingRoom, {
+      onSuccess(data: { exists: boolean }) {
+        console.log(
+          data,
+          "data in /emoney-frontend/components/room/create.tsx",
+        );
+        const existingRoomFound = data.exists;
+        if (!existingRoomFound) {
           setStep(STEP.PLAYER_DETAILS);
+        } else if (existingRoomFound) {
+          toast.error("Room code already taken", {
+            className: josephinBold.className,
+          });
         }
       },
-      onError(error) {
-        setStep(STEP.PLAYER_DETAILS);
+      onError(error: { error: string }) {
+        console.log(
+          error,
+          "error in /emoney-frontend/components/room/create.tsx",
+        );
         toast.error(error.error, {
           className: josephinBold.className,
         });
@@ -70,9 +80,9 @@ const CreateRoomForm = () => {
   const checkPlayerAlreadyInRoom = async () => {
     const existingPlayerId = playerStore.getPlayerIdForRoom(formData.roomCode);
     if (existingPlayerId) {
-      checkPlayerExecute(formData.roomCode, existingPlayerId);
+      router.push(`/room/${formData.roomCode}`);
     } else {
-      setStep(STEP.PLAYER_DETAILS);
+      checkExistingRoomExecute(formData.roomCode);
     }
   };
 
@@ -109,7 +119,7 @@ const CreateRoomForm = () => {
             checkPlayerAlreadyInRoom();
           }
         }}
-        disabled={checkingPlayer}
+        disabled={checkingExistingRoom}
       >
         Next
       </Button>

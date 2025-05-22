@@ -1,43 +1,52 @@
 import { Property } from "@/types/schema";
 
 const getDisplayState = (level: number) => {
-  if (level === 1) {
-    return `${level} house`;
-  } else if (level === 5) {
+  const moreThanOneHouse = level > 1;
+  const hotel = level === 5;
+  if (hotel) {
     return `1 Hotel`;
-  } else if (level < 5) {
-    return `${level} houses`;
+  } else {
+    return `${level} House${moreThanOneHouse ? "s" : ""}`;
   }
 };
 
-const getDisplayStateManage = (count: number, num: number) => {
-  if (count > num * 4) {
-    const hotels = count - num * 4;
-    const houses = count - hotels - hotels * 4;
-    if (hotels === 3) {
-      return `${hotels} Hotels`;
-    } else if (hotels === 1) {
-      return `${hotels} Hotel & ${houses} Houses`;
-    }
-    return `${hotels} Hotels & ${houses} Houses`;
-  } else if (count === 0) {
-    return "";
-  } else if (count === 1) {
-    return `${count} House`;
-  }
-  return `${count} houses`;
+const getDisplayStateManage = (
+  numberOfHouses: number,
+  numberOfProperties: number,
+): string => {
+  if (numberOfHouses === 0) return "";
+
+  const maxHouses = numberOfProperties * 4;
+
+  const hotels = Math.floor(numberOfHouses / 5);
+  const houses =
+    numberOfHouses < maxHouses
+      ? numberOfProperties
+      : numberOfProperties - hotels * 5;
+
+  const parts = [];
+  if (hotels > 0) parts.push(`${hotels} Hotel${hotels > 1 ? "s" : ""}`);
+  if (houses > 0) parts.push(`${houses} House${houses > 1 ? "s" : ""}`);
+
+  return parts.join(" & ");
 };
 
-const getCost = (property: Property, targetLevel: number) => {
-  const difference = Math.abs(targetLevel - property.developmentLevel);
-  const isUpgrade = targetLevel > property.developmentLevel;
+const getCost = (property: Property, targetLevel: number): number => {
+  const levelDiff = targetLevel - property.developmentLevel;
 
-  return property.houseCost * difference * (isUpgrade ? 1 : 0.5);
+  if (levelDiff === 0) return 0;
+
+  const isUpgrade = levelDiff > 0;
+  const costMultiplier = isUpgrade ? 1 : 0.5;
+
+  return property.houseCost * Math.abs(levelDiff) * costMultiplier;
 };
-const getDisplayText = (count: number) => {
-  if (count < 5) {
-    return `${count} house${count !== 1 ? "s" : ""}`;
+
+const getDisplayText = (numberOfHouses: number): string => {
+  if (numberOfHouses < 5) {
+    return `${numberOfHouses} House${numberOfHouses !== 1 ? "s" : ""}`;
   }
   return "Hotel";
 };
+
 export { getCost, getDisplayState, getDisplayText, getDisplayStateManage };
