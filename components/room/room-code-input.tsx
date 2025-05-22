@@ -1,7 +1,9 @@
 import { josephinBold } from "../ui/fonts";
 import { InputHTMLAttributes } from "react";
 
-interface BaseInputProps extends InputHTMLAttributes<HTMLInputElement> {}
+interface BaseInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  className?: string;
+}
 
 export const BaseRoomInput = ({ className = "", ...props }: BaseInputProps) => {
   return (
@@ -11,4 +13,3 @@ export const BaseRoomInput = ({ className = "", ...props }: BaseInputProps) => {
     />
   );
 };
-
