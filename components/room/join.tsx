@@ -32,7 +32,7 @@ const JoinRoomForm = () => {
   const { execute: joinRoomExecute, loading: joining } = usePublicAction(
     playerApi.join,
     {
-      onSuccess(data) {
+      onSuccess(data: { roomCode: string; playerId: string }) {
         playerStore.setPlayerIdForRoom(data.roomCode, data.playerId);
         router.push(`/room/${data.roomCode}`);
       },
@@ -47,14 +47,14 @@ const JoinRoomForm = () => {
 
   const { execute: checkPlayerExecute, loading: checkingPlayer } =
     usePublicAction(playerApi.getDetails, {
-      onSuccess(data) {
+      onSuccess(data: { isValid: boolean }) {
         if (data.isValid) {
           router.push(`/rooms/${formData.roomCode}`);
         } else {
           setStep(STEP.PLAYER_DETAILS);
         }
       },
-      onError(error) {
+      onError(error: { error: string }) {
         setStep(STEP.PLAYER_DETAILS);
         toast.error(error.error, {
           className: josephinBold.className,
