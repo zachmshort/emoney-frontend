@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ApiResponse } from "@/utils/api.service";
+import { ApiResponse } from "@/lib/utils/api.service";
 
 export function usePublicFetch<T, P = any>(
   resourceFn: (...args: P[]) => Promise<ApiResponse<T>>,
