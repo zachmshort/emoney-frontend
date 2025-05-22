@@ -35,7 +35,11 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     error: playersError,
     loading: playersLoading,
     refetch: refetchPlayers,
-  } = usePublicFetch(roomApi.getPlayers, {
+  } = usePublicFetch<{
+    players: Player[];
+    room: Room;
+    eventHistory: EventHistory[];
+  }>(roomApi.getPlayers, {
     resourceParams: [code, storedPlayerId],
     dependencies: [code, storedPlayerId],
     enabled: !!code && !!storedPlayerId,
