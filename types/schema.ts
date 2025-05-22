@@ -1,6 +1,4 @@
-import { Group } from "next/dist/shared/lib/router/utils/route-regex";
-
-export interface Room {
+export type Room = {
   id: string;
   name: string;
   roomCode: string;
@@ -8,9 +6,9 @@ export interface Room {
   createdAt: Date;
   isActive: boolean;
   freeParking: number;
-}
+};
 
-export interface Player {
+export type Player = {
   id: string;
   roomId: string;
   deviceId: string;
@@ -20,9 +18,9 @@ export interface Player {
   isActive: boolean;
   isBanker: boolean;
   properties?: Property[];
-}
+};
 
-export interface Property {
+export type Property = {
   id: string;
   roomId: string;
   playerId: string;
@@ -36,9 +34,9 @@ export interface Property {
   rentPrices: number[];
   houseCost?: number;
   propertyIndex: number;
-}
+};
 
-export interface Transfer {
+export type Transfer = {
   id: string;
   roomId: string;
   fromPlayerId: string | null; // null if from bank
@@ -47,29 +45,29 @@ export interface Transfer {
   reason: string; // "transfer" | "rent" | "tax" | "chance" etc.
   timestamp: Date;
   status: string; // "pending" | "completed" | "rejected"
-}
+};
 
-export interface EventHistory {
+export type EventHistory = {
   id: string;
   roomId: string;
   event: string;
   timestamp: Date;
   eventType: string[];
-}
+};
 
-// interface Immunity {
+// type Immunity {
 //   propertyId?: string;
 //   propertyGroup?: string;
 //   count: number;
 // }
 
-interface Trade {
+type Trade = {
   properties?: string[];
   amount?: number;
   // immunity?: Immunity[];
-}
+};
 
-export interface Offer {
+export type Offer = {
   id: string;
   roomId: string;
   status: "PENDING" | "DENIED" | "ACCEPTED" | "COUNTERED";
@@ -80,9 +78,9 @@ export interface Offer {
   createdAt: Date;
   updatedAt: Date;
   note?: string;
-}
+};
 
-export interface OfferNoID {
+export type OfferNoID = {
   roomId: string;
   status: "PENDING" | "DENIED" | "ACCEPTED" | "COUNTERED";
   fromPlayerId: string;
@@ -92,4 +90,4 @@ export interface OfferNoID {
   createdAt: Date;
   updatedAt: Date;
   note?: string;
-}
+};

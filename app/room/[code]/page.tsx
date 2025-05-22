@@ -6,12 +6,11 @@ import { getWsUrl } from "@/lib/utils/wsHelpers";
 import { playerStore } from "@/lib/utils/playerHelpers";
 import { toast } from "sonner";
 import { josephinBold } from "@/components/ui/fonts";
-import {
-  fetchRoomData,
-  fetchAvailableProperties,
-} from "@/lib/utils/roomHelpers";
 import { sendMessage } from "@/lib/utils/sendWsMessage";
 import { ManagePropertiesPayload } from "@/types/payloads";
+import { usePublicFetch } from "@/hooks/use-public-fetch";
+import { roomApi } from "@/lib/utils/api.service";
+import DataState from "@/components/containers/data-state";
 
 interface WebSocketMessage {
   type: string;
@@ -21,20 +20,59 @@ interface WebSocketMessage {
 }
 
 const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
-  // variables set by websocket passed down to children that change as game progresses
   const { code } = use(params);
   const [player, setPlayer] = useState<Player | null>(null);
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
   const [room, setRoom] = useState<Room>();
-  const [eventHistory, setEventHistory] = useState<EventHistory[]>([]); // history of transactions, game creation, etc.
-  const [availableProperties, setAvailableProperties] = useState([]); // properties owned by bank, should be [] in late game
+  const [eventHistory, setEventHistory] = useState<EventHistory[]>([]);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const ws = useRef<WebSocket | null>(null);
+  const storedPlayerId = playerStore.getPlayerIdForRoom(code);
+
+  const {
+    data: playersData,
+    error: playersError,
+    loading: playersLoading,
+    refetch: refetchPlayers,
+  } = usePublicFetch(roomApi.getPlayers, {
+    resourceParams: [code, storedPlayerId],
+    dependencies: [code, storedPlayerId],
+    enabled: !!code && !!storedPlayerId,
+  });
+
+  const {
+    data: propertiesData,
+    error: propertiesError,
+    loading: propertiesLoading,
+    refetch: refetchProperties,
+  } = usePublicFetch(roomApi.getProperties, {
+    resourceParams: [code],
+    dependencies: [code],
+    enabled: !!code,
+  });
+
+  useEffect(() => {
+    if (playersData) {
+      const currentPlayer =
+        playersData.players?.find((p: Player) => p.id === storedPlayerId) ||
+        null;
+
+      const others =
+        playersData.players?.filter((p: Player) => p.id !== storedPlayerId) ||
+        [];
+
+      setPlayer(currentPlayer);
+      setOtherPlayers(others);
+      setRoom(playersData.room);
+      setEventHistory(playersData.eventHistory || []);
+    }
+  }, [playersData, storedPlayerId]);
 
   const handleBankerTransaction = (
     amount: string,
     targetPlayerId: string,
-    transactionType: "BANKER_ADD" | "BANKER_REMOVE"
+    transactionType: "BANKER_ADD" | "BANKER_REMOVE",
   ) => {
     sendMessage(ws.current, "BANKER_TRANSACTION", {
       type: "BANKER_TRANSACTION",
@@ -49,7 +87,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   const handlePurchaseProperty = (
     propertyId: string,
     buyerId: string,
-    price: number
+    price: number,
   ) => {
     sendMessage(ws.current, "PURCHASE_PROPERTY", {
       type: "PURCHASE_PROPERTY",
@@ -68,43 +106,17 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       className: `${josephinBold.className} text-xs text-center`,
     });
 
-    fetchRoomData(
-      code,
-      playerStore,
-      setPlayer,
-      setOtherPlayers,
-      setRoom,
-      setEventHistory
-    );
+    refetchPlayers();
 
     if (["PURCHASE_PROPERTY", "MANAGE_PROPERTIES"].includes(message.type)) {
-      fetchAvailableProperties(code, setAvailableProperties);
-    }
-  };
-
-  const getIconForType = (type: string) => {
-    switch (type) {
-      case "PLAYER_JOINED":
-        return "🧍";
-      case "PLAYER_LEFT":
-        return "🧍";
-      case "BANKER_TRANSACTION":
-        return "🏦";
-      case "PROPERTY_CHANGE":
-        return "🧾";
-      case "TRANSFER":
-        return "💵";
-      case "MANAGE_PROPERTIES":
-        return "🏠";
-      default:
-        return "ℹ️";
+      refetchProperties();
     }
   };
 
   const handleFreeParkingAction = (
     amount: string,
     freeParkingType: "ADD" | "REMOVE",
-    playerId: string
+    playerId: string,
   ) => {
     sendMessage(ws.current, "FREE_PARKING", {
       type: "FREE_PARKING",
@@ -119,7 +131,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     amount: number,
     managementType: ManagePropertiesPayload["managementType"],
     properties: { propertyId: string; count?: number }[],
-    playerId: string
+    playerId: string,
   ) => {
     sendMessage(ws.current, "MANAGE_PROPERTIES", {
       managementType,
@@ -144,7 +156,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       toPlayerId?: string;
       reason: string;
       roomId: string;
-    }
+    },
   ) => {
     sendMessage(ws.current, "TRANSFER", {
       type: "TRANSFER",
@@ -158,13 +170,13 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
   };
 
   const initializeWebSocket = useCallback(
-    (storedPlayerId: string) => {
+    (playerId: string) => {
       if (ws.current?.readyState === WebSocket.OPEN) return;
 
       ws.current = new WebSocket(getWsUrl(code));
 
       ws.current.onopen = () => {
-        sendMessage(ws.current, "JOIN", { playerId: storedPlayerId });
+        sendMessage(ws.current, "JOIN", { playerId });
       };
 
       ws.current.onerror = (error) => {
@@ -172,7 +184,7 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
       };
 
       ws.current.onclose = () => {
-        setTimeout(() => initializeWebSocket(storedPlayerId), 1000);
+        setTimeout(() => initializeWebSocket(playerId), 1000);
       };
 
       ws.current.onmessage = (event) => {
@@ -184,68 +196,85 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
         }
       };
     },
-    [code]
+    [code],
   );
 
   useEffect(() => {
-    const storedPlayerId = playerStore.getPlayerIdForRoom(code);
-
     if (!storedPlayerId) {
       toast.error("No player found for this room");
       return;
     }
 
     initializeWebSocket(storedPlayerId);
-    fetchRoomData(
-      code,
-      playerStore,
-      setPlayer,
-      setOtherPlayers,
-      setRoom,
-      setEventHistory
-    );
-    fetchAvailableProperties(code, setAvailableProperties);
 
     return () => {
       ws.current?.close();
     };
-  }, [code]);
+  }, [code, storedPlayerId, initializeWebSocket]);
 
-  if (!room)
-    return (
-      <div id="loading" className={`${josephinBold.className}`}>
-        <div className="dice">
-          <div className="front">1</div>
-          <div className="back">6</div>
-          <div className="left">2</div>
-          <div className="right">5</div>
-          <div className="top">3</div>
-          <div className="bottom">4</div>
-        </div>
-        <p
-          className={`color !text-xl border-yellow-100 border h-12 w-[200px] justify-center flex items-center rounded-sm`}
-        >
-          LOADING
-        </p>
-      </div>
-    );
+  const isLoading = playersLoading || propertiesLoading;
+  const error = playersError || propertiesError;
+
+  const combinedData =
+    playersData && propertiesData
+      ? {
+        players: playersData,
+        properties: propertiesData,
+      }
+      : null;
+
+  useEffect(() => {
+    if (!initialLoadComplete && playersData && propertiesData) {
+      setInitialLoadComplete(true);
+    }
+  }, [playersData, propertiesData, initialLoadComplete]);
 
   return (
-    <>
-      <RoomView
-        room={room}
-        currentPlayer={player}
-        otherPlayers={otherPlayers}
-        availableProperties={availableProperties}
-        eventHistory={eventHistory}
-        onTransfer={handleTransfer}
-        onPurchaseProperty={handlePurchaseProperty}
-        onFreeParkingAction={handleFreeParkingAction}
-        onBankerTransaction={handleBankerTransaction}
-        onManageProperties={handleManageProperties}
-      />
-    </>
+    <DataState
+      data={combinedData}
+      loading={!initialLoadComplete}
+      error={error}
+      refetch={() => {
+        refetchPlayers();
+        refetchProperties();
+      }}
+    >
+      {() => (
+        <RoomView
+          room={room}
+          loading={isLoading}
+          currentPlayer={player}
+          otherPlayers={otherPlayers}
+          availableProperties={propertiesData?.availableProperties || []}
+          eventHistory={eventHistory}
+          onTransfer={handleTransfer}
+          onPurchaseProperty={handlePurchaseProperty}
+          onFreeParkingAction={handleFreeParkingAction}
+          onBankerTransaction={handleBankerTransaction}
+          onManageProperties={handleManageProperties}
+        />
+      )}
+    </DataState>
   );
 };
 
 export default RoomPage;
+
+const getIconForType = (type: string) => {
+  switch (type) {
+    case "PLAYER_JOINED":
+      return "🧍";
+    case "PLAYER_LEFT":
+      return "🧍";
+    case "BANKER_TRANSACTION":
+      return "🏦";
+    case "PROPERTY_CHANGE":
+      return "🧾";
+    case "TRANSFER":
+      return "💵";
+    case "MANAGE_PROPERTIES":
+      return "🏠";
+    default:
+      return "ℹ️";
+  }
+};

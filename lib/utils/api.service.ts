@@ -1,4 +1,4 @@
-import API from "./api"
+import API from "./api";
 
 const handleApiResponse = (promise: any) => {
   return promise
@@ -40,10 +40,13 @@ const ROOMS_BASE = `/${API_VERSION}/rooms`;
 const ROOM = (code: string) => `${ROOMS_BASE}/${code}`;
 
 const ROOM_PLAYERS = (code: string) => `${ROOM(code)}/players`;
-const ROOM_PLAYER = (code: string, playerId: string) => `${ROOM_PLAYERS(code)}/${playerId}`;
+const ROOM_PLAYER = (code: string, playerId: string) =>
+  `${ROOM_PLAYERS(code)}/${playerId}`;
 
-const PLAYER_PROPERTIES = (code: string, playerId: string) => `${ROOM_PLAYER(code, playerId)}/properties`;
-const PLAYER_PROPERTY = (code: string, playerId: string, propertyId: string) => `${PLAYER_PROPERTIES(code, playerId)}/${propertyId}`;
+const PLAYER_PROPERTIES = (code: string, playerId: string) =>
+  `${ROOM_PLAYER(code, playerId)}/properties`;
+const PLAYER_PROPERTY = (code: string, playerId: string, propertyId: string) =>
+  `${PLAYER_PROPERTIES(code, playerId)}/${propertyId}`;
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -59,7 +62,6 @@ async function apiRequest<T = any>(
   params?: Record<string, string>,
 ): Promise<ApiResponse<T>> {
   const url = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-  console.log(url, "url in /emoney-frontend/utils/api.service.ts")
   const config = params ? { params } : undefined;
 
   let promise: any;
@@ -82,23 +84,28 @@ async function apiRequest<T = any>(
 }
 
 export const roomApi = {
-  create: (data: any) => apiRequest("post", ROOMS_BASE, data),                       // /rooms
-  getPlayers: (code: string) => apiRequest("get", ROOM_PLAYERS(code)),               // /rooms/:code/players
-  getProperties: (code: string) => apiRequest("get", `${ROOM(code)}/properties`),    // /rooms/:code/properties
+  create: (data: any) => apiRequest("post", ROOMS_BASE, data),
+  getPlayers: (code: string) => apiRequest("get", ROOM_PLAYERS(code)),
+  getProperties: (code: string) =>
+    apiRequest("get", `${ROOM(code)}/properties`),
 };
 
 export const playerApi = {
-  join: (code: string, data: any) => apiRequest("post", ROOM_PLAYERS(code), data),   // /rooms/:code/players
+  join: (code: string, data: any) =>
+    apiRequest("post", ROOM_PLAYERS(code), data),
 
   getDetails: (code: string, playerId: string) =>
-    apiRequest("get", ROOM_PLAYER(code, playerId)),                                  // GET /rooms/:code/players/:playerId
+    apiRequest("get", ROOM_PLAYER(code, playerId)),
 
   addProperty: (code: string, playerId: string, propertyId: string) =>
-    apiRequest("post", PLAYER_PROPERTY(code, playerId, propertyId)),                 // POST /rooms/:code/players/:playerId/properties/:propertyId
+    apiRequest("post", PLAYER_PROPERTY(code, playerId, propertyId)),
 
   removeProperty: (code: string, playerId: string, propertyId: string) =>
-    apiRequest("delete", PLAYER_PROPERTY(code, playerId, propertyId)),               // DELETE /rooms/:code/players/:playerId/properties/:propertyId
+    apiRequest("delete", PLAYER_PROPERTY(code, playerId, propertyId)),
 
   mortgageProperty: (code: string, playerId: string, propertyId: string) =>
-    apiRequest("post", `${PLAYER_PROPERTY(code, playerId, propertyId)}/mortgage`),   // POST /rooms/:code/players/:playerId/properties/:propertyId/mortgage
+    apiRequest(
+      "post",
+      `${PLAYER_PROPERTY(code, playerId, propertyId)}/mortgage`,
+    ),
 };

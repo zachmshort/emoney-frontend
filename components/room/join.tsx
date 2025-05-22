@@ -11,7 +11,7 @@ import { playerStore } from "@/lib/utils/playerHelpers";
 import { InitialJoinRoomFormData, JoinRoomFormData } from "./utils";
 import { BaseRoomInput } from "./room-code-input";
 import { usePublicAction } from "@/hooks/use-public-fetch";
-import { playerApi } from "@/utils/api.service";
+import { playerApi } from "@/lib/utils/api.service";
 
 enum STEP {
   ROOM_LOOKUP,
@@ -25,9 +25,7 @@ const JoinRoomForm = () => {
   const [step, setStep] = useState<STEP>(STEP.ROOM_LOOKUP);
   const router = useRouter();
 
-  const [selectedColor, setSelectedColor] = useState("");
-
-  const updateForm = (key: keyof JoinRoomFormData, value: string) => {
+  const updateFormData = (key: keyof JoinRoomFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -36,11 +34,11 @@ const JoinRoomForm = () => {
     {
       onSuccess(data) {
         playerStore.setPlayerIdForRoom(data.roomCode, data.playerId);
-        router.push(`/rooms/${data.roomCode}`);
+        router.push(`/room/${data.roomCode}`);
       },
       onError(error) {
         toast.error("Failed to join room", {
-          description: error?.message || "Please try again.",
+          description: error?.error || "Please try again.",
           className: josephinBold.className,
         });
       },
@@ -74,15 +72,16 @@ const JoinRoomForm = () => {
   };
 
   const joinRoom = () => {
-    if (!formData.playerName || !selectedColor) {
+    if (!formData.playerName || !formData.playerColor) {
       toast.error("Please fill out all fields", {
         className: josephinBold.className,
       });
       return;
     }
     joinRoomExecute(formData.roomCode, {
-      name: formData.playerName,
-      color: selectedColor,
+      playerName: formData.playerName,
+      roomCode: formData.roomCode,
+      playerColor: formData.playerColor,
     });
   };
 
@@ -91,7 +90,7 @@ const JoinRoomForm = () => {
       <BaseRoomInput
         placeholder="Room Code"
         value={formData.roomCode}
-        onChange={(e) => updateForm("roomCode", e.target.value)}
+        onChange={(e) => updateFormData("roomCode", e.target.value)}
         disabled={checkingPlayer}
       />
       <Button
@@ -117,10 +116,14 @@ const JoinRoomForm = () => {
       <BaseRoomInput
         placeholder="Your Name"
         value={formData.playerName}
-        onChange={(e) => updateForm("playerName", e.target.value)}
+        onChange={(e) => updateFormData("playerName", e.target.value)}
         disabled={joining}
       />
-      <ColorSelect onColorSelect={setSelectedColor} />
+      <ColorSelect
+        onColorSelect={(color: string) => {
+          updateFormData("playerColor", color);
+        }}
+      />
       <Button onClick={joinRoom} className="mt-4" disabled={joining}>
         Join Room
       </Button>

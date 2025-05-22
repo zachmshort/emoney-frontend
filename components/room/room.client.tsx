@@ -10,6 +10,7 @@ const RoomView = ({
   currentPlayer,
   otherPlayers,
   room,
+  loading,
   availableProperties,
   onTransfer,
   eventHistory,
@@ -32,6 +33,7 @@ const RoomView = ({
       roomId: string;
     },
   ) => void;
+  loading: boolean;
   onFreeParkingAction: (amount: string, type: string, playerId: string) => void;
   onBankerTransaction: (amount: string, type: string, playerId: string) => void;
   availableProperties: Property[];

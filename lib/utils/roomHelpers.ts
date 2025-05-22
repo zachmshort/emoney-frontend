@@ -1,5 +1,4 @@
 import { toast } from "sonner";
-import { getEndpoints } from "./wsHelpers";
 import { EventHistory, Player, Property, Room } from "@/types/schema";
 import { Dispatch, SetStateAction } from "react";
 
@@ -9,7 +8,7 @@ const fetchRoomData = async (
   setPlayer: Dispatch<SetStateAction<Player | null>>,
   setOtherPlayers: Dispatch<SetStateAction<Player[]>>,
   setRoom: Dispatch<SetStateAction<Room | undefined>>,
-  setEventHistory: Dispatch<SetStateAction<EventHistory[]>>
+  setEventHistory: Dispatch<SetStateAction<EventHistory[]>>,
 ) => {
   try {
     const storedPlayerId = playerStore.getPlayerIdForRoom(code);
@@ -35,24 +34,23 @@ const fetchRoomData = async (
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         );
         const propertyData = await propertyResponse.json();
         return {
           ...p,
           properties: propertyData.properties,
         };
-      })
+      }),
     );
 
     const currentPlayer = playersWithProperties.find(
-      (p: Player) => p.id === storedPlayerId
+      (p: Player) => p.id === storedPlayerId,
     );
 
     const remainingPlayers = playersWithProperties.filter(
-      (p: Player) => p.id !== storedPlayerId
+      (p: Player) => p.id !== storedPlayerId,
     );
-    console.log(remainingPlayers);
     setPlayer(currentPlayer || null);
     setOtherPlayers(remainingPlayers);
     setRoom(roomData.room);
@@ -65,7 +63,7 @@ const fetchRoomData = async (
 
 const fetchAvailableProperties = async (
   roomCode: string,
-  setAvailableProperties: Dispatch<SetStateAction<Property[]>>
+  setAvailableProperties: Dispatch<SetStateAction<Property[]>>,
 ) => {
   try {
     const response = await fetch(
@@ -75,7 +73,7 @@ const fetchAvailableProperties = async (
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!response.ok) {

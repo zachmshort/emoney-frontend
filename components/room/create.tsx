@@ -39,11 +39,11 @@ const CreateRoomForm = () => {
     {
       onSuccess(data) {
         playerStore.setPlayerIdForRoom(data.roomCode, data.playerId);
-        router.push(`/rooms/${data.roomCode}`);
+        router.push(`/room/${data.roomCode}`);
       },
       onError(error) {
-        toast.error("Failed to create room", {
-          description: error?.message || "Please try again.",
+        toast.error("Error creating room", {
+          description: error.error,
           className: josephinBold.className,
         });
       },
@@ -54,7 +54,7 @@ const CreateRoomForm = () => {
     usePublicAction(playerApi.getDetails, {
       onSuccess(data) {
         if (data.isValid) {
-          router.push(`/rooms/${formData.roomCode}`);
+          router.push(`/room/${formData.roomCode}`);
         } else {
           setStep(STEP.PLAYER_DETAILS);
         }

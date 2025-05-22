@@ -1,12 +1,13 @@
 import axios from "axios";
 
-const apiUrl = process.env.API_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+console.log(apiUrl, "apiUrl in /emoney-frontend/utils/api.ts");
 
 const API = axios.create({
   baseURL: apiUrl,
   headers: { "Content-Type": "application/json" },
 });
-
+console.log(API.getUri(), "API.getUri() in /emoney-frontend/utils/api.ts");
 
 /**
  * Request Interceptor:
@@ -16,7 +17,6 @@ const API = axios.create({
  */
 API.interceptors.request.use(async (config) => {
   try {
-
     // const publicEndpoints = [
     //   "/room",
     //   "/join",

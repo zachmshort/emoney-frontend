@@ -1,14 +1,20 @@
 "use client";
 
-import { josephinBold, josephinLight } from "@/components/ui/fonts";
+import {
+  josephinBold,
+  josephinLight,
+  josephinNormal,
+} from "@/components/ui/fonts";
 import NextLink from "next/link";
 import Link from "@/components/ui/link";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
+import DiceLoader from "@/components/loaders/dice";
 
 const MyRoomsPage = () => {
   const [rooms, setRooms] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const storedRooms = Object.keys(localStorage)
@@ -24,35 +30,18 @@ const MyRoomsPage = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div id="loading" className={`${josephinBold.className} w-full min-h-screen flex flex-col items-center justify-center`}>
-        <div className="dice">
-          <div className="front">1</div>
-          <div className="back">6</div>
-          <div className="left">2</div>
-          <div className="right">5</div>
-          <div className="top">3</div>
-          <div className="bottom">4</div>
-        </div>
-        <p
-          className={`color !text-xl border-yellow-100 border h-12 w-[200px] justify-center flex items-center rounded-sm`}
-        >
-          LOADING
-        </p>
-      </div>
-    );
+    return <DiceLoader />;
   }
 
-  const existingRooms = rooms.length > 0
+  const existingRooms = rooms && rooms.length > 0;
 
   return (
-    <div className={`min-h-screen overflow-y-auto`}>
+    <div className={`min-h-screen`}>
       <Header />
-      
-      <div className="flex items-center justify-start mt-20 gap-y-4 flex-col w-full min-h-screen">
-        {existingRooms ? <ExistingRooms rooms={rooms} />
-         : (
-          
+      <div className="pt-20 flex flex-col items-start px-10 gap-y-6">
+        {existingRooms ? (
+          <ExistingRooms rooms={rooms} />
+        ) : (
           <NoExistingRoomsFound />
         )}
       </div>
@@ -60,52 +49,60 @@ const MyRoomsPage = () => {
   );
 };
 
-const NoExistingRoomsFound = ()=> {
+const NoExistingRoomsFound = () => {
   return (
-<div
-            className={`${josephinBold.className} flex items-center justify-center gap-y-4 flex-col w-full h-[50vh]`}
-          >
-            <p className={`color`}>No rooms found</p>
-            <Link href="/join" >Join Room</Link>
-            <Link href="/create" >Create Room</Link>
-          </div>
-  )
-}
+    <div
+      className={`${josephinBold.className} flex items-center justify-center gap-y-4 flex-col w-full h-[50vh]`}
+    >
+      <p className={`color`}>No rooms found</p>
+      <Link href="/join">Join Room</Link>
+      <Link href="/create">Create Room</Link>
+    </div>
+  );
+};
 
-const ExistingRooms = (rooms)=> {
+const ExistingRooms = ({ rooms }: { rooms: string[] }) => {
   return (
-
-  <>
-           {rooms.map((room, index) => (
-            <NextLink
-              key={index}
-              href={`/room/${room}`}
-              className={`font ${josephinLight.className} text-2xl`}
-            >
-              {room}
-            </NextLink>
-
-          ))}
-
-  </>
-
-  )
-}
+    <>
+      {rooms.map((room: string, index: number) => (
+        <NextLink
+          key={index}
+          href={`/room/${room}`}
+          className={`font ${josephinLight.className} text-2xl`}
+        >
+          {room}
+        </NextLink>
+      ))}
+    </>
+  );
+};
 
 const Header = () => {
-return (
-<div className={`h-16 fixed top-0 w-full bg-black border-b`}>
-        <div className={`flex items-center justify-center px-2 h-full`}>
-          <NextLink href={`/`} className={`absolute left-2 top-4`}>
-            <IoIosArrowBack className={`text-2xl color`} />
-          </NextLink>
-          <h1 className={`${josephinBold.className} text-2xl color`}>
-            Existing Rooms
-          </h1>
-          <div />
-        </div>
+  return (
+    <div className={`h-16 absolute`}>
+      <div className={`flex items-center justify-start px-2 h-full`}>
+        <BackButton />
+        <Heading />
+        <div />
       </div>
-)
-}
+    </div>
+  );
+};
+
+const BackButton = () => {
+  return (
+    <NextLink href={`/`} className={`absolute left-2 top-4`}>
+      <IoIosArrowBack className={`text-2xl color`} />
+    </NextLink>
+  );
+};
+
+const Heading = () => {
+  return (
+    <h1 className={`${josephinNormal.className} px-8 text-2xl color`}>
+      Existing Rooms
+    </h1>
+  );
+};
 
 export default MyRoomsPage;
