@@ -37,11 +37,11 @@ const CreateRoomForm = () => {
   const { execute: createRoomExecute, loading: creating } = usePublicAction(
     roomApi.create,
     {
-      onSuccess(data) {
+      onSuccess(data: { roomCode: string; playerId: string }) {
         playerStore.setPlayerIdForRoom(data.roomCode, data.playerId);
         router.push(`/room/${data.roomCode}`);
       },
-      onError(error) {
+      onError(error: { error: string }) {
         toast.error("Error creating room", {
           description: error.error,
           className: josephinBold.className,
@@ -52,7 +52,7 @@ const CreateRoomForm = () => {
 
   const { execute: checkPlayerExecute, loading: checkingPlayer } =
     usePublicAction(playerApi.getDetails, {
-      onSuccess(data) {
+      onSuccess(data: { roomCode: string; isValid: boolean }) {
         if (data.isValid) {
           router.push(`/room/${formData.roomCode}`);
         } else {
