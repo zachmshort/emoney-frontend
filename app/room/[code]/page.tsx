@@ -1,5 +1,5 @@
 "use client";
-import { EventHistory, Player, Room } from "@/types/schema";
+import { EventHistory, Player, Property, Room } from "@/types/schema";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import RoomView from "@/components/room/room.client";
 import { getWsUrl } from "@/lib/utils/wsHelpers";
@@ -50,11 +50,14 @@ const RoomPage = ({ params }: { params: Promise<{ code: string }> }) => {
     error: propertiesError,
     loading: propertiesLoading,
     refetch: refetchProperties,
-  } = usePublicFetch(roomApi.getProperties, {
-    resourceParams: [code],
-    dependencies: [code],
-    enabled: !!code,
-  });
+  } = usePublicFetch<{ availableProperties: Property[]; roomId: string }>(
+    roomApi.getProperties,
+    {
+      resourceParams: [code],
+      dependencies: [code],
+      enabled: !!code,
+    },
+  );
 
   useEffect(() => {
     if (playersData) {
